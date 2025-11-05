@@ -22,11 +22,12 @@ public class FarmTile : MonoBehaviour
     public void PlantCrop()
     {
  
-        if(inventory.currentTool==Inventory.Tool.Planting)
+        if(inventory.HasSeeds(inventory.selectedCrop) && inventory.currentTool==Inventory.Tool.Planting)
         {
             if (crop == null)
             {
                 crop = inventory.selectedCrop;
+                inventory.UseSeed(inventory.selectedCrop);
                 Debug.Log("Tile is now planted.");
 
             }

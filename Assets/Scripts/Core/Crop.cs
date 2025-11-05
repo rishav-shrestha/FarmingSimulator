@@ -11,4 +11,5 @@ public class Crop : ScriptableObject
     public float deathTime = 12f;
     public int sellPrice = 10;
     public int totalStages = 5;
+    public bool locked;
 }

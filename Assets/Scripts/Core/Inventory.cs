@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Inventory : MonoBehaviour
@@ -6,57 +7,70 @@ public class Inventory : MonoBehaviour
 
     [Header("Selected Items")]
     public Crop selectedCrop;
-
+    private CropDatabase cropDatabase;
     [Header("Currencies")]
     [SerializeField] public int coins = 0;
 
 
     [Header("Tool Settings")]
-    public Tool currentTool = Tool.None;
-
+    public Tool currentTool = Tool.Planting;
     [Header("Inventory Data")]
     // how many of each crop (harvested items) you have
-    public Dictionary<string, int> cropInventory = new Dictionary<string, int>();
+    public Dictionary<Crop, int> cropInventory = new Dictionary<Crop, int>();
 
     // how many seeds of each crop type you have
-    public Dictionary<string, int> seedInventory = new Dictionary<string, int>();
+    public Dictionary<Crop, int> seedInventory = new Dictionary<Crop, int>();
 
 
     private void Start()
     {
+        cropDatabase = this.GetComponent<CropDatabase>();
+        selectedCrop = cropDatabase.crops[0]; // default to first crop
         // Initialize with zero or some starting amounts
-        cropInventory["Tomato"] = 0;
-        seedInventory["Tomato"] = 5; // example: 5 tomato seeds at start
+        cropInventory[cropDatabase.crops[0]] = 0;
+        seedInventory[cropDatabase.crops[0]] = 5; // example: 5 tomato seeds at start
     }
 
-    public void AddSeed(string cropName, int amount)
+    public void AddSeed(Crop crop, int amount)
     {
-        if (!seedInventory.ContainsKey(cropName))
-            seedInventory[cropName] = 0;
-        seedInventory[cropName] += amount;
+        if (!seedInventory.ContainsKey(crop))
+            seedInventory[crop] = 0;
+        seedInventory[crop] += amount;
     }
 
-    public bool UseSeed(string cropName, int amount = 1)
+    public bool HasSeeds(Crop crop, int amount = 1)
     {
-        if (seedInventory.ContainsKey(cropName) && seedInventory[cropName] >= amount)
+        return seedInventory.ContainsKey(crop) && seedInventory[crop] >= amount;
+    }
+    public bool UseSeed(Crop crop, int amount = 1)
+    {
+        if (HasSeeds(crop,amount))
         {
-            seedInventory[cropName] -= amount;
+
+
+            seedInventory[crop] -= amount;
             return true;
+        }
+        if (seedInventory[crop] -1 < 0)
+        {
+            Debug.LogWarning("Attempted to use more seeds than available!");
+            return false;
         }
         return false;
     }
 
-    public void AddCrop(string cropName, int amount)
+    public void AddCrop(Crop crop, int amount)
     {
-        if (!cropInventory.ContainsKey(cropName))
-            cropInventory[cropName] = 0;
-        cropInventory[cropName] += amount;
+        if (!cropInventory.ContainsKey(crop))
+            cropInventory[crop] = 0;
+        cropInventory[crop] += amount;
     }
-    public bool SellCrop(string cropName, int amount = 1)
+    public bool SellCrop(Crop crop, int amount = 1)
     {
-        if (cropInventory.ContainsKey(cropName) && seedInventory[cropName] >= amount)
+        if (cropInventory.ContainsKey(crop) && seedInventory[crop] >= amount)
         {
-            seedInventory[cropName] -= amount;
+            seedInventory[crop] -= amount;
+            EarnCoins(amount);
             return true;
         }
         return false;

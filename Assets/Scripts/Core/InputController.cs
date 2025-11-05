@@ -1,4 +1,5 @@
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class InputController : MonoBehaviour
@@ -18,6 +19,10 @@ public class InputController : MonoBehaviour
 
     void HandleMouse()
     {
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+            return;
+
+
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
             startPos = Mouse.current.position.ReadValue();
