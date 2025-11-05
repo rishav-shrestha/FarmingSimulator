@@ -42,6 +42,12 @@ public class Inventory : MonoBehaviour
     {
         return seedInventory.ContainsKey(crop) && seedInventory[crop] >= amount;
     }
+    public int GetSeedAmount(Crop crop)
+    {
+        if (seedInventory.ContainsKey(crop))
+            return seedInventory[crop];
+        return 0;
+    }   
     public bool UseSeed(Crop crop, int amount = 1)
     {
         if (HasSeeds(crop,amount))
@@ -59,6 +65,16 @@ public class Inventory : MonoBehaviour
         return false;
     }
 
+    public bool HasCrops(Crop crop, int amount = 1)
+    {
+        return cropInventory.ContainsKey(crop) && cropInventory[crop] >= amount;
+    }
+    public int GetCropAmount(Crop crop)
+    {
+        if (cropInventory.ContainsKey(crop))
+            return cropInventory[crop];
+        return 0;
+    }
     public void AddCrop(Crop crop, int amount)
     {
         if (!cropInventory.ContainsKey(crop))
