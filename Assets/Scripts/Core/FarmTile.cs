@@ -3,14 +3,21 @@ using UnityEngine;
 
 public class FarmTile : MonoBehaviour
 {
+
+    public enum TileState
+    {
+        Empty,
+        Growing,
+        RequiresWater,
+        FullyGrown,
+        Dead
+    }
+    public TileState currentState = TileState.Empty;
     // Sprite for the farm tile when it's empty
     public Sprite emptyTileSprite;
     public Crop crop;
     public Inventory inventory;
     public int currentStage = 0;
-    public bool fullyGrown=false;
-    public bool dead=false;
-    public bool needsWater=false;
     public float growthTimer = 0f;
     public float deathTimer = 0f;
 
@@ -26,6 +33,7 @@ public class FarmTile : MonoBehaviour
         {
             if (crop == null)
             {
+                currentState = TileState.Growing;
                 AudioManager.instance.playSFX(AudioManager.instance.plantSFX);
                 crop = inventory.selectedCrop;
                 inventory.UseSeed(inventory.selectedCrop);
@@ -43,7 +51,7 @@ public class FarmTile : MonoBehaviour
         if (inventory.currentTool == Inventory.Tool.Harvesting)
         {   if (crop!=null)
             {
-                if(fullyGrown)
+                if(currentState==TileState.FullyGrown)
                 {
                     Debug.Log("Crop harvested");
                     AudioManager.instance.playSFX(AudioManager.instance.harvestSFX);
@@ -51,10 +59,9 @@ public class FarmTile : MonoBehaviour
                     currentStage = 0;
                     growthTimer = 0f;
                     deathTimer = 0f;
-                    fullyGrown = false;
-                    dead = false;
+                    currentState = TileState.Empty;
                 }
-                else if(dead)
+                else if(currentState==TileState.Dead)
                 {
                     Debug.Log("The crop is dead and cannot be harvested.");
                     
@@ -62,8 +69,7 @@ public class FarmTile : MonoBehaviour
                     currentStage = 0;
                     growthTimer = 0f;
                     deathTimer = 0f;
-                    fullyGrown = false;
-                    dead = false;
+                    currentState = TileState.Empty;
                 }
                 else
                 {
@@ -79,11 +85,11 @@ public class FarmTile : MonoBehaviour
 
     public void waterCrop()
     {
-        if(needsWater && inventory.currentTool==Inventory.Tool.Watering)
+        if(currentState==TileState.RequiresWater && inventory.currentTool==Inventory.Tool.Watering)
         {
             AudioManager.instance.playEffects(AudioManager.instance.waterSFX);
             Debug.Log("Crop watered.");
-            needsWater = false;
+            currentState = TileState.Growing;
             currentStage++;
         }
     }
@@ -93,32 +99,30 @@ public class FarmTile : MonoBehaviour
     {
         if(crop !=null)
         {
-            if (currentStage < crop.totalStages - 1 && !needsWater)
+            if (currentStage < crop.totalStages - 1 && currentState==TileState.Growing)
             {
                 growthTimer += Time.deltaTime;
                 if (growthTimer >= crop.growthTime)
                 {
                     growthTimer = 0f;
-                    needsWater = true;
+                    currentState=TileState.RequiresWater;
                 }
             }
             if (currentStage == crop.totalStages - 1)
             {
-                fullyGrown = true;
+                currentState=TileState.FullyGrown;
                 deathTimer += Time.deltaTime;
                 if (deathTimer >= crop.deathTime)
                 {
-                    fullyGrown = false;
+                    currentState=TileState.Dead;
                     currentStage++;
                     deathTimer = 0f;
-                    dead = true;
                 }
             }
         }
-        else if(fullyGrown||dead||currentStage>0||growthTimer!=0||deathTimer!=0)
+        else if(currentState!=TileState.Empty||currentStage>0||growthTimer!=0||deathTimer!=0)
         {
-            fullyGrown = false;
-            dead = false;
+            currentState=TileState.Empty;
             currentStage = 0;
             growthTimer = 0f;
             deathTimer = 0f;
