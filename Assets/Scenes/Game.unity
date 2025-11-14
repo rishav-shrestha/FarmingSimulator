@@ -313,10 +313,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27da4b5364a1185479e32280fb9899ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventory: {fileID: 728832132}
-  tool: 1
-  ToolSelectedsprite: {fileID: -3824439478612353135, guid: 18580446916d0284fb4f077992b05ffa, type: 3}
-  ToolUnselectedSprite: {fileID: 7055503818684435622, guid: 18580446916d0284fb4f077992b05ffa, type: 3}
 --- !u!222 &130858649
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -513,13 +509,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1908922114}
-        m_TargetAssemblyTypeName: AudioManager, Assembly-CSharp
-        m_MethodName: playSFX
-        m_Mode: 2
+      - m_Target: {fileID: 562794494}
+        m_TargetAssemblyTypeName: ButtonClickSFX, Assembly-CSharp
+        m_MethodName: playButtonSound
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 8300000, guid: b82236b4fdab3144dba069cedc7a4ba9, type: 3}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -1267,10 +1263,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27da4b5364a1185479e32280fb9899ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventory: {fileID: 728832132}
-  tool: 1
-  ToolSelectedsprite: {fileID: -3824439478612353135, guid: 18580446916d0284fb4f077992b05ffa, type: 3}
-  ToolUnselectedSprite: {fileID: 7055503818684435622, guid: 18580446916d0284fb4f077992b05ffa, type: 3}
 --- !u!222 &555346528
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1325,6 +1317,7 @@ GameObject:
   - component: {fileID: 562794488}
   - component: {fileID: 562794492}
   - component: {fileID: 562794493}
+  - component: {fileID: 562794494}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1455,6 +1448,18 @@ MonoBehaviour:
   masterSlider: {fileID: 1238689846}
   musicSlider: {fileID: 745355080}
   sfxSlider: {fileID: 690866599}
+--- !u!114 &562794494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 562794487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21c57cc206cb1994badb6b00a0714014, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &568066561
 GameObject:
   m_ObjectHideFlags: 0
@@ -1808,13 +1813,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1908922114}
-        m_TargetAssemblyTypeName: AudioManager, Assembly-CSharp
-        m_MethodName: playSFX
-        m_Mode: 2
+      - m_Target: {fileID: 562794494}
+        m_TargetAssemblyTypeName: ButtonClickSFX, Assembly-CSharp
+        m_MethodName: playButtonSound
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 8300000, guid: b82236b4fdab3144dba069cedc7a4ba9, type: 3}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -2206,13 +2211,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1908922114}
-        m_TargetAssemblyTypeName: AudioManager, Assembly-CSharp
-        m_MethodName: playSFX
-        m_Mode: 2
+      - m_Target: {fileID: 562794494}
+        m_TargetAssemblyTypeName: ButtonClickSFX, Assembly-CSharp
+        m_MethodName: playButtonSound
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 8300000, guid: b82236b4fdab3144dba069cedc7a4ba9, type: 3}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -2491,6 +2496,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 562794494}
+        m_TargetAssemblyTypeName: ButtonClickSFX, Assembly-CSharp
+        m_MethodName: playButtonSound
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1096283390
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2679,13 +2696,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1908922114}
-        m_TargetAssemblyTypeName: AudioManager, Assembly-CSharp
-        m_MethodName: playSFX
-        m_Mode: 2
+      - m_Target: {fileID: 562794494}
+        m_TargetAssemblyTypeName: ButtonClickSFX, Assembly-CSharp
+        m_MethodName: playButtonSound
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 8300000, guid: b82236b4fdab3144dba069cedc7a4ba9, type: 3}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -3631,13 +3648,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-      - m_Target: {fileID: 1908922114}
-        m_TargetAssemblyTypeName: AudioManager, Assembly-CSharp
-        m_MethodName: playSFX
-        m_Mode: 2
+      - m_Target: {fileID: 562794494}
+        m_TargetAssemblyTypeName: ButtonClickSFX, Assembly-CSharp
+        m_MethodName: playButtonSound
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 8300000, guid: b82236b4fdab3144dba069cedc7a4ba9, type: 3}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -3861,6 +3878,9 @@ MonoBehaviour:
   SFXSource: {fileID: 1360573610}
   buttonClickSFX: {fileID: 8300000, guid: b82236b4fdab3144dba069cedc7a4ba9, type: 3}
   backgroundMusic: {fileID: 8300000, guid: b477ce774e4d43541ad645cd15771305, type: 3}
+  plantSFX: {fileID: 8300000, guid: 80cbb3f221940284a9214b249fd79c41, type: 3}
+  waterSFX: {fileID: 8300000, guid: be3552244e58149449ec0347fe065c6e, type: 3}
+  harvestSFX: {fileID: 8300000, guid: 195c02b3e5c1d2a46afd715ac4e342e1, type: 3}
 --- !u!4 &1908922115
 Transform:
   m_ObjectHideFlags: 0
@@ -3998,13 +4018,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-      - m_Target: {fileID: 1908922114}
-        m_TargetAssemblyTypeName: AudioManager, Assembly-CSharp
-        m_MethodName: playSFX
-        m_Mode: 2
+      - m_Target: {fileID: 562794494}
+        m_TargetAssemblyTypeName: ButtonClickSFX, Assembly-CSharp
+        m_MethodName: playButtonSound
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 8300000, guid: b82236b4fdab3144dba069cedc7a4ba9, type: 3}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -4203,13 +4223,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1908922114}
-        m_TargetAssemblyTypeName: AudioManager, Assembly-CSharp
-        m_MethodName: playSFX
-        m_Mode: 2
+      - m_Target: {fileID: 562794494}
+        m_TargetAssemblyTypeName: ButtonClickSFX, Assembly-CSharp
+        m_MethodName: playButtonSound
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 8300000, guid: b82236b4fdab3144dba069cedc7a4ba9, type: 3}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 

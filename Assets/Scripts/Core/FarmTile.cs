@@ -26,6 +26,7 @@ public class FarmTile : MonoBehaviour
         {
             if (crop == null)
             {
+                AudioManager.instance.playSFX(AudioManager.instance.plantSFX);
                 crop = inventory.selectedCrop;
                 inventory.UseSeed(inventory.selectedCrop);
                 Debug.Log("Tile is now planted.");
@@ -45,7 +46,7 @@ public class FarmTile : MonoBehaviour
                 if(fullyGrown)
                 {
                     Debug.Log("Crop harvested");
-                    this.tag = "EmptyFarmTile";
+                    AudioManager.instance.playSFX(AudioManager.instance.harvestSFX);
                     crop = null;
                     currentStage = 0;
                     growthTimer = 0f;
@@ -56,7 +57,7 @@ public class FarmTile : MonoBehaviour
                 else if(dead)
                 {
                     Debug.Log("The crop is dead and cannot be harvested.");
-                    this.tag = "EmptyFarmTile";
+                    
                     crop = null;
                     currentStage = 0;
                     growthTimer = 0f;
@@ -80,6 +81,7 @@ public class FarmTile : MonoBehaviour
     {
         if(needsWater && inventory.currentTool==Inventory.Tool.Watering)
         {
+            AudioManager.instance.playEffects(AudioManager.instance.waterSFX);
             Debug.Log("Crop watered.");
             needsWater = false;
             currentStage++;
