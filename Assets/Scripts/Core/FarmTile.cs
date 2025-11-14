@@ -57,7 +57,6 @@ public class FarmTile : MonoBehaviour
                 else if(dead)
                 {
                     Debug.Log("The crop is dead and cannot be harvested.");
-                    
                     crop = null;
                     currentStage = 0;
                     growthTimer = 0f;
