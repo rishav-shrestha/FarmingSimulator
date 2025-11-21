@@ -11,6 +11,8 @@ public class AudioManager : MonoBehaviour
     [SerializeField] AudioSource musicSource;
     [SerializeField] AudioSource SFXSource;
 
+
+    //Audio Clips
     [Header("Audio Clip")]
 
     public AudioClip buttonClickSFX;
@@ -31,7 +33,7 @@ public class AudioManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    //Audio Clips
+
 
 
 

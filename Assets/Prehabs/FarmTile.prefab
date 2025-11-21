@@ -57,7 +57,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -101,15 +101,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb3efaa3659cd0a4d98d717daac34491, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentState: 0
   emptyTileSprite: {fileID: 2084287143374336005, guid: b4c117fb7249cf74da3546708e6f3414, type: 3}
   crop: {fileID: 0}
   inventory: {fileID: 0}
   currentStage: 0
-  fullyGrown: 0
-  dead: 0
-  needsWater: 0
   growthTimer: 0
   deathTimer: 0
+  isHovered: 0
+  outlineColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  outlineScale: 1.05
+  outlineOrderOffset: 10
+  aboveTileOffset: 20
+  outlinePrehab: {fileID: 3946634408572581168, guid: 758309aff48268d4f9e91871b93d7afc, type: 3}
 --- !u!61 &6454251923724275446
 BoxCollider2D:
   m_ObjectHideFlags: 0
