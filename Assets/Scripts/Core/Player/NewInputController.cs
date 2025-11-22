@@ -20,9 +20,16 @@ public class NewInputController : MonoBehaviour
 
     void HandleMouse()
     {
-    
+
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+        {
+            if (hoveredTile != null)
+            {
+                hoveredTile.isHovered = false;
+                hoveredTile = null;
+            }
             return;
+        }
 
 
         if (Mouse.current.leftButton.wasPressedThisFrame)

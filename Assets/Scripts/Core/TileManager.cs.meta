@@ -1,2 +1,14 @@
 fileFormatVersion: 2
 guid: e82842b89d65082408f77b9827e1c1b5
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - farmTilePrefab: {fileID: 3340812262877100073, guid: e84ba03c3db288a45a48e02e0f8c9b58, type: 3}
+  - borderPrehab: {instanceID: 0}
+  - outsidePrehab: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

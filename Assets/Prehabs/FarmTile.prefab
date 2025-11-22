@@ -78,7 +78,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 2084287143374336005, guid: b4c117fb7249cf74da3546708e6f3414, type: 3}
+  m_Sprite: {fileID: -1528159681, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -102,18 +102,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentState: 0
-  emptyTileSprite: {fileID: 2084287143374336005, guid: b4c117fb7249cf74da3546708e6f3414, type: 3}
+  emptyTileSprite: {fileID: -1528159681, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
   crop: {fileID: 0}
   inventory: {fileID: 0}
   currentStage: 0
   growthTimer: 0
   deathTimer: 0
   isHovered: 0
+  isSelected: 0
+  isCurrentSelected: 0
   outlineColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   outlineScale: 1.05
   outlineOrderOffset: 10
   aboveTileOffset: 20
+  action: 0
+  outlineChild: {fileID: 0}
   outlinePrehab: {fileID: 3946634408572581168, guid: 758309aff48268d4f9e91871b93d7afc, type: 3}
+  hoverScale: 1.2
+  normalScale: 1
+  scaleSpeed: 5
 --- !u!61 &6454251923724275446
 BoxCollider2D:
   m_ObjectHideFlags: 0

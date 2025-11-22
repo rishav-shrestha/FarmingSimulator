@@ -15,14 +15,14 @@ MonoBehaviour:
   cropName: tomato
   icon: {fileID: 0}
   tile:
-  - {fileID: -865633008, guid: b4c117fb7249cf74da3546708e6f3414, type: 3}
-  - {fileID: 1051990173, guid: b4c117fb7249cf74da3546708e6f3414, type: 3}
-  - {fileID: 1658067732, guid: b4c117fb7249cf74da3546708e6f3414, type: 3}
-  - {fileID: 177170689, guid: b4c117fb7249cf74da3546708e6f3414, type: 3}
-  - {fileID: 1878439888, guid: b4c117fb7249cf74da3546708e6f3414, type: 3}
-  - {fileID: -388119821, guid: b4c117fb7249cf74da3546708e6f3414, type: 3}
-  startingspriteIndex: 1
+  - {fileID: -864972266, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
+  - {fileID: -549705495, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
+  - {fileID: 1890530284, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
+  - {fileID: -1460876114, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
+  - {fileID: -706249926, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
+  - {fileID: 812771317, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
   growthTime: 2
   deathTime: 1000
   sellPrice: 10
-  totalStages: 5
+  totalStages: 6
+  locked: 0

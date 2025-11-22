@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89737728c643f2b4189a5b8029bf86ef, type: 3}
+  m_Name: Cauliflower
+  m_EditorClassIdentifier: 
+  cropName: 
+  icon: {fileID: 0}
+  tile:
+  - {fileID: -770299968, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
+  - {fileID: 2077212408, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
+  - {fileID: -576034249, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
+  - {fileID: -12548945, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
+  - {fileID: 570955535, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
+  - {fileID: 372965690, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
+  growthTime: 24
+  deathTime: 12
+  sellPrice: 10
+  totalStages: 5
+  locked: 0

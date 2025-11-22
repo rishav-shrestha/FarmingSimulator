@@ -7,6 +7,7 @@ public class Inventory : MonoBehaviour
 
     [Header("Selected Items")]
     public Crop selectedCrop;
+    public int seedamountdisplay = 0;
     private CropDatabase cropDatabase;
     [Header("Currencies")]
     [SerializeField] public int coins = 0;
@@ -22,13 +23,17 @@ public class Inventory : MonoBehaviour
     public Dictionary<Crop, int> seedInventory = new Dictionary<Crop, int>();
 
 
-    private void Start()
+    void Start()
     {
         cropDatabase = this.GetComponent<CropDatabase>();
         selectedCrop = cropDatabase.crops[0]; // default to first crop
         // Initialize with zero or some starting amounts
         cropInventory[cropDatabase.crops[0]] = 0;
         seedInventory[cropDatabase.crops[0]] = 5; // example: 5 tomato seeds at start
+    }
+    void Update()
+    {
+        seedamountdisplay = seedInventory[selectedCrop];
     }
 
     public void AddSeed(Crop crop, int amount)

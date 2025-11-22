@@ -4,7 +4,9 @@ public class TileManager : MonoBehaviour
 {
     public int width = 10;
     public int height = 10;
-    public GameObject tilePrefab;
+    public GameObject farmTilePrefab;
+    public GameObject borderPrehab;
+    public GameObject outsidePrehab;
 
     // Added: 2D array for easy access to instantiated FarmTile components
     public FarmTile[,] tiles;
@@ -27,8 +29,8 @@ public class TileManager : MonoBehaviour
         {
             for (int y = 0; y < height; y++)
             {
-                Vector3 pos = new Vector3(x*tilePrefab.GetComponent<SpriteRenderer>().bounds.size.x, y* tilePrefab.GetComponent<SpriteRenderer>().bounds.size.y, 0);
-                GameObject go = Instantiate(tilePrefab, pos, Quaternion.identity, transform);
+                Vector3 pos = new Vector3(x*farmTilePrefab.GetComponent<SpriteRenderer>().bounds.size.x, y* farmTilePrefab.GetComponent<SpriteRenderer>().bounds.size.y, 0);
+                GameObject go = Instantiate(farmTilePrefab, pos, Quaternion.identity, transform);
 
                 // Try to cache the FarmTile component for easy access
                 FarmTile ft = go.GetComponent<FarmTile>();

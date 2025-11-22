@@ -67,7 +67,7 @@ public class InputController : MonoBehaviour
             Debug.Log("Interacted with FarmTile");
             tile.PlantCrop();
             tile.HarvestCrop();
-            tile.waterCrop();
+            tile.WaterCrop();
         }
     }
 }

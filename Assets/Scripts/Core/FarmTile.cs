@@ -31,7 +31,10 @@ public class FarmTile : MonoBehaviour
     public float outlineScale = 1.05f;        
     public int outlineOrderOffset = 10;       
     public int aboveTileOffset = 20;          
+    
 
+    //player interaction
+    public Inventory.Tool action = Inventory.Tool.None;
 
     public GameObject outlineChild;
     public GameObject outlinePrehab;
@@ -61,12 +64,12 @@ public class FarmTile : MonoBehaviour
     public void PlantCrop()
     {
 
-        if (inventory.HasSeeds(inventory.selectedCrop) && inventory.currentTool == Inventory.Tool.Planting)
+        if (inventory.HasSeeds(inventory.selectedCrop) && action == Inventory.Tool.Planting)
         {
             if (crop == null)
             {
                 currentState = TileState.Growing;
-                AudioManager.instance.playSFX(AudioManager.instance.plantSFX);
+             //   AudioManager.instance.playSFX(AudioManager.instance.plantSFX);
                 crop = inventory.selectedCrop;
                 inventory.UseSeed(inventory.selectedCrop);
                 Debug.Log("Tile is now planted.");
@@ -80,14 +83,14 @@ public class FarmTile : MonoBehaviour
     }
     public void HarvestCrop()
     {
-        if (inventory.currentTool == Inventory.Tool.Harvesting)
+        if (action == Inventory.Tool.Harvesting)
         {
             if (crop != null)
             {
                 if (currentState == TileState.FullyGrown)
                 {
                     Debug.Log("Crop harvested");
-                    AudioManager.instance.playSFX(AudioManager.instance.harvestSFX);
+                 //   AudioManager.instance.playSFX(AudioManager.instance.harvestSFX);
                     crop = null;
                     currentStage = 0;
                     growthTimer = 0f;
@@ -115,11 +118,11 @@ public class FarmTile : MonoBehaviour
         }
     }
 
-    public void waterCrop()
+    public void WaterCrop()
     {
-        if (currentState == TileState.RequiresWater && inventory.currentTool == Inventory.Tool.Watering)
+        if (currentState == TileState.RequiresWater && action == Inventory.Tool.Watering)
         {
-            AudioManager.instance.playEffects(AudioManager.instance.waterSFX);
+        //    AudioManager.instance.playEffects(AudioManager.instance.waterSFX);
             Debug.Log("Crop watered.");
             currentState = TileState.Growing;
             currentStage++;
@@ -159,22 +162,33 @@ public class FarmTile : MonoBehaviour
             growthTimer = 0f;
             deathTimer = 0f;
         }
-        this.GetComponent<SpriteRenderer>().sprite = crop != null ? crop.tile[crop.startingspriteIndex + currentStage - 1] : emptyTileSprite;
+        this.GetComponent<SpriteRenderer>().sprite = crop != null ? crop.tile[currentStage] : emptyTileSprite;
         // Smoothly scale the main tile
         float targetScale = isHovered ? hoverScale : normalScale;
         transform.localScale = Vector3.Lerp(transform.localScale, Vector3.one * targetScale, Time.deltaTime * scaleSpeed);
         
         if(isCurrentSelected)
         {
-            UpdateOutline(true, Color.green,2);
+            UpdateOutline(true, Color.yellow,2);
         }
         else if(isSelected)
         {
-            UpdateOutline(true,Color.aliceBlue, 1);
+            if(action==Inventory.Tool.Planting)
+            {
+                UpdateOutline(true, Color.green, 1);
+            }
+            else if(action==Inventory.Tool.Watering)
+            {
+                UpdateOutline(true, Color.blue, 1);
+            }
+            else if(action==Inventory.Tool.Harvesting)
+            {
+                UpdateOutline(true, Color.gray3, 1);
+            }
         }
         else if (isHovered)
         {
-            UpdateOutline(true,Color.yellow,1);
+            UpdateOutline(true,Color.white,1);
         }
         else
         {
