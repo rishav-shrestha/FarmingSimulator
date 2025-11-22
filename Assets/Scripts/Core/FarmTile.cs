@@ -23,14 +23,17 @@ public class FarmTile : MonoBehaviour
     public float growthTimer = 0f;
     public float deathTimer = 0f;
     public bool isHovered = false;
+    public bool isSelected = false;
+    public bool isCurrentSelected = false;
 
     //outline variables
-    public Color outlineColor = Color.yellow; // color of outline
-    public float outlineScale = 1.05f;        // slightly bigger than main sprite
-    public int outlineOrderOffset = 10;       // how much higher the outline should render
-    public int aboveTileOffset = 20;          // how much higher the tile should render when hovered
+    public Color outlineColor = Color.yellow; 
+    public float outlineScale = 1.05f;        
+    public int outlineOrderOffset = 10;       
+    public int aboveTileOffset = 20;          
 
-    private GameObject outlineChild;
+
+    public GameObject outlineChild;
     public GameObject outlinePrehab;
     private SpriteRenderer mainRenderer;
     private SpriteRenderer tileRenderer;
@@ -160,9 +163,18 @@ public class FarmTile : MonoBehaviour
         // Smoothly scale the main tile
         float targetScale = isHovered ? hoverScale : normalScale;
         transform.localScale = Vector3.Lerp(transform.localScale, Vector3.one * targetScale, Time.deltaTime * scaleSpeed);
-        if (isHovered)
+        
+        if(isCurrentSelected)
         {
-            UpdateOutline(true);
+            UpdateOutline(true, Color.green,2);
+        }
+        else if(isSelected)
+        {
+            UpdateOutline(true,Color.aliceBlue, 1);
+        }
+        else if (isHovered)
+        {
+            UpdateOutline(true,Color.yellow,1);
         }
         else
         {
@@ -170,16 +182,33 @@ public class FarmTile : MonoBehaviour
         }
     }
 
+    public void UpdateOutline(bool outline, Color color,int order)
+    {
+        if (outline)
+        {
+            outlineChild.SetActive(true);
+            outlineChild.GetComponent<SpriteRenderer>().color = color;
+            outlineChild.GetComponent<SpriteRenderer>().sortingOrder = order+originalTileOrder;
+            tileRenderer.sortingOrder = originalTileOrder + aboveTileOffset+order; // bring tile above other tiles
+        }
+        else
+        {
+            outlineChild.GetComponent<SpriteRenderer>().sortingOrder = originalTileOrder;
+            outlineChild.SetActive(false);
+            tileRenderer.sortingOrder = originalTileOrder; // restore original order
+        }
+    }
+
+
     public void UpdateOutline(bool outline)
     {
         if (outline)
         {
-            Debug.Log("Hovering over tile - showing outline.");
             outlineChild.SetActive(true);
-            tileRenderer.sortingOrder = originalTileOrder + aboveTileOffset; // bring tile above other tiles
         }
         else
         {
+            outlineChild.GetComponent<SpriteRenderer>().sortingOrder = originalTileOrder;
             outlineChild.SetActive(false);
             tileRenderer.sortingOrder = originalTileOrder; // restore original order
         }

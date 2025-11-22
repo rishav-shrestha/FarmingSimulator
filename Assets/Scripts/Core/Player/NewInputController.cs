@@ -31,8 +31,7 @@ public class NewInputController : MonoBehaviour
             startTime = Time.time;
             isDragging = false;
         }
-
-        if (Mouse.current.leftButton.isPressed)
+            if (Mouse.current.leftButton.isPressed)
         {
             float distance = Vector2.Distance(startPos, Mouse.current.position.ReadValue());
             if (distance > dragThreshold) isDragging = true;
@@ -48,7 +47,6 @@ public class NewInputController : MonoBehaviour
         Find(worldPos); 
         if (Mouse.current.leftButton.wasReleasedThisFrame)
         {
-            Debug.Log("Mouse button released");
             float duration = Time.time - startTime;
             if (!isDragging && duration <= tapThreshold)
             {
@@ -61,13 +59,6 @@ public class NewInputController : MonoBehaviour
     void Find(Vector3 worldpos)
     {
         Collider2D hit = Physics2D.OverlapPoint(worldpos);
-        if(hit==null)
-        {
-            Debug.Log("No hit detected");
-        }
-        else {Debug.Log("Hit detected: " + hit.name); }
-
-
         if (hit != null && hit.TryGetComponent(out FarmTile tile))
         {
             hoveredTile = tile;
@@ -77,12 +68,10 @@ public class NewInputController : MonoBehaviour
     void TryInteract(Vector3 worldPos)
     {
         Collider2D hit = Physics2D.OverlapPoint(worldPos);
-
         if (hit != null && hit.TryGetComponent(out FarmTile tile))
         {
            GameObject player = GameObject.FindGameObjectWithTag("Player");
             player.GetComponent<PlayerInteraction>().addTile(tile.gameObject);
-            Debug.Log("Added Tile ");
         }
     }
 }
