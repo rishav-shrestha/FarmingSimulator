@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89737728c643f2b4189a5b8029bf86ef, type: 3}
   m_Name: Carrot
   m_EditorClassIdentifier: 
-  cropName: 
+  cropName: carrot
   icon: {fileID: 0}
   tile:
   - {fileID: 742686146, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
@@ -20,8 +20,9 @@ MonoBehaviour:
   - {fileID: -423023613, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
   - {fileID: -952928052, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
   - {fileID: -1494854205, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
-  growthTime: 24
-  deathTime: 12
+  growthTime: 45
+  deathTime: 150
   sellPrice: 10
+  seedBuyPrice: 4
   totalStages: 5
   locked: 0

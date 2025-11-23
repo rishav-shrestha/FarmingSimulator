@@ -12,12 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89737728c643f2b4189a5b8029bf86ef, type: 3}
   m_Name: Radish
   m_EditorClassIdentifier: 
-  cropName: 
+  cropName: radish
   icon: {fileID: 0}
-  tile: []
-  startingspriteIndex: 1
-  growthTime: 24
-  deathTime: 12
-  sellPrice: 10
+  tile:
+  - {fileID: -1555773868, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
+  - {fileID: -980423747, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
+  - {fileID: 927194476, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
+  - {fileID: -780576607, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
+  - {fileID: 879595948, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
+  growthTime: 30
+  deathTime: 120
+  sellPrice: 7
+  seedBuyPrice: 3
   totalStages: 5
   locked: 0

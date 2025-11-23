@@ -12,12 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89737728c643f2b4189a5b8029bf86ef, type: 3}
   m_Name: Eggplant
   m_EditorClassIdentifier: 
-  cropName: 
+  cropName: eggplant
   icon: {fileID: 0}
-  tile: []
-  startingspriteIndex: 1
-  growthTime: 24
-  deathTime: 12
-  sellPrice: 10
-  totalStages: 5
+  tile:
+  - {fileID: 1698020144, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
+  - {fileID: 510499026, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
+  - {fileID: 1824064653, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
+  - {fileID: 1567154418, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
+  - {fileID: -1758260113, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
+  - {fileID: -84609719, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
+  growthTime: 120
+  deathTime: 300
+  sellPrice: 28
+  seedBuyPrice: 10
+  totalStages: 6
   locked: 0

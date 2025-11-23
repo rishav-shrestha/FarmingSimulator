@@ -11,7 +11,14 @@ public class NewInputController : MonoBehaviour
     private Vector2 startPos;
     private float startTime;
     private FarmTile hoveredTile;
-
+    private GameObject hoveredCharacter;
+    private bool isPlayer;
+    private GameManager gameManager;
+    
+    void Start()
+    {
+        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+    }
     void Update()
     {
         HandleMouse();
@@ -20,13 +27,27 @@ public class NewInputController : MonoBehaviour
 
     void HandleMouse()
     {
-
+        
+        
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
         {
             if (hoveredTile != null)
             {
                 hoveredTile.isHovered = false;
                 hoveredTile = null;
+            }
+            if (hoveredCharacter != null)
+            {
+                if (isPlayer)
+                {
+                    hoveredCharacter.GetComponent<PlayerData>().hovered = false;
+                }
+                else
+                {
+                    hoveredCharacter.GetComponent<WorkerData>().hovered = false; 
+                }
+                isPlayer = false;
+                hoveredCharacter = null;
             }
             return;
         }
@@ -51,6 +72,20 @@ public class NewInputController : MonoBehaviour
             hoveredTile.isHovered = false;
             hoveredTile = null;
         }
+
+        if (hoveredCharacter != null)
+        {
+            if (isPlayer)
+            {
+                hoveredCharacter.GetComponent<PlayerData>().hovered = false;
+            }
+            else
+            {
+                hoveredCharacter.GetComponent<WorkerData>().hovered = false; 
+            }
+            isPlayer = false;
+            hoveredCharacter = null;
+        }
         Find(worldPos); 
         if (Mouse.current.leftButton.wasReleasedThisFrame)
         {
@@ -66,19 +101,43 @@ public class NewInputController : MonoBehaviour
     void Find(Vector3 worldpos)
     {
         Collider2D hit = Physics2D.OverlapPoint(worldpos);
-        if (hit != null && hit.TryGetComponent(out FarmTile tile))
+        if (hit != null && hit.TryGetComponent(out PlayerData player))
         {
+            hoveredCharacter = player.gameObject;
+            isPlayer = true;
+            player.hovered = true;
+        }
+        else if (hit != null&&hit.TryGetComponent(out WorkerData worker))
+        {
+            hoveredCharacter = worker.gameObject;
+            worker.hovered = true;
+        }
+        else if (hit != null && hit.TryGetComponent(out FarmTile tile))
+        {
+            tile.isHovered = true;
             hoveredTile = tile;
-            tile.isHovered = true;    
         }
     }
     void TryInteract(Vector3 worldPos)
     {
         Collider2D hit = Physics2D.OverlapPoint(worldPos);
-        if (hit != null && hit.TryGetComponent(out FarmTile tile))
+        if (hit != null)
         {
-           GameObject player = GameObject.FindGameObjectWithTag("Player");
-            player.GetComponent<PlayerInteraction>().addTile(tile.gameObject);
+            if (hit.TryGetComponent(out PlayerData player))
+            {
+                gameManager.SelectCharacter(player.gameObject);
+            }
+            else if (hit.TryGetComponent(out WorkerData worker))
+            {
+                gameManager.SelectCharacter(worker.gameObject);
+            }
+        }
+        
+        if (gameManager.selectedCharacter.TryGetComponent(out PlayerData data) 
+            && hit != null && hit.TryGetComponent(out FarmTile tile))
+            {
+                GameObject player = GameObject.FindGameObjectWithTag("Player");
+                player.GetComponent<PlayerInteraction>().addTile(tile.gameObject);
+            }
         }
     }
-}

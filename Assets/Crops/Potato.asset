@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89737728c643f2b4189a5b8029bf86ef, type: 3}
   m_Name: Potato
   m_EditorClassIdentifier: 
-  cropName: 
+  cropName: potato
   icon: {fileID: 0}
   tile:
   - {fileID: 1303350644, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
@@ -21,8 +21,9 @@ MonoBehaviour:
   - {fileID: -1434807292, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
   - {fileID: -196290319, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
   - {fileID: 1213268125, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
-  growthTime: 24
-  deathTime: 12
-  sellPrice: 10
-  totalStages: 5
+  growthTime: 90
+  deathTime: 240
+  sellPrice: 20
+  seedBuyPrice: 8
+  totalStages: 6
   locked: 0

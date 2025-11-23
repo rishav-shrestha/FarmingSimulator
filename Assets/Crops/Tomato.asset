@@ -21,8 +21,9 @@ MonoBehaviour:
   - {fileID: -1460876114, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
   - {fileID: -706249926, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
   - {fileID: 812771317, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
-  growthTime: 2
-  deathTime: 1000
-  sellPrice: 10
+  growthTime: 60
+  deathTime: 180
+  sellPrice: 12
+  seedBuyPrice: 5
   totalStages: 6
   locked: 0

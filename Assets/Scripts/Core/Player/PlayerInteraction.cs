@@ -12,6 +12,7 @@ public class PlayerInteraction : MonoBehaviour
 
     void Start()
     {
+        
         inventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<Inventory>();
     }
     public void addTile(GameObject tile)

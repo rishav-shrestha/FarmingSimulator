@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89737728c643f2b4189a5b8029bf86ef, type: 3}
   m_Name: Pumpkin
   m_EditorClassIdentifier: 
-  cropName: 
+  cropName: pumpkin
   icon: {fileID: 0}
   tile:
   - {fileID: 53299561, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
@@ -21,8 +21,9 @@ MonoBehaviour:
   - {fileID: -1598412431, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
   - {fileID: 921060442, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
   - {fileID: -1124134409, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
-  growthTime: 24
-  deathTime: 12
-  sellPrice: 10
-  totalStages: 5
+  growthTime: 300
+  deathTime: 600
+  sellPrice: 30
+  seedBuyPrice: 800
+  totalStages: 6
   locked: 0

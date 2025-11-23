@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89737728c643f2b4189a5b8029bf86ef, type: 3}
   m_Name: Corn
   m_EditorClassIdentifier: 
-  cropName: 
+  cropName: corn
   icon: {fileID: 0}
   tile:
   - {fileID: 373476569, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
@@ -21,8 +21,9 @@ MonoBehaviour:
   - {fileID: 823363238, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
   - {fileID: -2076390034, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
   - {fileID: 2005691904, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
-  growthTime: 24
-  deathTime: 12
-  sellPrice: 10
-  totalStages: 5
+  growthTime: 150
+  deathTime: 360
+  sellPrice: 32
+  seedBuyPrice: 12
+  totalStages: 6
   locked: 0
