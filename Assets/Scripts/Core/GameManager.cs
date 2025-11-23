@@ -1,22 +1,20 @@
-using System;
 using UnityEngine;
-using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager instance;
+    public static GameManager Instance;
     public Inventory inventory;
-    public GameObject TileManager;
+    public GameObject tileManager;
     public GameObject player;
-    public GameObject[] Workers;
+    public GameObject[] workers;
     public GameObject selectedCharacter;
     
     private void Awake()
     {
-        if (instance == null)
+        if (Instance == null)
         {
-            instance = this;
+            Instance = this;
             DontDestroyOnLoad(gameObject);
         }
         else
@@ -30,7 +28,7 @@ public class GameManager : MonoBehaviour
         selectedCharacter = player;
     }
 
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    private void OnSceneLoaded(Scene scene)
     {
         Debug.Log("Scene Loaded: " + scene.name);
         if (scene.name == "Game")
@@ -63,9 +61,9 @@ public class GameManager : MonoBehaviour
             Instantiate(inventory.gameObject, inventory.transform.position, inventory.transform.rotation);
             }
 
-            if (TileManager == null)
+            if (tileManager == null)
             {
-                TileManager = GameObject.FindGameObjectWithTag("TileManager");
+                tileManager = GameObject.FindGameObjectWithTag("TileManager");
             }
             else
             {
@@ -74,12 +72,12 @@ public class GameManager : MonoBehaviour
                 {
                     Destroy(oldTileManager);
                 }
-                Instantiate(TileManager, TileManager.transform.position, TileManager.transform.rotation);
+                Instantiate(tileManager, tileManager.transform.position, tileManager.transform.rotation);
             }
 
-            if (Workers == null)
+            if (workers == null)
             {
-                Workers = GameObject.FindGameObjectsWithTag("Worker");
+                workers = GameObject.FindGameObjectsWithTag("Worker");
             }
             else
             {
@@ -88,7 +86,7 @@ public class GameManager : MonoBehaviour
                 {
                     Destroy( oldworker);
                 }
-                foreach (GameObject worker in Workers)
+                foreach (GameObject worker in workers)
                 {
                     Instantiate(worker, worker.transform.position, worker.transform.rotation);
                 }

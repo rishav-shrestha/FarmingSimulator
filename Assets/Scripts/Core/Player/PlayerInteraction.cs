@@ -1,58 +1,55 @@
 
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerInteraction : MonoBehaviour
 {
-    Inventory inventory;
+    Inventory _inventory;
     public List<GameObject> selectedTiles = new List<GameObject>();
     public GameObject currentSelectedTile;
-    public int seedinhands = 0;
+    public int seedinhands;
 
     void Start()
     {
         
-        inventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<Inventory>();
+        _inventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<Inventory>();
     }
-    public void addTile(GameObject tile)
+    public void AddTile(GameObject tile)
     {
 
-            switch(inventory.currentTool)
+            switch(_inventory.currentTool)
             {
                 case Inventory.Tool.Planting:
-                    if(inventory.HasSeeds(inventory.selectedCrop)&&tile.GetComponent<FarmTile>().currentState==FarmTile.TileState.Empty)
+                    if(_inventory.HasSeeds(_inventory.selectedCrop)&&tile.GetComponent<FarmTile>().currentState==FarmTile.TileState.Empty)
                     {
                     seedinhands++;
-                    int seedinv = inventory.seedInventory[inventory.selectedCrop];
+                    int seedinv = _inventory.SeedInventory[_inventory.selectedCrop];
                     if (seedinv-seedinhands>=0)
-                        add(tile);
+                        Add(tile);
                     }
                     break;
                 case Inventory.Tool.Harvesting:
                     if(tile.GetComponent<FarmTile>().currentState == FarmTile.TileState.FullyGrown)
                     {
-                        add(tile);
+                        Add(tile);
                     }
                     break;
                 case Inventory.Tool.Watering:
                     if (tile.GetComponent<FarmTile>().currentState == FarmTile.TileState.RequiresWater)
                     {
-                        add(tile);
+                        Add(tile);
                     }
-                    break;
-                default: 
                     break;
             }
        
     }
 
-    private void add(GameObject tile)
+    private void Add(GameObject tile)
     {
-        tile.GetComponent<FarmTile>().action = inventory.currentTool;
+        tile.GetComponent<FarmTile>().action = _inventory.currentTool;
         selectedTiles.Add(tile);
     }
-    public void removeTile(GameObject tile) { 
+    public void RemoveTile(GameObject tile) { 
         tile.GetComponent<FarmTile>().isSelected=false;
         if(tile.GetComponent<FarmTile>().action == Inventory.Tool.Planting)
         {
@@ -65,14 +62,14 @@ public class PlayerInteraction : MonoBehaviour
             currentSelectedTile = selectedTiles[0];
         }
     }
-    public void clearTiles() {
+    public void ClearTiles() {
         for (int i = selectedTiles.Count - 1; i >= 0; i--)
         {
             selectedTiles[i].GetComponent<FarmTile>().isSelected=false;
         }
         selectedTiles.Clear();
     }
-    public void interactTile(GameObject tile)
+    public void InteractTile(GameObject tile)
     {
         if(tile!=null)
         {
@@ -87,12 +84,10 @@ public class PlayerInteraction : MonoBehaviour
                 case Inventory.Tool.Watering:
                     tile.GetComponent<FarmTile>().WaterCrop();
                     break;
-                default:
-                    break;
             }
         } 
         tile.GetComponentInParent<FarmTile>().isCurrentSelected = false;
-        removeTile(tile);
+        RemoveTile(tile);
     }
     void Update()
     {

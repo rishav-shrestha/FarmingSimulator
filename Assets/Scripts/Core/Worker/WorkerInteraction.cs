@@ -3,20 +3,31 @@ using System.Collections.Generic;
 
 public class WorkerInteraction : MonoBehaviour
 {
-    Inventory inventory;
+    Inventory _inventory;
     public Inventory.Tool assignedWork=Inventory.Tool.None;
     public List<GameObject> selectedTiles = new List<GameObject>();
     public GameObject currentSelectedTile;
-    public int seedinhands = 0;
-    public bool workerSelected;
     public GameObject startTile;
     public GameObject endTile;
+    public WorkerData workerData;
     void Start()
     {
-        inventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<Inventory>();
+        workerData=this.GetComponent<WorkerData>();
+        _inventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<Inventory>();
     }
 
-    public void add(GameObject tile)
+    private void Update()
+    {
+        if (startTile != null && endTile != null)
+        {
+            SelectTilesBetween(startTile.GetComponent<FarmTile>(), endTile.GetComponent<FarmTile>());
+            startTile = null;
+            endTile = null;
+        }
+        
+    }
+
+    public void Add(GameObject tile)
     {
         selectedTiles.Add(tile);
     }
@@ -36,29 +47,48 @@ public class WorkerInteraction : MonoBehaviour
         currentSelectedTile = nearestTile;
     }
 
-    public void selectStartTile(GameObject Tile)
+    public void SetWork(Inventory.Tool tool)
     {
-        startTile = Tile;
+        assignedWork = tool;
     }
-    public GameObject getStartTile()
-    {
-        return startTile;
-    }
-    public void selectEndTile(GameObject Tile)
-    {
-        endTile = Tile;
-    }
-    public GameObject getEndTile()
-    {
-        return endTile;
-    }
-    
 
-    public void interact(GameObject tile)
+    public void SetCrop(Crop crop)
+    {
+        workerData.selectedcrop = crop;
+    }
+
+    public void SelectTilesBetween(FarmTile startTile, FarmTile endTile)
+    {
+        if (startTile == null || endTile == null) return;
+
+        // Get the grid coordinates of startTile and endTile
+        Vector2Int startPos = startTile.gridPos;  // You'll need to store this in FarmTile
+        Vector2Int endPos = endTile.gridPos;
+
+        int minX = Mathf.Min(startPos.x, endPos.x);
+        int maxX = Mathf.Max(startPos.x, endPos.x);
+        int minY = Mathf.Min(startPos.y, endPos.y);
+        int maxY = Mathf.Max(startPos.y, endPos.y);
+
+        for (int x = minX; x <= maxX; x++)
+        {
+            for (int y = minY; y <= maxY; y++)
+            {
+                FarmTile tile = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().tileManager.GetComponent<TileManager>().GetTileAt(x, y); 
+                if (tile != null && !selectedTiles.Contains(tile.gameObject))
+                {
+                    tile.gameObject.GetComponent<SpriteRenderer>().color = Color.mediumPurple;
+                    Add(tile.gameObject);
+                }
+            }
+        }
+    }
+
+    public void Interact(GameObject tile)
     {
         if (assignedWork == Inventory.Tool.Planting)
         {
-            if (inventory.HasSeeds(inventory.selectedCrop)&&tile.GetComponent<FarmTile>().currentState==FarmTile.TileState.Empty)
+            if (_inventory.HasSeeds(_inventory.selectedCrop)&&tile.GetComponent<FarmTile>().currentState==FarmTile.TileState.Empty)
             {
                 tile.GetComponent<FarmTile>().PlantCrop();
             }
@@ -73,12 +103,12 @@ public class WorkerInteraction : MonoBehaviour
         }
     }
 
-    public void clearTiles()
+    public void ClearTiles()
     {
         selectedTiles.Clear();
     }
 
-    public void remove(GameObject tile)
+    public void Remove(GameObject tile)
     {
         selectedTiles.Remove(tile);
     }

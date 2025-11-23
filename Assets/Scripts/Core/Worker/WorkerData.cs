@@ -1,45 +1,44 @@
-using System;
 using UnityEngine;
 
 public class WorkerData : MonoBehaviour
 {
     public string workername = "Worker";
-    [SerializeField] public int MaxEnergy = 0;
-    [SerializeField] public int Energy = 0;
-    [SerializeField] public int plantingskills = 0;
-    [SerializeField] public int harvestingskills = 0;
-    [SerializeField] public int wateringskills = 0;
+    [SerializeField] public int maxEnergy ;
+    [SerializeField] public int energy ;
+    [SerializeField] public int plantingskills;
+    [SerializeField] public int harvestingskills;
+    [SerializeField] public int wateringskills;
 
-    [SerializeField] public int maxSkillLevel = 0;
+    [SerializeField] public int maxSkillLevel;
 
     public Crop selectedcrop;
     
-    public bool hovered = false;
+    public bool hovered;
 
-    private void Update()
+    void Update()
     {
         GameObject selectedCharacter = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().selectedCharacter;
             if (selectedCharacter ==
                 this.gameObject)
             {
-                updateOutline(true,0.5f,Color.yellow);
+                UpdateOutline(true,0.5f,Color.yellow);
             }
             else if (hovered)
             {
-                updateOutline(true,0.5f,Color.white);
+                UpdateOutline(true,0.5f,Color.white);
             }
             else
             {
-                updateOutline(false);
+                UpdateOutline(false);
             }  
     }
 
-    public void updateOutline(bool selected,float thickness,Color color)
+    public void UpdateOutline(bool selected,float thickness,Color color)
     {
             this.gameObject.GetComponent<SpriteRenderer>().material.SetFloat("_OutlineThickness", thickness);
             this.gameObject.GetComponent<SpriteRenderer>().material.SetColor("_OutlineColor", color);
     }
-    public void updateOutline(bool selected)
+    public void UpdateOutline(bool selected)
     {
         if (selected)
         {

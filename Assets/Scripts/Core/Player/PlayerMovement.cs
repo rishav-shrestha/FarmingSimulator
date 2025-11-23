@@ -11,14 +11,14 @@ public class PlayerMovement : MonoBehaviour
     public float speed = 1f;
 
 
-    private PlayerState playerState;
-    private PlayerInteraction playerInteraction;
+    private PlayerState _playerState;
+    private PlayerInteraction _playerInteraction;
     void Start()
     {
 
         // Initialize components
-        playerInteraction = GetComponent<PlayerInteraction>();  
-        playerState = GetComponent<PlayerState>();
+        _playerInteraction = GetComponent<PlayerInteraction>();  
+        _playerState = GetComponent<PlayerState>();
         // Set idle position to starting position
         idlePosition = transform.position;
         // Set current position to starting position
@@ -28,46 +28,46 @@ public class PlayerMovement : MonoBehaviour
     {
 
         // State machine for player movement
-        switch (playerState.currentState)
+        switch (_playerState.currentState)
         {
             // Move towards target position
-            case PlayerState.State.goingtoTarget:
+            case PlayerState.State.GoingtoTarget:
                 MoveToTarget();
                 break;
             // Move back to idle position
-            case PlayerState.State.returningToIdle:
+            case PlayerState.State.ReturningToIdle:
                 ReturnToIdle();
                 // If a tile is selected while returning to idle, go to that tile
-                if (playerInteraction.currentSelectedTile != null)
+                if (_playerInteraction.currentSelectedTile != null)
                 {
-                    playerState.currentState = PlayerState.State.goingtoTarget;
-                    SetTargetPosition(playerInteraction.currentSelectedTile.transform.position);
+                    _playerState.currentState = PlayerState.State.GoingtoTarget;
+                    SetTargetPosition(_playerInteraction.currentSelectedTile.transform.position);
                 }
                 break;
             // Check for selected tile to interact with
             case PlayerState.State.Idle:
                 // If a tile is selected, go to that tile
-                if (playerInteraction.currentSelectedTile != null)
+                if (_playerInteraction.currentSelectedTile != null)
                 {
-                    playerState.currentState = PlayerState.State.goingtoTarget;
-                    SetTargetPosition(playerInteraction.currentSelectedTile.transform.position);
+                    _playerState.currentState = PlayerState.State.GoingtoTarget;
+                    SetTargetPosition(_playerInteraction.currentSelectedTile.transform.position);
                 }
                 break;
             // Handle interaction with selected tile
             case PlayerState.State.Interacting:
                 // Interact with the current selected tile
-                playerInteraction.interactTile(playerInteraction.currentSelectedTile);
+                _playerInteraction.InteractTile(_playerInteraction.currentSelectedTile);
                 Debug.Log("ChangeStatetoInteracting");
                 // If another tile is selected, go to that tile
-                if (playerInteraction.currentSelectedTile != null)
+                if (_playerInteraction.currentSelectedTile != null)
                 {
-                    SetTargetPosition(playerInteraction.currentSelectedTile.transform.position);
-                    playerState.currentState = PlayerState.State.goingtoTarget;
+                    SetTargetPosition(_playerInteraction.currentSelectedTile.transform.position);
+                    _playerState.currentState = PlayerState.State.GoingtoTarget;
                 }
                 // If no tile is selected, return to idle
                 else
                 {
-                    playerState.currentState = PlayerState.State.returningToIdle;
+                    _playerState.currentState = PlayerState.State.ReturningToIdle;
                 }
                 break;
         }
@@ -78,16 +78,16 @@ public class PlayerMovement : MonoBehaviour
         // change the state to returning to idle if at target and no tile is selected
         if (IsAtTarget())
         {
-            if (playerInteraction.currentSelectedTile == null)
+            if (_playerInteraction.currentSelectedTile == null)
             {
-                playerState.currentState = PlayerState.State.returningToIdle;
+                _playerState.currentState = PlayerState.State.ReturningToIdle;
             }
         }
 
         // change the state to idle if at idle position
         if (IsAtIdle())
         {
-            playerState.currentState = PlayerState.State.Idle;
+            _playerState.currentState = PlayerState.State.Idle;
         }
     }
 
@@ -104,7 +104,7 @@ public class PlayerMovement : MonoBehaviour
     // Check if the player is at the idle position
     public bool IsAtIdle()
     {
-        if(playerState.currentState != PlayerState.State.returningToIdle)
+        if(_playerState.currentState != PlayerState.State.ReturningToIdle)
         {
             return false;
         }
@@ -117,7 +117,7 @@ public class PlayerMovement : MonoBehaviour
         if (IsAtTarget())
         {
 
-            playerState.currentState = PlayerState.State.Interacting;
+            _playerState.currentState = PlayerState.State.Interacting;
         }
     }
     // Move the player back to the idle position
@@ -126,7 +126,7 @@ public class PlayerMovement : MonoBehaviour
         transform.position = Vector2.MoveTowards(currentPosition, idlePosition, speed * Time.deltaTime);
         if (Vector2.Distance(currentPosition, idlePosition) < 0.1f)
         {
-            playerState.currentState = PlayerState.State.Idle;
+            _playerState.currentState = PlayerState.State.Idle;
         }
     }
 }

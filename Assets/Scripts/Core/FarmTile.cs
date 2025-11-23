@@ -1,7 +1,5 @@
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.UI;
+
 
 public class FarmTile : MonoBehaviour
 {
@@ -19,12 +17,13 @@ public class FarmTile : MonoBehaviour
     public Sprite emptyTileSprite;
     public Crop crop;
     public Inventory inventory;
-    public int currentStage = 0;
-    public float growthTimer = 0f;
-    public float deathTimer = 0f;
-    public bool isHovered = false;
-    public bool isSelected = false;
-    public bool isCurrentSelected = false;
+    [SerializeField] public int currentStage;
+    [SerializeField] public float growthTimer ;
+    [SerializeField] public float deathTimer ;
+    public bool isHovered;
+    public bool isSelected;
+    public bool isCurrentSelected;
+    public Vector2Int gridPos;
 
     //outline variables
     public Color outlineColor = Color.yellow; 
@@ -38,9 +37,9 @@ public class FarmTile : MonoBehaviour
 
     public GameObject outlineChild;
     public GameObject outlinePrehab;
-    private SpriteRenderer mainRenderer;
-    private SpriteRenderer tileRenderer;
-    private int originalTileOrder;
+    private SpriteRenderer _mainRenderer;
+    private SpriteRenderer _tileRenderer;
+    private int _originalTileOrder;
 
     // Scaling variables
     public float hoverScale = 1.2f;    
@@ -55,9 +54,9 @@ public class FarmTile : MonoBehaviour
 
         //outline 
 
-        mainRenderer = GetComponent<SpriteRenderer>();
-        tileRenderer = mainRenderer; // assuming tile itself is the main sprite
-        originalTileOrder = tileRenderer.sortingOrder;
+        _mainRenderer = GetComponent<SpriteRenderer>();
+        _tileRenderer = _mainRenderer; // assuming tile itself is the main sprite
+        _originalTileOrder = _tileRenderer.sortingOrder;
 
         CreateOutlineChild();
     }
@@ -202,14 +201,14 @@ public class FarmTile : MonoBehaviour
         {
             outlineChild.SetActive(true);
             outlineChild.GetComponent<SpriteRenderer>().color = color;
-            outlineChild.GetComponent<SpriteRenderer>().sortingOrder = order+originalTileOrder;
-            tileRenderer.sortingOrder = originalTileOrder + aboveTileOffset+order; // bring tile above other tiles
+            outlineChild.GetComponent<SpriteRenderer>().sortingOrder = order+_originalTileOrder;
+            _tileRenderer.sortingOrder = _originalTileOrder + aboveTileOffset+order; // bring tile above other tiles
         }
         else
         {
-            outlineChild.GetComponent<SpriteRenderer>().sortingOrder = originalTileOrder;
+            outlineChild.GetComponent<SpriteRenderer>().sortingOrder = _originalTileOrder;
             outlineChild.SetActive(false);
-            tileRenderer.sortingOrder = originalTileOrder; // restore original order
+            _tileRenderer.sortingOrder = _originalTileOrder; // restore original order
         }
     }
 
@@ -222,9 +221,9 @@ public class FarmTile : MonoBehaviour
         }
         else
         {
-            outlineChild.GetComponent<SpriteRenderer>().sortingOrder = originalTileOrder;
+            outlineChild.GetComponent<SpriteRenderer>().sortingOrder = _originalTileOrder;
             outlineChild.SetActive(false);
-            tileRenderer.sortingOrder = originalTileOrder; // restore original order
+            _tileRenderer.sortingOrder = _originalTileOrder; // restore original order
         }
     }
 
@@ -246,7 +245,7 @@ public class FarmTile : MonoBehaviour
         // Set the Order in Layer relative to the main tile
         SpriteRenderer sr = outlineChild.GetComponent<SpriteRenderer>();
         if (sr != null)
-            sr.sortingOrder = tileRenderer.sortingOrder + outlineOrderOffset;
+            sr.sortingOrder = _tileRenderer.sortingOrder + outlineOrderOffset;
 
         // Hide by default
         outlineChild.SetActive(false);

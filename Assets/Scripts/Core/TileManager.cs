@@ -9,7 +9,7 @@ public class TileManager : MonoBehaviour
     public GameObject outsidePrehab;
 
     // Added: 2D array for easy access to instantiated FarmTile components
-    public FarmTile[,] tiles;
+    public FarmTile[,] Tiles;
 
     void Start()
     {
@@ -23,7 +23,7 @@ public class TileManager : MonoBehaviour
             Destroy(child.gameObject);
 
         // Initialize the array with the current dimensions
-        tiles = new FarmTile[width, height];
+        Tiles = new FarmTile[width, height];
 
         for (int x = 0; x < width; x++)
         {
@@ -34,11 +34,17 @@ public class TileManager : MonoBehaviour
 
                 // Try to cache the FarmTile component for easy access
                 FarmTile ft = go.GetComponent<FarmTile>();
+                
+                go.name = $"Tile_{x}_{y}";
                 if (ft == null)
                 {
                     Debug.LogWarning($"Instantiated tile at ({x},{y}) has no FarmTile component attached.");
                 }
-                tiles[x, y] = ft;
+                else
+                {
+                    ft.gridPos = new Vector2Int(x, y);  
+                }
+                Tiles[x, y] = ft;
             }
         }
     }   
@@ -46,8 +52,8 @@ public class TileManager : MonoBehaviour
     // Optional helper: safe accessor
     public FarmTile GetTileAt(int x, int y)
     {
-        if (tiles == null) return null;
+        if (Tiles == null) return null;
         if (x < 0 || x >= width || y < 0 || y >= height) return null;
-        return tiles[x, y];
+        return Tiles[x, y];
     }
 }

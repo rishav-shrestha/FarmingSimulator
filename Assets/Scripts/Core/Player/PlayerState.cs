@@ -5,9 +5,9 @@ public class PlayerState : MonoBehaviour
   public enum State
   {
     Idle,
-    goingtoTarget,
+    GoingtoTarget,
     Interacting,
-    returningToIdle
+    ReturningToIdle
     }
 public State currentState = State.Idle;
 }

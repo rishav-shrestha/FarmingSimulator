@@ -15,12 +15,12 @@ public class CameraController : MonoBehaviour
     [Header("References")]
     public TileManager tileManager; // assign in Inspector
 
-    private Camera cam;
-    private Vector3 dragOrigin;
+    private Camera _cam;
+    private Vector3 _dragOrigin;
 
     void Start()
     {
-        cam = Camera.main;
+        _cam = Camera.main;
         CenterAndFitFarm();
     }
 
@@ -39,13 +39,13 @@ public class CameraController : MonoBehaviour
         float centerX = (width - 1) / 2f;
         float centerY = (height - 1) / 2f;
 
-        cam.transform.position = new Vector3(centerX, centerY, cam.transform.position.z);
+        _cam.transform.position = new Vector3(centerX, centerY, _cam.transform.position.z);
 
         float screenAspect = (float)Screen.width / Screen.height;
         float sizeX = width / (2f * screenAspect);
         float sizeY = height / 2f;
 
-        cam.orthographicSize = Mathf.Clamp(Mathf.Max(sizeX, sizeY), minZoom, maxZoom);
+        _cam.orthographicSize = Mathf.Clamp(Mathf.Max(sizeX, sizeY), minZoom, maxZoom);
     }
 
     private void ClampCamera()
@@ -53,8 +53,8 @@ public class CameraController : MonoBehaviour
         int width = tileManager.width;
         int height = tileManager.height;
 
-        float camHeight = cam.orthographicSize;
-        float camWidth = camHeight * cam.aspect;
+        float camHeight = _cam.orthographicSize;
+        float camWidth = camHeight * _cam.aspect;
 
         float minX = camWidth - 0.5f - clampPadding;
         float maxX = width - 1 + 0.5f + clampPadding - camWidth;
@@ -77,29 +77,29 @@ public class CameraController : MonoBehaviour
             maxY = centerY + minPanAllowance / 2f;
         }
 
-        float clampedX = Mathf.Clamp(cam.transform.position.x, minX, maxX);
-        float clampedY = Mathf.Clamp(cam.transform.position.y, minY, maxY);
+        float clampedX = Mathf.Clamp(_cam.transform.position.x, minX, maxX);
+        float clampedY = Mathf.Clamp(_cam.transform.position.y, minY, maxY);
 
-        cam.transform.position = new Vector3(clampedX, clampedY, cam.transform.position.z);
+        _cam.transform.position = new Vector3(clampedX, clampedY, _cam.transform.position.z);
     }
 
 
     void HandleMouseDrag()
     {
-        float camWidth = cam.orthographicSize * cam.aspect;
-        float camHeight = cam.orthographicSize;
+        float camWidth = _cam.orthographicSize * _cam.aspect;
+        float camHeight = _cam.orthographicSize;
 
         if ((tileManager.width <= camWidth * 2) && (tileManager.height <= camHeight * 2))
             return;
 
         if (Mouse.current.leftButton.wasPressedThisFrame)
-            dragOrigin = cam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+            _dragOrigin = _cam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
 
         if (Mouse.current.leftButton.isPressed)
         {
-            Vector3 diff = dragOrigin - cam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-            cam.transform.position += new Vector3(diff.x, diff.y, 0) * dragSpeed;
-            dragOrigin = cam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+            Vector3 diff = _dragOrigin - _cam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+            _cam.transform.position += new Vector3(diff.x, diff.y, 0) * dragSpeed;
+            _dragOrigin = _cam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         }
     }
 
@@ -108,8 +108,8 @@ public class CameraController : MonoBehaviour
         float scroll = Mouse.current.scroll.ReadValue().y;
         if (scroll != 0)
         {
-            cam.orthographicSize -= scroll * zoomSpeed;
-            cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, minZoom, maxZoom);
+            _cam.orthographicSize -= scroll * zoomSpeed;
+            _cam.orthographicSize = Mathf.Clamp(_cam.orthographicSize, minZoom, maxZoom);
         }
     }
 }

@@ -5,9 +5,9 @@ public class WorkerState : MonoBehaviour
     public enum State
     {
         Idle,
-        goingtoTarget,
+        GoingtoTarget,
         Interacting,
-        returningToIdle
+        ReturningToIdle
     }
     
     public State currentState = State.Idle;

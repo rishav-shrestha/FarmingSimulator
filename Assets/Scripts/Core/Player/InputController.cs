@@ -7,9 +7,9 @@ public class InputController : MonoBehaviour
     public float tapThreshold = 0.2f;
     public float dragThreshold = 20f;
 
-    private bool isDragging = false;
-    private Vector2 startPos;
-    private float startTime;
+    private bool _isDragging;
+    private Vector2 _startPos;
+    private float _startTime;
 
     void Update()
     {
@@ -25,22 +25,22 @@ public class InputController : MonoBehaviour
 
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
-            startPos = Mouse.current.position.ReadValue();
-            startTime = Time.time;
-            isDragging = false;
+            _startPos = Mouse.current.position.ReadValue();
+            _startTime = Time.time;
+            _isDragging = false;
         }
 
         if (Mouse.current.leftButton.isPressed)
         {
-            float distance = Vector2.Distance(startPos, Mouse.current.position.ReadValue());
-            if (distance > dragThreshold) isDragging = true;
+            float distance = Vector2.Distance(_startPos, Mouse.current.position.ReadValue());
+            if (distance > dragThreshold) _isDragging = true;
         }
 
         if (Mouse.current.leftButton.wasReleasedThisFrame)
         {
             Debug.Log("Mouse button released");
-            float duration = Time.time - startTime;
-            if (!isDragging && duration <= tapThreshold)
+            float duration = Time.time - _startTime;
+            if (!_isDragging && duration <= tapThreshold)
             {
                 Vector3 worldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
                 worldPos.z = 0;

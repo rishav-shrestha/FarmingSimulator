@@ -1,31 +1,31 @@
 using UnityEngine;
-using static Unity.VisualScripting.Member;
+
 
 public class AudioManager : MonoBehaviour
 {
     //Audio Sources
-    public static AudioManager instance;
+    public static AudioManager Instance;
 
     [Header("Audio Source")]
 
     [SerializeField] AudioSource musicSource;
-    [SerializeField] AudioSource SFXSource;
+    [SerializeField] AudioSource sfxSource;
 
 
     //Audio Clips
     [Header("Audio Clip")]
 
-    public AudioClip buttonClickSFX;
+    public AudioClip buttonClickSfx;
     public AudioClip backgroundMusic;
-    public AudioClip plantSFX;
-    public AudioClip waterSFX;
-    public AudioClip harvestSFX;
+    public AudioClip plantSfx;
+    public AudioClip waterSfx;
+    public AudioClip harvestSfx;
 
     private void Awake()
     {
-        if (instance == null)
+        if (Instance == null)
         {
-            instance = this;
+            Instance = this;
             DontDestroyOnLoad(gameObject);
         }
         else
@@ -44,17 +44,17 @@ public class AudioManager : MonoBehaviour
     }
 
 
-    public void playSFX(AudioClip SFX)
+    public void PlaySfx(AudioClip sfx)
     {
-        SFXSource.PlayOneShot(SFX);
+        sfxSource.PlayOneShot(sfx);
     }
 
-    public void playEffects(AudioClip Effect)
+    public void PlayEffects(AudioClip effect)
     {
         GameObject temp = new GameObject("TempAudio");
         AudioSource source = temp.AddComponent<AudioSource>();
-        source.clip = Effect;
+        source.clip = effect;
         source.Play();
-        Destroy(temp, Effect.length);
+        Destroy(temp, effect.length);
     }
 }
