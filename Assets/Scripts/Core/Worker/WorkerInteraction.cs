@@ -31,11 +31,25 @@ public class WorkerInteraction : MonoBehaviour
     {
         selectedTiles.Add(tile);
     }
-    public void GetNearestTile()
+    public FarmTile GetNearestTile(FarmTile.TileState state)
     {
-        float minDist = float.MaxValue;
-        GameObject nearestTile = null;
+        List<GameObject> conditionalTiles = new List<GameObject>();
         foreach (GameObject tile in selectedTiles)
+        {
+            if (tile.GetComponent<FarmTile>().currentState == state)
+            {
+                conditionalTiles.Add(tile);
+            }
+        }
+        if (conditionalTiles.Count == 0) return null;
+        if(conditionalTiles.Count==1) return conditionalTiles[0].GetComponent<FarmTile>();
+        float minDist = float.MaxValue;
+        foreach (GameObject tile in selectedTiles)
+        {
+            
+        }
+        GameObject nearestTile = null;
+        foreach (GameObject tile in conditionalTiles)
         {
             float dist = (tile.transform.position - transform.position).magnitude;
             if (dist < minDist)
@@ -44,7 +58,7 @@ public class WorkerInteraction : MonoBehaviour
                 nearestTile = tile;
             }
         }
-        currentSelectedTile = nearestTile;
+        return nearestTile.GetComponent<FarmTile>();
     }
 
     public void SetWork(Inventory.Tool tool)
@@ -86,21 +100,22 @@ public class WorkerInteraction : MonoBehaviour
 
     public void Interact(GameObject tile)
     {
-        if (assignedWork == Inventory.Tool.Planting)
+        if(tile!=null)
         {
-            if (_inventory.HasSeeds(_inventory.selectedCrop)&&tile.GetComponent<FarmTile>().currentState==FarmTile.TileState.Empty)
+            switch (assignedWork)
             {
-                tile.GetComponent<FarmTile>().PlantCrop();
+                case Inventory.Tool.Planting:
+                    tile.GetComponent<FarmTile>().PlantCrop(this);
+                    break;
+                case Inventory.Tool.Harvesting:
+                    tile.GetComponent<FarmTile>().HarvestCrop(this);
+                    break;
+                case Inventory.Tool.Watering:
+                    tile.GetComponent<FarmTile>().WaterCrop(this);
+                    break;
             }
-        }
-        else if(assignedWork==Inventory.Tool.Harvesting&&tile.GetComponent<FarmTile>().currentState==FarmTile.TileState.FullyGrown)
-        {
-            tile.GetComponent<FarmTile>().HarvestCrop();
-        }
-        else if(assignedWork==Inventory.Tool.Watering&&tile.GetComponent<FarmTile>().currentState==FarmTile.TileState.RequiresWater)
-        {
-            tile.GetComponent<FarmTile>().WaterCrop();
-        }
+        } 
+        currentSelectedTile = null;
     }
 
     public void ClearTiles()

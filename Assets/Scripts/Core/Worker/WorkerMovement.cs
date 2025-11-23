@@ -22,24 +22,69 @@ public class WorkerMovement : MonoBehaviour
     }
     void Update()
     {
-
+        
         switch (_workerState.currentState)
         {
             case WorkerState.State.Idle:
-                
+                FindTarget();
+                if (_workerInteraction.currentSelectedTile != null)
+                {
+                    SetTargetPosition(_workerInteraction.currentSelectedTile.transform.position);
+                    _workerState.currentState = WorkerState.State.GoingtoTarget;
+                }
                 break;
             case WorkerState.State.GoingtoTarget :
+                MoveTo(targetPosition);
+                if (IsAtTarget())
+                {
+                    _workerState.currentState = WorkerState.State.Interacting;
+                }
                 break;
             case WorkerState.State.Interacting :
+                _workerInteraction.Interact(_workerInteraction.currentSelectedTile);
+                FindTarget();
+                if (_workerInteraction.currentSelectedTile != null)
+                {
+                    SetTargetPosition(_workerInteraction.currentSelectedTile.transform.position);
+                    _workerState.currentState = WorkerState.State.GoingtoTarget;
+                }
+                else
+                {
+                    _workerState.currentState = WorkerState.State.ReturningToIdle;
+                }
+                
                 break;
             case WorkerState.State.ReturningToIdle :
+                ReturnToIdle();
+                if (IsAtIdle())
+                {
+                    _workerState.currentState = WorkerState.State.Idle;
+                }
                 break;
         }
+        currentPosition = transform.position;
     }
 
     public void FindTarget()
     {
-        
+        if (_workerInteraction.currentSelectedTile == null)
+        {
+            if (_workerInteraction.assignedWork==Inventory.Tool.Planting)
+            {
+                FarmTile w = _workerInteraction.GetNearestTile(FarmTile.TileState.Empty);
+                if (w != null) _workerInteraction.currentSelectedTile=w.gameObject;
+            }
+            else if (_workerInteraction.assignedWork == Inventory.Tool.Harvesting)
+            {
+                FarmTile w = _workerInteraction.GetNearestTile(FarmTile.TileState.FullyGrown);
+                if (w != null) _workerInteraction.currentSelectedTile=w.gameObject;
+            }
+            else if (_workerInteraction.assignedWork == Inventory.Tool.Watering)
+            {
+                FarmTile w = _workerInteraction.GetNearestTile(FarmTile.TileState.RequiresWater);
+                if (w != null) _workerInteraction.currentSelectedTile=w.gameObject;
+            }
+        }
     }
     public void MoveTo(Vector2 target)
     {
