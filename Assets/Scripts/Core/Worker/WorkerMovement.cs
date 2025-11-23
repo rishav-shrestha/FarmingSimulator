@@ -27,6 +27,9 @@ public class WorkerMovement : MonoBehaviour
         {
             case WorkerState.State.Idle:
                 FindTarget();
+                if(_workerInteraction.assignedWork==Inventory.Tool.Planting && !GameObject.FindGameObjectWithTag("Inventory").GetComponent<Inventory>()
+                       .HasSeeds(GameObject.FindGameObjectWithTag("Inventory").GetComponent<Inventory>().selectedCrop))
+                    _workerInteraction.currentSelectedTile = null;
                 if (_workerInteraction.currentSelectedTile != null)
                 {
                     SetTargetPosition(_workerInteraction.currentSelectedTile.transform.position);
@@ -62,6 +65,7 @@ public class WorkerMovement : MonoBehaviour
                 }
                 break;
         }
+        
         currentPosition = transform.position;
     }
 
@@ -69,7 +73,9 @@ public class WorkerMovement : MonoBehaviour
     {
         if (_workerInteraction.currentSelectedTile == null)
         {
-            if (_workerInteraction.assignedWork==Inventory.Tool.Planting)
+            if (_workerInteraction.assignedWork==Inventory.Tool.Planting&& GameObject
+                    .FindGameObjectWithTag("Inventory").GetComponent<Inventory>()
+                    .HasSeeds(GameObject.FindGameObjectWithTag("Inventory").GetComponent<Inventory>().selectedCrop))
             {
                 FarmTile w = _workerInteraction.GetNearestTile(FarmTile.TileState.Empty);
                 if (w != null) _workerInteraction.currentSelectedTile=w.gameObject;

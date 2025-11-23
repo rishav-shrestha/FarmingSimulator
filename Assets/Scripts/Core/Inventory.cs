@@ -54,10 +54,14 @@ public class Inventory : MonoBehaviour
         CropStack stack = seedInventory.Find(x => x.crop == crop);
         return stack.amount;
     }
-    public bool HasSeeds(Crop crop, int amount = 1)
+    public bool HasSeeds(Crop crop)
     {
-        CropStack stack = seedInventory.Find(x => x.crop == crop);
-        return stack != null && stack.amount >= amount;
+        int amount =GetSeedAmount(crop);
+        if (amount == 0)
+        {
+            return false;
+        }
+      return true;
     }
 
     public bool UseSeed(Crop crop, int amount = 1)
