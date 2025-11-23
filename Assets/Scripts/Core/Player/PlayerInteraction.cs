@@ -23,7 +23,7 @@ public class PlayerInteraction : MonoBehaviour
                     if(_inventory.HasSeeds(_inventory.selectedCrop)&&tile.GetComponent<FarmTile>().currentState==FarmTile.TileState.Empty)
                     {
                     seedinhands++;
-                    int seedinv = _inventory.SeedInventory[_inventory.selectedCrop];
+                    int seedinv = _inventory.GetSeedAmount( _inventory.selectedCrop);
                     if (seedinv-seedinhands>=0)
                         Add(tile);
                     }
