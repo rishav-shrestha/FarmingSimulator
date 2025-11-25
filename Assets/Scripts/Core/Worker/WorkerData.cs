@@ -11,7 +11,7 @@ public class WorkerData : MonoBehaviour
 
     [SerializeField] public int maxSkillLevel;
 
-    public Crop selectedcrop;
+    
     
     public bool hovered;
 

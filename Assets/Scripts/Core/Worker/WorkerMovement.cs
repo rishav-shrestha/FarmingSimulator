@@ -75,7 +75,7 @@ public class WorkerMovement : MonoBehaviour
         {
             if (_workerInteraction.assignedWork==Inventory.Tool.Planting&& GameObject
                     .FindGameObjectWithTag("Inventory").GetComponent<Inventory>()
-                    .HasSeeds(GameObject.FindGameObjectWithTag("Inventory").GetComponent<Inventory>().selectedCrop))
+                    .HasSeeds(_workerInteraction.selectedcrop))
             {
                 FarmTile w = _workerInteraction.GetNearestTile(FarmTile.TileState.Empty);
                 if (w != null) _workerInteraction.currentSelectedTile=w.gameObject;

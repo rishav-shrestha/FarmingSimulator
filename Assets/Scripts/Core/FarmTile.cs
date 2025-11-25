@@ -4,14 +4,7 @@ using UnityEngine;
 public class FarmTile : MonoBehaviour
 {
 
-    public enum TileState
-    {
-        Empty,
-        Growing,
-        RequiresWater,
-        FullyGrown,
-        Dead
-    }
+    
     public TileState currentState = TileState.Empty;
     // Sprite for the farm tile when it's empty
     public Sprite emptyTileSprite;
@@ -20,6 +13,7 @@ public class FarmTile : MonoBehaviour
     [SerializeField] public int currentStage;
     [SerializeField] public float growthTimer ;
     [SerializeField] public float deathTimer ;
+    [SerializeField] public float waterTimer;
     public bool isHovered;
     public bool isSelected;
     public bool isCurrentSelected;
@@ -68,7 +62,7 @@ public class FarmTile : MonoBehaviour
             if (crop == null)
             {
                 currentState = TileState.Growing;
-             //   AudioManager.instance.playSFX(AudioManager.instance.plantSFX);
+               AudioManager.Instance.PlayEffects(AudioManager.Instance.plantSfx);
                 crop = inventory.selectedCrop;
                 inventory.UseSeed(inventory.selectedCrop);
                 Debug.Log("Tile is now planted.");
@@ -88,8 +82,7 @@ public class FarmTile : MonoBehaviour
             {
                 if (currentState == TileState.FullyGrown)
                 {
-                    Debug.Log("Crop harvested");
-                 //   AudioManager.instance.playSFX(AudioManager.instance.harvestSFX);
+                   AudioManager.Instance.PlayEffects(AudioManager.Instance.harvestSfx);
                     crop = null;
                     currentStage = 0;
                     growthTimer = 0f;
@@ -98,21 +91,12 @@ public class FarmTile : MonoBehaviour
                 }
                 else if (currentState == TileState.Dead)
                 {
-                    Debug.Log("The crop is dead and cannot be harvested.");
                     crop = null;
                     currentStage = 0;
                     growthTimer = 0f;
                     deathTimer = 0f;
                     currentState = TileState.Empty;
                 }
-                else
-                {
-                    Debug.Log("The crop is not fully grown yet.");
-                }
-            }
-            else
-            {
-                Debug.Log("No crop to harvest on this tile.");
             }
         }
     }
@@ -120,11 +104,10 @@ public class FarmTile : MonoBehaviour
     public void WaterCrop()
     {
         if (currentState == TileState.RequiresWater && action == Inventory.Tool.Watering)
-        {
-        //    AudioManager.instance.playEffects(AudioManager.instance.waterSFX);
-            Debug.Log("Crop watered.");
+        { 
+            AudioManager.Instance.PlayEffects(AudioManager.Instance.waterSfx);
             currentState = TileState.Growing;
-            currentStage++;
+            waterTimer--;
         }
     }
     
@@ -136,15 +119,13 @@ public class FarmTile : MonoBehaviour
             if (crop == null)
             {
                 currentState = TileState.Growing;
-             //   AudioManager.instance.playSFX(AudioManager.instance.plantSFX);
-                crop = inventory.selectedCrop;
-                inventory.UseSeed(inventory.selectedCrop);
-                Debug.Log("Tile is now planted.");
+                AudioManager.Instance.PlayEffects(AudioManager.Instance.plantSfx);
+                crop = worker.selectedcrop;
+                inventory.UseSeed(worker.selectedcrop);
 
             }
             else
             {
-                Debug.Log("Tile is already planted.");
             }
         }
     }
@@ -157,7 +138,7 @@ public class FarmTile : MonoBehaviour
                 if (currentState == TileState.FullyGrown)
                 {
                     Debug.Log("Crop harvested");
-                 //   AudioManager.instance.playSFX(AudioManager.instance.harvestSFX);
+                    AudioManager.Instance.PlayEffects(AudioManager.Instance.harvestSfx);
                     crop = null;
                     currentStage = 0;
                     growthTimer = 0f;
@@ -189,10 +170,8 @@ public class FarmTile : MonoBehaviour
     {
         if (currentState == TileState.RequiresWater && worker.assignedWork == Inventory.Tool.Watering)
         {
-        //    AudioManager.instance.playEffects(AudioManager.instance.waterSFX);
-            Debug.Log("Crop watered.");
+            AudioManager.Instance.PlayEffects(AudioManager.Instance.waterSfx);
             currentState = TileState.Growing;
-            currentStage++;
         }
     }
 
@@ -201,13 +180,27 @@ public class FarmTile : MonoBehaviour
     {
         if (crop != null)
         {
+            if (waterTimer <= 0)
+            {
+                waterTimer = Random.Range(crop.minwatertime, crop.maxwatertime);
+            }
+
+            if (waterTimer >= 1)
+            {
+                waterTimer-=Time.deltaTime; 
+            }
+            else
+            {
+                currentState = TileState.RequiresWater;
+            }
+                
             if (currentStage < crop.totalStages - 1 && currentState == TileState.Growing)
             {
                 growthTimer += Time.deltaTime;
                 if (growthTimer >= crop.growthTime)
                 {
                     growthTimer = 0f;
-                    currentState = TileState.RequiresWater;
+                    currentStage++;
                 }
             }
             if (currentStage == crop.totalStages - 1)
@@ -317,5 +310,14 @@ public class FarmTile : MonoBehaviour
 
         // Hide by default
         outlineChild.SetActive(false);
+    }
+    
+    public enum TileState
+    {
+        Empty,
+        Growing,
+        RequiresWater,
+        FullyGrown,
+        Dead
     }
 }

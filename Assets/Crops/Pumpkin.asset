@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Pumpkin
   m_EditorClassIdentifier: 
   cropName: pumpkin
-  icon: {fileID: 0}
+  icon: {fileID: 3801843947054940190, guid: 76ea97a40d62cef4ebd6665c098221b9, type: 3}
   tile:
   - {fileID: 53299561, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
   - {fileID: 2009933843, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
@@ -23,6 +23,8 @@ MonoBehaviour:
   - {fileID: -1124134409, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
   growthTime: 300
   deathTime: 600
+  minwatertime: 20
+  maxwatertime: 36
   sellPrice: 30
   seedBuyPrice: 800
   totalStages: 6

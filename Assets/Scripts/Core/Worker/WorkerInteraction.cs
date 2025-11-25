@@ -10,10 +10,15 @@ public class WorkerInteraction : MonoBehaviour
     public GameObject startTile;
     public GameObject endTile;
     public WorkerData workerData;
+    public Crop selectedcrop;
     void Start()
     {
         workerData=this.GetComponent<WorkerData>();
         _inventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<Inventory>();
+        if (selectedcrop == null)
+        {
+            selectedcrop = _inventory.selectedCrop;
+        }
     }
 
     private void Update()
@@ -68,7 +73,7 @@ public class WorkerInteraction : MonoBehaviour
 
     public void SetCrop(Crop crop)
     {
-        workerData.selectedcrop = crop;
+        selectedcrop = crop;
     }
 
     public void SelectTilesBetween(FarmTile startTile, FarmTile endTile)
@@ -118,6 +123,10 @@ public class WorkerInteraction : MonoBehaviour
         currentSelectedTile = null;
     }
 
+    public void CycleCrop()
+    {
+        _inventory.CycleSelectedCrop(this);
+    }
     public void ClearTiles()
     {
         selectedTiles.Clear();

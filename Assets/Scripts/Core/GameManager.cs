@@ -9,7 +9,6 @@ public class GameManager : MonoBehaviour
     public GameObject player;
     public GameObject[] workers;
     public GameObject selectedCharacter;
-    
     private void Awake()
     {
         if (Instance == null)
@@ -25,85 +24,28 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        selectedCharacter = player;
+        tileManager= GameObject.FindGameObjectWithTag("TileManager");
+        inventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<Inventory>();
+        player = GameObject.FindGameObjectWithTag("Player");
+        workers = GameObject.FindGameObjectsWithTag("Worker");
+        SelectCharacter(player);
+        
     }
 
-    private void OnSceneLoaded(Scene scene)
+    public void CycleWorkerCrop()
     {
-        Debug.Log("Scene Loaded: " + scene.name);
-        if (scene.name == "Game")
+        if (selectedCharacter.CompareTag("Worker"))
         {
-            if (player == null)
-            {
-                player = GameObject.FindGameObjectWithTag("Player");  
-            }
-            else
-            {
-            GameObject oldPlayer = GameObject.FindGameObjectWithTag("Player");
-            if (oldPlayer != null)
-            {
-                Destroy(oldPlayer);
-            }
-            Instantiate(player, player.transform.position, player.transform.rotation);
-            }
-
-            if (inventory == null)
-            {
-                inventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<Inventory>();
-            }
-            else
-            {
-            Inventory oldInventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<Inventory>();
-            if (oldInventory != null)
-            {
-                Destroy(oldInventory.gameObject);
-            }
-            Instantiate(inventory.gameObject, inventory.transform.position, inventory.transform.rotation);
-            }
-
-            if (tileManager == null)
-            {
-                tileManager = GameObject.FindGameObjectWithTag("TileManager");
-            }
-            else
-            {
-                GameObject oldTileManager = GameObject.FindGameObjectWithTag("TileManager");
-                if (oldTileManager != null)
-                {
-                    Destroy(oldTileManager);
-                }
-                Instantiate(tileManager, tileManager.transform.position, tileManager.transform.rotation);
-            }
-
-            if (workers == null)
-            {
-                workers = GameObject.FindGameObjectsWithTag("Worker");
-            }
-            else
-            {
-                GameObject[] oldWorkers = GameObject.FindGameObjectsWithTag("Worker");
-                foreach (GameObject oldworker in oldWorkers)
-                {
-                    Destroy( oldworker);
-                }
-                foreach (GameObject worker in workers)
-                {
-                    Instantiate(worker, worker.transform.position, worker.transform.rotation);
-                }
-            }
+            selectedCharacter.GetComponent<WorkerInteraction>().CycleCrop();
         }
     }
     public void SelectCharacter(GameObject character)
     {
         selectedCharacter = character;
     }
-    public void DeSelectCharacter()
-    {
-       selectedCharacter = null;
-    }
     
     public void ExitGame()
     {
-        Application.Quit();
+        SceneManager.LoadScene("MainMenu");
     }
 }

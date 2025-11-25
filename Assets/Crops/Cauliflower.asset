@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Cauliflower
   m_EditorClassIdentifier: 
   cropName: cauliflower
-  icon: {fileID: 0}
+  icon: {fileID: 8429711700039073009, guid: e92b771a6bcc54f40900152e71f964de, type: 3}
   tile:
   - {fileID: -770299968, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
   - {fileID: 2077212408, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
@@ -23,6 +23,8 @@ MonoBehaviour:
   - {fileID: 372965690, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
   growthTime: 180
   deathTime: 420
+  minwatertime: 18
+  maxwatertime: 30
   sellPrice: 45
   seedBuyPrice: 20
   totalStages: 6

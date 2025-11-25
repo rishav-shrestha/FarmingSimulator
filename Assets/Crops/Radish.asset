@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Radish
   m_EditorClassIdentifier: 
   cropName: radish
-  icon: {fileID: 0}
+  icon: {fileID: -7275490403220872501, guid: 87bbcb2a9f5661a4dbb4904541ab7d90, type: 3}
   tile:
   - {fileID: -1555773868, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
   - {fileID: -980423747, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
@@ -22,6 +22,8 @@ MonoBehaviour:
   - {fileID: 879595948, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
   growthTime: 30
   deathTime: 120
+  minwatertime: 5
+  maxwatertime: 8
   sellPrice: 7
   seedBuyPrice: 3
   totalStages: 5

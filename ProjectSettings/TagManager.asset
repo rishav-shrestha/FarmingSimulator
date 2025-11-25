@@ -7,6 +7,7 @@ TagManager:
   - Inventory
   - GameManager
   - Worker
+  - TileManager
   layers:
   - Default
   - TransparentFX

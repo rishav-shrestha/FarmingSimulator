@@ -7,7 +7,7 @@ public class Inventory : MonoBehaviour
     [Header("Selected Items")]
     public Crop selectedCrop;
     public int seedamountdisplay;
-    private CropDatabase _cropDatabase;
+    public CropDatabase _cropDatabase;
     [Header("Currencies")]
     [SerializeField] public int coins;
 
@@ -21,7 +21,7 @@ public class Inventory : MonoBehaviour
     // List for harvested crops
     public List<CropStack> cropInventory = new List<CropStack>();
 
-
+    
     void Start()
     {
         _cropDatabase = GetComponent<CropDatabase>();
@@ -39,6 +39,32 @@ public class Inventory : MonoBehaviour
         seedamountdisplay=GetSeedAmount(selectedCrop);
     }
 
+    public void SetSelectedCrop(Crop crop)
+    {
+        selectedCrop = crop;
+    }
+
+    public void CycleSelectedCrop()
+    {
+        if (GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().selectedCharacter
+            .CompareTag("Player"))
+        {
+            int index = _cropDatabase.crops.IndexOf(selectedCrop);
+            index = (index + 1) % _cropDatabase.crops.Count;
+            SetSelectedCrop( _cropDatabase.crops[index]);     
+        }
+    }
+    public void CycleSelectedCrop(WorkerInteraction worker)
+    {
+        if (GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().selectedCharacter
+            .CompareTag("Worker"))
+        {
+            int index = _cropDatabase.crops.IndexOf(worker.selectedcrop);
+            index = (index + 1) % _cropDatabase.crops.Count;
+            worker.SetCrop( _cropDatabase.crops[index]);     
+        }
+    }
+    
     // --- Seed methods ---
     public void AddSeed(Crop crop, int amount)
     {
@@ -113,8 +139,6 @@ public class Inventory : MonoBehaviour
             EarnCoins(amount); // your existing method
             return true;
         }
-
-        Debug.LogWarning("Attempted to sell more crops than available!");
         return false;
     }
 

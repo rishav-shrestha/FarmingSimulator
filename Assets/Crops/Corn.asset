@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Corn
   m_EditorClassIdentifier: 
   cropName: corn
-  icon: {fileID: 0}
+  icon: {fileID: -8085116256810050344, guid: 8200ec6e5d80f644cafdd234c14bf75e, type: 3}
   tile:
   - {fileID: 373476569, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
   - {fileID: -1773795878, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
@@ -23,6 +23,8 @@ MonoBehaviour:
   - {fileID: 2005691904, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
   growthTime: 150
   deathTime: 360
+  minwatertime: 16
+  maxwatertime: 26
   sellPrice: 32
   seedBuyPrice: 12
   totalStages: 6

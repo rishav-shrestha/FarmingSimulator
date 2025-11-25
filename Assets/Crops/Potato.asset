@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Potato
   m_EditorClassIdentifier: 
   cropName: potato
-  icon: {fileID: 0}
+  icon: {fileID: -6241358012108125060, guid: 60c1b46c1cd69804895c7e2db75fae50, type: 3}
   tile:
   - {fileID: 1303350644, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
   - {fileID: 864287823, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
@@ -23,6 +23,8 @@ MonoBehaviour:
   - {fileID: 1213268125, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
   growthTime: 90
   deathTime: 240
+  minwatertime: 12
+  maxwatertime: 20
   sellPrice: 20
   seedBuyPrice: 8
   totalStages: 6

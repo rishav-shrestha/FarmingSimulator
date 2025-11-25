@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Eggplant
   m_EditorClassIdentifier: 
   cropName: eggplant
-  icon: {fileID: 0}
+  icon: {fileID: -5235280566220964929, guid: 4f35d2af84b4fc34cb05c48ebc5694f4, type: 3}
   tile:
   - {fileID: 1698020144, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
   - {fileID: 510499026, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
@@ -23,6 +23,8 @@ MonoBehaviour:
   - {fileID: -84609719, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
   growthTime: 120
   deathTime: 300
+  minwatertime: 14
+  maxwatertime: 24
   sellPrice: 28
   seedBuyPrice: 10
   totalStages: 6
