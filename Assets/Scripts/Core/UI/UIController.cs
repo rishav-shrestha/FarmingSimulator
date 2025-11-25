@@ -26,7 +26,9 @@ public class UIController : MonoBehaviour
     
     [Header("UI Elements")]
     
-    public GameObject workerUI;
+    public GameObject PlayModeUI;
+    public GameObject EditModeUI;
+    public GameObject workerUIAdditive;
     public TextMeshProUGUI seedAmountDisplay;
     [Header("GameComponents")]
     
@@ -42,7 +44,7 @@ public class UIController : MonoBehaviour
     }
     public void Start()
     {
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        gameManager = GetComponent<GameManager>();
         _inventory = gameManager.inventory;
     }
     public void Update()
@@ -54,13 +56,20 @@ public class UIController : MonoBehaviour
         UpdateCropImage();
         UpdateTool();
         UpdateSeedAmount();
-        if(gameManager.selectedCharacter.CompareTag("Worker"))
+        if (gameManager.GetGameMode() == GameManager.GameMode.Play)
         {
-            if (workerUI.activeSelf == false) workerUI.SetActive(true);
+            if(gameManager.selectedCharacter.CompareTag("Worker"))
+            {
+                if (workerUIAdditive.activeSelf == false) workerUIAdditive.SetActive(true);
+            }
+            else if(gameManager.selectedCharacter.CompareTag("Player"))
+            {
+                if (workerUIAdditive.activeSelf == true) workerUIAdditive.SetActive(false);
+            }   
         }
-        else if(gameManager.selectedCharacter.CompareTag("Player"))
+        else if (gameManager.GetGameMode() == GameManager.GameMode.Edit)
         {
-            if (workerUI.activeSelf == true) workerUI.SetActive(false);
+            if (workerUIAdditive.activeSelf == true) workerUIAdditive.SetActive(false);
         }
     }
     public void UpdateTool()
@@ -71,12 +80,15 @@ public class UIController : MonoBehaviour
                 &&inventory.currentTool == Inventory.Tool.Harvesting) SelectHarvestTool();
         else if(gameManager.selectedCharacter.CompareTag("Player")
                 &&inventory.currentTool == Inventory.Tool.Watering) SelectWaterTool();
+        else if(gameManager.selectedCharacter.CompareTag("Player")&&inventory.currentTool==Inventory.Tool.None) SelectNoneTool();
         else if(gameManager.selectedCharacter.CompareTag("Worker")
                 &&gameManager.selectedCharacter.GetComponent<WorkerInteraction>().assignedWork == Inventory.Tool.Planting) SelectPlantTool();
         else if(gameManager.selectedCharacter.CompareTag("Worker")
                 &&gameManager.selectedCharacter.GetComponent<WorkerInteraction>().assignedWork == Inventory.Tool.Harvesting) SelectHarvestTool();
         else if(gameManager.selectedCharacter.CompareTag("Worker")
                 &&gameManager.selectedCharacter.GetComponent<WorkerInteraction>().assignedWork == Inventory.Tool.Watering) SelectWaterTool();
+        else if(gameManager.selectedCharacter.CompareTag("Worker")
+                &&gameManager.selectedCharacter.GetComponent<WorkerInteraction>().assignedWork == Inventory.Tool.None) SelectNoneTool();
     }
     public void UpdateCropImage()
     {
@@ -150,6 +162,19 @@ public class UIController : MonoBehaviour
             harvestbutton.image.sprite = harvestUnselectedSprite;
             waterbutton.image.sprite = waterSelectedSprite;
         }
+    }
+
+    public void SelectNoneTool()
+    {
+        plantbutton.image.sprite = plantUnselectedSprite;
+        harvestbutton.image.sprite = harvestUnselectedSprite;
+        waterbutton.image.sprite = waterUnselectedSprite;
+    }
+
+    public void UnPauseGame()
+    {
+        if(gameManager.GetPreviousMode()==GameManager.GameMode.Edit) EditModeUI.SetActive(true);
+        if(gameManager.GetPreviousMode()==GameManager.GameMode.Play) PlayModeUI.SetActive(true);
     }
     public void ExitGame()  
     {

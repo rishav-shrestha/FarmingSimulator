@@ -8,12 +8,12 @@ public class VolumeSettings : MonoBehaviour
     [SerializeField] Slider masterSlider;
     [SerializeField] Slider musicSlider;
     [SerializeField] Slider sfxSlider;
-
+    private bool _isInitializing = true;
 
     private void Start()
     {
         LoadVolume();
-
+        _isInitializing = false;
     }
 
     private float VolumeToDecibels(float volume)
@@ -27,6 +27,7 @@ public class VolumeSettings : MonoBehaviour
     }
     public void SetMasterVolume()
     {
+        if(!_isInitializing) playVolumeChangeSound();
         float volume = masterSlider.value;
         mixer.SetFloat("Master", VolumeToDecibels(volume));
         PlayerPrefs.SetFloat("MasterVolume", volume);
@@ -34,6 +35,7 @@ public class VolumeSettings : MonoBehaviour
 
     public void SetMusicVolume()
     {
+        if(!_isInitializing) playVolumeChangeSound();
         float volume = musicSlider.value;
         mixer.SetFloat("Music", VolumeToDecibels(volume));
         PlayerPrefs.SetFloat("MusicVolume", volume);
@@ -41,14 +43,19 @@ public class VolumeSettings : MonoBehaviour
 
     public void SetSFXVolume()
     {
+        if(!_isInitializing) playVolumeChangeSound();
         float volume = sfxSlider.value;
         mixer.SetFloat("SFX", VolumeToDecibels(volume));
         PlayerPrefs.SetFloat("SFXVolume", volume);
     }
 
     private void LoadVolume()
-    {
-                if (PlayerPrefs.HasKey("MasterVolume"))
+    {    
+        masterSlider.onValueChanged.RemoveAllListeners();
+        musicSlider.onValueChanged.RemoveAllListeners();
+        sfxSlider.onValueChanged.RemoveAllListeners();
+        // load saved values
+        if (PlayerPrefs.HasKey("MasterVolume"))
         {
             float masterVolume = PlayerPrefs.GetFloat("MasterVolume");
             masterSlider.value = masterVolume;
@@ -66,8 +73,11 @@ public class VolumeSettings : MonoBehaviour
             sfxSlider.value = sfxVolume;
             mixer.SetFloat("SFX", VolumeToDecibels(sfxVolume));
         }
-        SetMasterVolume();
-        SetMusicVolume();
-        SetSFXVolume();
+         
     }
+    public void playVolumeChangeSound()
+    {
+        AudioManager.Instance.PlaySfx(AudioManager.Instance.buttonClickSfx);
+    }
+
 }

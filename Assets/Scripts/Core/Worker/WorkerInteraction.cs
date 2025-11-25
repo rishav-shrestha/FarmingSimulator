@@ -6,14 +6,16 @@ public class WorkerInteraction : MonoBehaviour
     Inventory _inventory;
     public Inventory.Tool assignedWork=Inventory.Tool.None;
     public List<GameObject> selectedTiles = new List<GameObject>();
+    public List<GameObject> shownTiles = new List<GameObject>();
     public GameObject currentSelectedTile;
+    
     public GameObject startTile;
     public GameObject endTile;
     public WorkerData workerData;
     public Crop selectedcrop;
     void Start()
     {
-        workerData=this.GetComponent<WorkerData>();
+        workerData=GetComponent<WorkerData>();
         _inventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<Inventory>();
         if (selectedcrop == null)
         {
@@ -25,10 +27,21 @@ public class WorkerInteraction : MonoBehaviour
     {
         if (startTile != null && endTile != null)
         {
-            SelectTilesBetween(startTile.GetComponent<FarmTile>(), endTile.GetComponent<FarmTile>());
+            if (GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().GetEditMode() ==
+                GameManager.EditMode.Add)
+            {
+                SelectTilesBetween(startTile.GetComponent<FarmTile>(), endTile.GetComponent<FarmTile>());
+            }
+            else if (GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().GetEditMode() ==
+                     GameManager.EditMode.Remove)
+            {
+                RemoveTilesBetween(startTile.GetComponent<FarmTile>(), endTile.GetComponent<FarmTile>());
+            }
+
             startTile = null;
             endTile = null;
         }
+        
         
     }
 
@@ -75,7 +88,32 @@ public class WorkerInteraction : MonoBehaviour
     {
         selectedcrop = crop;
     }
+    public void ShowTilesBetween(FarmTile startTile, FarmTile endTile)
+    {
+        shownTiles.Clear();
+        if (startTile == null || endTile == null) return;
 
+        // Get the grid coordinates of startTile and endTile
+        Vector2Int startPos = startTile.gridPos;  // You'll need to store this in FarmTile
+        Vector2Int endPos = endTile.gridPos;
+
+        int minX = Mathf.Min(startPos.x, endPos.x);
+        int maxX = Mathf.Max(startPos.x, endPos.x);
+        int minY = Mathf.Min(startPos.y, endPos.y);
+        int maxY = Mathf.Max(startPos.y, endPos.y);
+
+        for (int x = minX; x <= maxX; x++)
+        {
+            for (int y = minY; y <= maxY; y++)
+            {
+                FarmTile tile = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().tileManager.GetComponent<TileManager>().GetTileAt(x, y); 
+                if (tile != null)
+                {
+                    shownTiles.Add(tile.gameObject);
+                }
+            }
+        }
+    }
     public void SelectTilesBetween(FarmTile startTile, FarmTile endTile)
     {
         if (startTile == null || endTile == null) return;
@@ -96,8 +134,32 @@ public class WorkerInteraction : MonoBehaviour
                 FarmTile tile = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().tileManager.GetComponent<TileManager>().GetTileAt(x, y); 
                 if (tile != null && !selectedTiles.Contains(tile.gameObject))
                 {
-                    tile.gameObject.GetComponent<SpriteRenderer>().color = Color.mediumPurple;
                     Add(tile.gameObject);
+                }
+            }
+        }
+    }
+    public void RemoveTilesBetween(FarmTile startTile, FarmTile endTile)
+    {
+        if (startTile == null || endTile == null) return;
+
+        // Get the grid coordinates of startTile and endTile
+        Vector2Int startPos = startTile.gridPos;  // You'll need to store this in FarmTile
+        Vector2Int endPos = endTile.gridPos;
+
+        int minX = Mathf.Min(startPos.x, endPos.x);
+        int maxX = Mathf.Max(startPos.x, endPos.x);
+        int minY = Mathf.Min(startPos.y, endPos.y);
+        int maxY = Mathf.Max(startPos.y, endPos.y);
+
+        for (int x = minX; x <= maxX; x++)
+        {
+            for (int y = minY; y <= maxY; y++)
+            {
+                FarmTile tile = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().tileManager.GetComponent<TileManager>().GetTileAt(x, y); 
+                if (tile != null && selectedTiles.Contains(tile.gameObject))
+                {
+                    Remove(tile.gameObject);
                 }
             }
         }

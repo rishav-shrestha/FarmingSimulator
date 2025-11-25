@@ -24,7 +24,7 @@ public class CameraController : MonoBehaviour
         CenterAndFitFarm();
     }
 
-    void LateUpdate()
+    public void UpdateCamera()
     {
         HandleMouseDrag();
         HandleMouseZoom();

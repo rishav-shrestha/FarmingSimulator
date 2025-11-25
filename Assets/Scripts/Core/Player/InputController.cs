@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
@@ -10,64 +10,225 @@ public class InputController : MonoBehaviour
     private bool _isDragging;
     private Vector2 _startPos;
     private float _startTime;
-
+    private FarmTile _hoveredTile;
+    private GameObject _hoveredCharacter;
+    private bool _isPlayer;
+    private GameManager _gameManager;
+    private CameraController _cameraController;
+    
+    void Start()
+    {
+        _gameManager = GetComponent<GameManager>();
+        _cameraController = GetComponent<CameraController>();
+    }
     void Update()
     {
+        if (_gameManager.GetGameMode() == GameManager.GameMode.Pause) return;
+        
         HandleMouse();
-
+        _cameraController.UpdateCamera();
     }
-
+    
+    
     void HandleMouse()
     {
+        if (IsPointerOverUI()) return;
+
+        HandleMousePress();
+        HandleMouseDrag();
+        UpdateHoveredObjects();
+        HandleMouseRelease();
+       
+       
+    }
+
+
+
+
+    bool IsPointerOverUI()
+    {
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
-            return;
+        {
+            ClearHoveredObjects();
+            return true;
+        }
+        return false;
+    }
 
+    void ClearHoveredObjects()
+    {
+        if (_hoveredTile != null)
+        {
+            _hoveredTile.isHovered = false;
+            _hoveredTile = null;
+        }
 
+        if (_hoveredCharacter != null)
+        {
+            if (_isPlayer)
+                _hoveredCharacter.GetComponent<PlayerData>().hovered = false;
+            else
+                _hoveredCharacter.GetComponent<WorkerData>().hovered = false;
+
+            _hoveredCharacter = null;
+            _isPlayer = false;
+        }
+    }
+ 
+    void HandleMousePress()
+    {
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
             _startPos = Mouse.current.position.ReadValue();
             _startTime = Time.time;
             _isDragging = false;
         }
+    }
 
+    void HandleMouseDrag()
+    {
         if (Mouse.current.leftButton.isPressed)
         {
             float distance = Vector2.Distance(_startPos, Mouse.current.position.ReadValue());
             if (distance > dragThreshold) _isDragging = true;
         }
+    }
+ 
+    void UpdateHoveredObjects()
+    {
+        Vector3 worldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+        worldPos.z = 0;
 
+        ClearHoveredObjects();
+        Find(worldPos); 
+    }
+
+    void HandleMouseRelease()
+    {
         if (Mouse.current.leftButton.wasReleasedThisFrame)
         {
-            Debug.Log("Mouse button released");
             float duration = Time.time - _startTime;
             if (!_isDragging && duration <= tapThreshold)
             {
                 Vector3 worldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
                 worldPos.z = 0;
-                TryInteract(worldPos);
+                if (_gameManager.GetGameMode() == GameManager.GameMode.Play) TryInteractPlayMode(worldPos); 
+                else if(_gameManager.GetGameMode() == GameManager.GameMode.Edit) TryInteractEditMode(worldPos);
             }
         }
     }
 
-    void TryInteract(Vector3 worldPos)
+    void Find(Vector3 worldpos)
     {
-        Debug.Log("Trying to interact at: " + worldPos);
-        Collider2D hit = Physics2D.OverlapPoint(worldPos);
-        if (hit == null)
+        Collider2D hit = Physics2D.OverlapPoint(worldpos);
+        HoverCharacter(hit);
+        if (!HoverCharacter(hit)) HoverTIle(hit);  
+    }
+
+    bool HoverCharacter(Collider2D hit)
+    {
+        if (hit != null && hit.TryGetComponent(out PlayerData player))
         {
-            Debug.Log("No collider detected at " + worldPos);
+            _hoveredCharacter = player.gameObject;
+            _isPlayer = true;
+            player.hovered = true;
+            return true;
         }
-        else
+        else if (hit != null&&hit.TryGetComponent(out WorkerData worker))
         {
-            Debug.Log("Collider detected: " + hit.name);
+            _hoveredCharacter = worker.gameObject;
+            worker.hovered = true;
+            return true;
         }
-        
+        return false;
+    }
+
+    void HoverTIle(Collider2D hit)
+    {
         if (hit != null && hit.TryGetComponent(out FarmTile tile))
         {
-            Debug.Log("Interacted with FarmTile");
-            tile.PlantCrop();
-            tile.HarvestCrop();
-            tile.WaterCrop();
+            tile.isHovered = true;
+            _hoveredTile = tile;
         }
     }
-}
+    void TryInteractPlayMode(Vector3 worldPos)
+    {
+        Collider2D hit = Physics2D.OverlapPoint(worldPos);
+        selectCharacter(hit);
+        selectTile(hit);
+        
+    }
+    public void selectCharacter(Collider2D hit)
+    {
+        if (hit != null)
+        {
+            if (hit.TryGetComponent(out PlayerData player))
+            {
+                _gameManager.SelectCharacter(player.gameObject);
+            }
+            else if (hit.TryGetComponent(out WorkerData worker))
+            {
+                _gameManager.SelectCharacter(worker.gameObject);
+            }
+        }
+    }
+
+    public void selectTile(Collider2D hit)
+    {
+        if (_gameManager.selectedCharacter.TryGetComponent(out PlayerData data) 
+            && hit != null && hit.TryGetComponent(out FarmTile tile))
+        {
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            player.GetComponent<PlayerInteraction>().AddTile(tile.gameObject);
+        }
+    }
+
+    public void TryInteractEditMode(Vector3 worldPos)
+    {
+        
+        Collider2D hit = Physics2D.OverlapPoint(worldPos);
+        InteractNormalMode(hit);
+        InteractAddRemoveMode(hit);
+    }
+
+    private void InteractAddRemoveMode(Collider2D hit)
+    {
+        if(_gameManager.GetEditMode()==GameManager.EditMode.Remove||_gameManager.GetEditMode()==GameManager.EditMode.Add) 
+        {
+            if (_gameManager.selectedCharacter.TryGetComponent(out WorkerData workerData)
+                && hit != null && hit.TryGetComponent(out FarmTile farmTile))
+            {
+                GameObject worker = workerData.gameObject;
+                if (worker.GetComponent<WorkerInteraction>().startTile == null)
+                {
+                    worker.GetComponent<WorkerInteraction>().startTile = farmTile.gameObject;  
+                }
+                else
+                {
+                    worker.GetComponent<WorkerInteraction>().endTile = farmTile.gameObject;
+                    worker.GetComponent<WorkerInteraction>().shownTiles.Clear();
+                }
+            }  
+        }
+    }
+
+    public void InteractNormalMode(Collider2D hit)
+    {
+        if (_gameManager.GetEditMode() == GameManager.EditMode.Normal)
+        {
+            if (hit != null && hit.TryGetComponent(out FarmTile tile))
+            {
+                if(!_gameManager.selectedCharacter.GetComponent<WorkerInteraction>().selectedTiles.Contains(tile.gameObject))
+                {
+                    _gameManager.selectedCharacter.GetComponent<WorkerInteraction>().Add(tile.gameObject);
+                }
+                else 
+                {
+                    Debug.Log("Remove");
+                    _gameManager.selectedCharacter.GetComponent<WorkerInteraction>().Remove(tile.gameObject);
+                }
+            }
+        }
+    }
+        
+    }

@@ -4,7 +4,7 @@ using UnityEngine;
 public class FarmTile : MonoBehaviour
 {
 
-    
+    public GameManager gameManager;
     public TileState currentState = TileState.Empty;
     // Sprite for the farm tile when it's empty
     public Sprite emptyTileSprite;
@@ -44,6 +44,7 @@ public class FarmTile : MonoBehaviour
 
     private void Start()
     {
+        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         inventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<Inventory>();
 
         //outline 
@@ -227,54 +228,140 @@ public class FarmTile : MonoBehaviour
         float targetScale = isHovered ? hoverScale : normalScale;
         transform.localScale = Vector3.Lerp(transform.localScale, Vector3.one * targetScale, Time.deltaTime * scaleSpeed);
         
-        if(isCurrentSelected)
+        if (gameManager.GetGameMode() == GameManager.GameMode.Play)
         {
-            UpdateOutline(true, Color.yellow,2);
-        }
-        else if(isSelected)
-        {
-            if(action==Inventory.Tool.Planting)
+            if(isCurrentSelected)
             {
-                UpdateOutline(true, Color.green, 1);
+                UpdateOutline(true, Color.yellow,2);
             }
-            else if(action==Inventory.Tool.Watering)
+            else if(isSelected)
             {
-                UpdateOutline(true, Color.blue, 1);
+                if(action==Inventory.Tool.Planting)
+                {
+                    UpdateOutline(true, Color.green, 1);
+                }
+                else if(action==Inventory.Tool.Watering)
+                {
+                    UpdateOutline(true, Color.blue, 1);
+                }
+                else if(action==Inventory.Tool.Harvesting)
+                {
+                    UpdateOutline(true, Color.gray3, 1);
+                }
             }
-            else if(action==Inventory.Tool.Harvesting)
+            else if (isHovered)
             {
-                UpdateOutline(true, Color.gray3, 1);
+                UpdateOutline(true,Color.white,1);
             }
+            else
+            {
+                GetComponent<SpriteRenderer>().color = Color.white;
+                UpdateOutline(false);
+            }   
         }
-        else if (isHovered)
+        
+        
+        else if(gameManager.GetGameMode() == GameManager.GameMode.Edit)
         {
-            UpdateOutline(true,Color.white,1);
-        }
-        else
-        {
-            UpdateOutline(false);
+            
+            if (gameManager.GetEditMode() == GameManager.EditMode.Add ||
+                gameManager.GetEditMode() == GameManager.EditMode.Remove)
+            {
+                if (this==gameManager.selectedCharacter.GetComponent<WorkerInteraction>().startTile)
+                {
+                    UpdateOutline(true, Color.darkBlue, 1);
+                }
+                else if (this == gameManager.selectedCharacter.GetComponent<WorkerInteraction>().endTile)
+                {
+                     UpdateOutline(true, Color.red, 1);
+                }
+                else if (gameManager.selectedCharacter.GetComponent<WorkerInteraction>().startTile == null && isHovered)
+                {
+                  UpdateOutline(true, Color.deepSkyBlue, 1);
+                }
+                else if (gameManager.selectedCharacter.GetComponent<WorkerInteraction>().endTile == null && isHovered)
+                {
+                    UpdateOutline(true, Color.mediumVioletRed, 1);
+                    gameManager.selectedCharacter.GetComponent<WorkerInteraction>().ShowTilesBetween
+                        (gameManager.selectedCharacter.GetComponent<WorkerInteraction>().startTile.GetComponent<FarmTile>(),this);
+                }
+                else
+                {
+                    UpdateOutline(false);
+                }
+            }
+
+            if (gameManager.GetEditMode() == GameManager.EditMode.Normal)
+            {
+                if (isHovered)
+                {
+                    UpdateOutline(true,Color.white,1);
+                }
+                else
+                {
+                    UpdateOutline(false);
+                } 
+            }
+            if (gameManager.selectedCharacter.GetComponent<WorkerInteraction>().startTile != null && gameManager.selectedCharacter.GetComponent<WorkerInteraction>().endTile == null && isHovered)
+            {
+                    gameManager.selectedCharacter.GetComponent<WorkerInteraction>().ShowTilesBetween
+                        (gameManager.selectedCharacter.GetComponent<WorkerInteraction>().startTile.GetComponent<FarmTile>(),this);
+                  
+            }
+
+            if (gameManager.GetEditMode() == GameManager.EditMode.Add)
+            {
+                if (gameManager.selectedCharacter.GetComponent<WorkerInteraction>().selectedTiles.Contains(this.gameObject))
+                {
+                    this.GetComponent<SpriteRenderer>().color = Color.green;
+                }
+                else if (gameManager.selectedCharacter.GetComponent<WorkerInteraction>().shownTiles.Contains(this.gameObject))
+                {
+                    this.GetComponent<SpriteRenderer>().color = Color.pink;
+                } 
+                else
+                {
+                    GetComponent<SpriteRenderer>().color = Color.white;
+                }   
+            }
+            else
+            {
+                if (gameManager.selectedCharacter.GetComponent<WorkerInteraction>().shownTiles.Contains(this.gameObject)&&
+                    gameManager.selectedCharacter.GetComponent<WorkerInteraction>().selectedTiles.Contains(this.gameObject))
+                {
+                    this.GetComponent<SpriteRenderer>().color = Color.pink;
+                } else
+                if (gameManager.selectedCharacter.GetComponent<WorkerInteraction>().selectedTiles.Contains(this.gameObject))
+                {
+                    this.GetComponent<SpriteRenderer>().color = Color.green;
+                }
+                else
+                {
+                    GetComponent<SpriteRenderer>().color = Color.white;
+                }   
+            }
         }
     }
 
-    public void UpdateOutline(bool outline, Color color,int order)
+    private void UpdateOutline(bool outline, Color color,int order)
     {
         if (outline)
         {
             outlineChild.SetActive(true);
             outlineChild.GetComponent<SpriteRenderer>().color = color;
             outlineChild.GetComponent<SpriteRenderer>().sortingOrder = order+_originalTileOrder;
-            _tileRenderer.sortingOrder = _originalTileOrder + aboveTileOffset+order; // bring tile above other tiles
+            _tileRenderer.sortingOrder = _originalTileOrder + aboveTileOffset+order; 
         }
         else
         {
             outlineChild.GetComponent<SpriteRenderer>().sortingOrder = _originalTileOrder;
             outlineChild.SetActive(false);
-            _tileRenderer.sortingOrder = _originalTileOrder; // restore original order
+            _tileRenderer.sortingOrder = _originalTileOrder; 
         }
     }
 
 
-    public void UpdateOutline(bool outline)
+    private void UpdateOutline(bool outline)
     {
         if (outline)
         {
@@ -289,7 +376,7 @@ public class FarmTile : MonoBehaviour
     }
 
 
-    void CreateOutlineChild()
+    private void CreateOutlineChild()
     {
         if (outlineChild != null) return; // safety check
 
