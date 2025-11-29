@@ -134,7 +134,7 @@ public class InputController : MonoBehaviour
             player.hovered = true;
             return true;
         }
-        else if (hit != null&&hit.TryGetComponent(out WorkerData worker))
+        if (hit != null&&hit.TryGetComponent(out WorkerData worker))
         {
             _hoveredCharacter = worker.gameObject;
             worker.hovered = true;

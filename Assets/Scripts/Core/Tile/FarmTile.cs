@@ -174,7 +174,7 @@ public class FarmTile : MonoBehaviour
         if(gameManager.GetGameMode()==GameManager.GameMode.Pause) return;
         if (crop != null)
         {
-            if (currentState != TileState.Empty || currentState != TileState.FullyGrown ||
+            if (currentState != TileState.Empty && currentState != TileState.FullyGrown &&
                 currentState != TileState.Dead)
             {
                 if (waterTimer <= 0)
