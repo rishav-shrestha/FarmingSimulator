@@ -22,13 +22,13 @@ public class WorkerMovement : MonoBehaviour
     }
     void Update()
     {
-        
+        if(_gameManager.GetGameMode()==GameManager.GameMode.Pause) return;
         switch (_workerState.currentState)
         {
             case WorkerState.State.Idle:
                 FindTarget();
                 if(_workerInteraction.assignedWork==Inventory.Tool.Planting && !GameObject.FindGameObjectWithTag("Inventory").GetComponent<Inventory>()
-                       .HasSeeds(GameObject.FindGameObjectWithTag("Inventory").GetComponent<Inventory>().selectedCrop))
+                       .HasSeeds(_workerInteraction.selectedcrop))
                     _workerInteraction.currentSelectedTile = null;
                 if (_workerInteraction.currentSelectedTile != null)
                 {
@@ -63,6 +63,12 @@ public class WorkerMovement : MonoBehaviour
                 {
                     _workerState.currentState = WorkerState.State.Idle;
                 }
+                FindTarget();
+                if (_workerInteraction.currentSelectedTile != null)
+                {
+                    SetTargetPosition(_workerInteraction.currentSelectedTile.transform.position);
+                    _workerState.currentState = WorkerState.State.GoingtoTarget;
+                }
                 break;
         }
         
@@ -83,6 +89,7 @@ public class WorkerMovement : MonoBehaviour
             else if (_workerInteraction.assignedWork == Inventory.Tool.Harvesting)
             {
                 FarmTile w = _workerInteraction.GetNearestTile(FarmTile.TileState.FullyGrown);
+                if (w == null) w = _workerInteraction.GetNearestTile(FarmTile.TileState.Dead);
                 if (w != null) _workerInteraction.currentSelectedTile=w.gameObject;
             }
             else if (_workerInteraction.assignedWork == Inventory.Tool.Watering)

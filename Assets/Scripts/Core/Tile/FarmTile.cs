@@ -20,7 +20,6 @@ public class FarmTile : MonoBehaviour
     public Vector2Int gridPos;
 
     //outline variables
-    public Color outlineColor = Color.yellow; 
     public float outlineScale = 1.05f;        
     public int outlineOrderOffset = 10;       
     public int aboveTileOffset = 20;          
@@ -28,6 +27,7 @@ public class FarmTile : MonoBehaviour
 
     //player interaction
     public Inventory.Tool action = Inventory.Tool.None;
+    public Crop selectedCrop;
 
     public GameObject outlineChild;
     public GameObject outlinePrehab;
@@ -39,8 +39,11 @@ public class FarmTile : MonoBehaviour
     public float hoverScale = 1.2f;    
     public float normalScale = 1f;     
     public float scaleSpeed = 5f;
+    public bool outlined;
 
-
+    //Crop Child
+    public GameObject cropChild;
+    private SpriteRenderer cropRenderer;
 
     private void Start()
     {
@@ -53,26 +56,24 @@ public class FarmTile : MonoBehaviour
         _tileRenderer = _mainRenderer; // assuming tile itself is the main sprite
         _originalTileOrder = _tileRenderer.sortingOrder;
 
+        //Crop Child
+        cropRenderer = cropChild.GetComponent<SpriteRenderer>();
+
         CreateOutlineChild();
     }
     public void PlantCrop()
     {
 
-        if (inventory.HasSeeds(inventory.selectedCrop) && action == Inventory.Tool.Planting)
+        if (inventory.HasSeeds(selectedCrop) && action == Inventory.Tool.Planting)
         {
             if (crop == null)
             {
                 currentState = TileState.Growing;
-               AudioManager.Instance.PlayEffects(AudioManager.Instance.plantSfx);
-                crop = inventory.selectedCrop;
-                inventory.UseSeed(inventory.selectedCrop);
-                Debug.Log("Tile is now planted.");
-
+               AudioManager.Instance.PlayGameSfx(AudioManager.Instance.plantSfx);
+                crop = selectedCrop;
+                inventory.UseSeed(selectedCrop);
             }
-            else
-            {
-                Debug.Log("Tile is already planted.");
-            }
+            selectedCrop = null;
         }
     }
     public void HarvestCrop()
@@ -83,7 +84,7 @@ public class FarmTile : MonoBehaviour
             {
                 if (currentState == TileState.FullyGrown)
                 {
-                   AudioManager.Instance.PlayEffects(AudioManager.Instance.harvestSfx);
+                   AudioManager.Instance.PlayGameSfx(AudioManager.Instance.harvestSfx);
                     crop = null;
                     currentStage = 0;
                     growthTimer = 0f;
@@ -106,7 +107,7 @@ public class FarmTile : MonoBehaviour
     {
         if (currentState == TileState.RequiresWater && action == Inventory.Tool.Watering)
         { 
-            AudioManager.Instance.PlayEffects(AudioManager.Instance.waterSfx);
+            AudioManager.Instance.PlayGameSfx(AudioManager.Instance.waterSfx);
             currentState = TileState.Growing;
             waterTimer--;
         }
@@ -115,12 +116,12 @@ public class FarmTile : MonoBehaviour
      public void PlantCrop(WorkerInteraction worker)
     {
 
-        if (inventory.HasSeeds(inventory.selectedCrop) && worker.assignedWork == Inventory.Tool.Planting)
+        if (inventory.HasSeeds(worker.selectedcrop) && worker.assignedWork == Inventory.Tool.Planting)
         {
             if (crop == null)
             {
                 currentState = TileState.Growing;
-                AudioManager.Instance.PlayEffects(AudioManager.Instance.plantSfx);
+                AudioManager.Instance.PlayGameSfx(AudioManager.Instance.plantSfx);
                 crop = worker.selectedcrop;
                 inventory.UseSeed(worker.selectedcrop);
 
@@ -130,6 +131,7 @@ public class FarmTile : MonoBehaviour
             }
         }
     }
+
     public void HarvestCrop(WorkerInteraction worker)
     {
         if (worker.assignedWork == Inventory.Tool.Harvesting)
@@ -138,8 +140,7 @@ public class FarmTile : MonoBehaviour
             {
                 if (currentState == TileState.FullyGrown)
                 {
-                    Debug.Log("Crop harvested");
-                    AudioManager.Instance.PlayEffects(AudioManager.Instance.harvestSfx);
+                    AudioManager.Instance.PlayGameSfx(AudioManager.Instance.harvestSfx);
                     crop = null;
                     currentStage = 0;
                     growthTimer = 0f;
@@ -148,54 +149,54 @@ public class FarmTile : MonoBehaviour
                 }
                 else if (currentState == TileState.Dead)
                 {
-                    Debug.Log("The crop is dead and cannot be harvested.");
                     crop = null;
                     currentStage = 0;
                     growthTimer = 0f;
                     deathTimer = 0f;
                     currentState = TileState.Empty;
                 }
-                else
-                {
-                    Debug.Log("The crop is not fully grown yet.");
-                }
-            }
-            else
-            {
-                Debug.Log("No crop to harvest on this tile.");
             }
         }
     }
+    
 
     public void WaterCrop(WorkerInteraction worker)
     {
         if (currentState == TileState.RequiresWater && worker.assignedWork == Inventory.Tool.Watering)
         {
-            AudioManager.Instance.PlayEffects(AudioManager.Instance.waterSfx);
+            AudioManager.Instance.PlayGameSfx(AudioManager.Instance.waterSfx);
             currentState = TileState.Growing;
+            waterTimer--;
         }
     }
-
-
     void Update()
     {
+        if(gameManager.GetGameMode()==GameManager.GameMode.Pause) return;
         if (crop != null)
         {
-            if (waterTimer <= 0)
+            if (currentState != TileState.Empty || currentState != TileState.FullyGrown ||
+                currentState != TileState.Dead)
             {
-                waterTimer = Random.Range(crop.minwatertime, crop.maxwatertime);
-            }
+                if (waterTimer <= 0)
+                {
+                    waterTimer = Random.Range(crop.minwatertime, crop.maxwatertime);
+                }
 
-            if (waterTimer >= 1)
-            {
-                waterTimer-=Time.deltaTime; 
+                if (waterTimer >= 1)
+                {
+                    waterTimer-=Time.deltaTime; 
+                }
+                else
+                {
+                    currentState = TileState.RequiresWater;
+                }  
             }
             else
             {
-                currentState = TileState.RequiresWater;
+                waterTimer = 0;
             }
                 
-            if (currentStage < crop.totalStages - 1 && currentState == TileState.Growing)
+            if (currentStage < crop.totalStages - 2 && currentState == TileState.Growing)
             {
                 growthTimer += Time.deltaTime;
                 if (growthTimer >= crop.growthTime)
@@ -204,7 +205,7 @@ public class FarmTile : MonoBehaviour
                     currentStage++;
                 }
             }
-            if (currentStage == crop.totalStages - 1)
+            if (currentStage == crop.totalStages - 2)
             {
                 currentState = TileState.FullyGrown;
                 deathTimer += Time.deltaTime;
@@ -223,43 +224,63 @@ public class FarmTile : MonoBehaviour
             growthTimer = 0f;
             deathTimer = 0f;
         }
-        this.GetComponent<SpriteRenderer>().sprite = crop != null ? crop.tile[currentStage] : emptyTileSprite;
+        switch (gameManager.graphicsMode)
+        {
+            case GameManager.GraphicsMode.Low:
+                GetComponent<SpriteRenderer>().sprite = crop != null ? crop.tile[currentStage] : emptyTileSprite;
+                break;
+            case GameManager.GraphicsMode.High:
+                if (gameManager.GetGameMode() == GameManager.GameMode.Edit)
+                {
+                    GetComponent<SpriteRenderer>().sprite = crop != null ? crop.tile[currentStage] : emptyTileSprite;
+                    break;
+                }
+                if (crop != null)
+                {
+                    cropRenderer.sprite=crop.sprite[currentStage]; 
+                }
+                else
+                {
+                    cropRenderer.sprite=null;
+                }
+                GetComponent<SpriteRenderer>().sprite =emptyTileSprite;
+                break;
+        }
         // Smoothly scale the main tile
         float targetScale = isHovered ? hoverScale : normalScale;
         transform.localScale = Vector3.Lerp(transform.localScale, Vector3.one * targetScale, Time.deltaTime * scaleSpeed);
-        
+        cropChild.transform.localScale = Vector3.Lerp(cropChild.transform.localScale, Vector3.one * targetScale, Time.deltaTime * scaleSpeed);
         if (gameManager.GetGameMode() == GameManager.GameMode.Play)
         {
             if(isCurrentSelected)
             {
-                UpdateOutline(true, Color.yellow,2);
+                UpdateOutline(Color.yellow);
             }
             else if(isSelected)
             {
                 if(action==Inventory.Tool.Planting)
                 {
-                    UpdateOutline(true, Color.green, 1);
+                    UpdateOutline(Color.green );
                 }
                 else if(action==Inventory.Tool.Watering)
                 {
-                    UpdateOutline(true, Color.blue, 1);
+                    UpdateOutline(Color.blue);
                 }
                 else if(action==Inventory.Tool.Harvesting)
                 {
-                    UpdateOutline(true, Color.gray3, 1);
+                    UpdateOutline(Color.gray3);
                 }
             }
             else if (isHovered)
             {
-                UpdateOutline(true,Color.white,1);
+                UpdateOutline(Color.white);
             }
             else
             {
                 GetComponent<SpriteRenderer>().color = Color.white;
-                UpdateOutline(false);
+                UpdateOutline();
             }   
         }
-        
         
         else if(gameManager.GetGameMode() == GameManager.GameMode.Edit)
         {
@@ -269,25 +290,25 @@ public class FarmTile : MonoBehaviour
             {
                 if (this==gameManager.selectedCharacter.GetComponent<WorkerInteraction>().startTile)
                 {
-                    UpdateOutline(true, Color.darkBlue, 1);
+                    UpdateOutline(Color.darkBlue);
                 }
                 else if (this == gameManager.selectedCharacter.GetComponent<WorkerInteraction>().endTile)
                 {
-                     UpdateOutline(true, Color.red, 1);
+                    UpdateOutline(Color.red);
                 }
                 else if (gameManager.selectedCharacter.GetComponent<WorkerInteraction>().startTile == null && isHovered)
                 {
-                  UpdateOutline(true, Color.deepSkyBlue, 1);
+                  UpdateOutline(Color.deepSkyBlue);
                 }
                 else if (gameManager.selectedCharacter.GetComponent<WorkerInteraction>().endTile == null && isHovered)
                 {
-                    UpdateOutline(true, Color.mediumVioletRed, 1);
+                    UpdateOutline(Color.mediumVioletRed);
                     gameManager.selectedCharacter.GetComponent<WorkerInteraction>().ShowTilesBetween
                         (gameManager.selectedCharacter.GetComponent<WorkerInteraction>().startTile.GetComponent<FarmTile>(),this);
                 }
                 else
                 {
-                    UpdateOutline(false);
+                    UpdateOutline();
                 }
             }
 
@@ -295,11 +316,11 @@ public class FarmTile : MonoBehaviour
             {
                 if (isHovered)
                 {
-                    UpdateOutline(true,Color.white,1);
+                    UpdateOutline(Color.white);
                 }
                 else
                 {
-                    UpdateOutline(false);
+                    UpdateOutline();
                 } 
             }
             if (gameManager.selectedCharacter.GetComponent<WorkerInteraction>().startTile != null && gameManager.selectedCharacter.GetComponent<WorkerInteraction>().endTile == null && isHovered)
@@ -313,11 +334,11 @@ public class FarmTile : MonoBehaviour
             {
                 if (gameManager.selectedCharacter.GetComponent<WorkerInteraction>().selectedTiles.Contains(this.gameObject))
                 {
-                    this.GetComponent<SpriteRenderer>().color = Color.green;
+                    GetComponent<SpriteRenderer>().color = Color.green;
                 }
                 else if (gameManager.selectedCharacter.GetComponent<WorkerInteraction>().shownTiles.Contains(this.gameObject))
                 {
-                    this.GetComponent<SpriteRenderer>().color = Color.pink;
+                    GetComponent<SpriteRenderer>().color = Color.pink;
                 } 
                 else
                 {
@@ -329,11 +350,11 @@ public class FarmTile : MonoBehaviour
                 if (gameManager.selectedCharacter.GetComponent<WorkerInteraction>().shownTiles.Contains(this.gameObject)&&
                     gameManager.selectedCharacter.GetComponent<WorkerInteraction>().selectedTiles.Contains(this.gameObject))
                 {
-                    this.GetComponent<SpriteRenderer>().color = Color.pink;
+                    GetComponent<SpriteRenderer>().color = Color.pink;
                 } else
                 if (gameManager.selectedCharacter.GetComponent<WorkerInteraction>().selectedTiles.Contains(this.gameObject))
                 {
-                    this.GetComponent<SpriteRenderer>().color = Color.green;
+                    GetComponent<SpriteRenderer>().color = Color.green;
                 }
                 else
                 {
@@ -343,59 +364,53 @@ public class FarmTile : MonoBehaviour
         }
     }
 
-    private void UpdateOutline(bool outline, Color color,int order)
+    private void UpdateOutline(Color color,bool outline=true)
     {
         if (outline)
         {
             outlineChild.SetActive(true);
             outlineChild.GetComponent<SpriteRenderer>().color = color;
-            outlineChild.GetComponent<SpriteRenderer>().sortingOrder = order+_originalTileOrder;
-            _tileRenderer.sortingOrder = _originalTileOrder + aboveTileOffset+order; 
+            if (gameManager.GetGameMode() == GameManager.GameMode.Play &&
+                gameManager.graphicsMode == GameManager.GraphicsMode.High)
+            {
+                cropChild.GetComponent<SpriteRenderer>().material.SetFloat("_OutlineThickness", 0.5f);
+                cropChild.GetComponent<SpriteRenderer>().material.SetColor("_OutlineColor", color);
+            }
+            outlined = true;
         }
         else
         {
-            outlineChild.GetComponent<SpriteRenderer>().sortingOrder = _originalTileOrder;
+            cropChild.GetComponent<SpriteRenderer>().material.SetFloat("_OutlineThickness", 0);
             outlineChild.SetActive(false);
-            _tileRenderer.sortingOrder = _originalTileOrder; 
         }
     }
 
-
-    private void UpdateOutline(bool outline)
+    private void UpdateOutline(bool outline=false)
     {
         if (outline)
         {
             outlineChild.SetActive(true);
+            outlined = true;
         }
         else
         {
-            outlineChild.GetComponent<SpriteRenderer>().sortingOrder = _originalTileOrder;
+            cropChild.GetComponent<SpriteRenderer>().material.SetFloat("_OutlineThickness", 0);
             outlineChild.SetActive(false);
-            _tileRenderer.sortingOrder = _originalTileOrder; // restore original order
+            outlined = false;
         }
     }
 
 
     private void CreateOutlineChild()
     {
-        if (outlineChild != null) return; // safety check
-
-        // Instantiate the prefab at the same position and parent it
+        if (outlineChild != null) return; 
         outlineChild = Instantiate(outlinePrehab, transform.position, Quaternion.identity, transform);
-
-        // Reset local position/rotation just in case
         outlineChild.transform.localPosition = Vector3.zero;
         outlineChild.transform.localRotation = Quaternion.identity;
-
-        // Optional: scale slightly bigger than the tile
         outlineChild.transform.localScale = Vector3.one * outlineScale;
-
-        // Set the Order in Layer relative to the main tile
         SpriteRenderer sr = outlineChild.GetComponent<SpriteRenderer>();
         if (sr != null)
             sr.sortingOrder = _tileRenderer.sortingOrder + outlineOrderOffset;
-
-        // Hide by default
         outlineChild.SetActive(false);
     }
     

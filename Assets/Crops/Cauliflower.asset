@@ -15,12 +15,19 @@ MonoBehaviour:
   cropName: cauliflower
   icon: {fileID: 8429711700039073009, guid: e92b771a6bcc54f40900152e71f964de, type: 3}
   tile:
-  - {fileID: -770299968, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
-  - {fileID: 2077212408, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
-  - {fileID: -576034249, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
-  - {fileID: -12548945, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
-  - {fileID: 570955535, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
-  - {fileID: 372965690, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
+  - {fileID: -907993578, guid: 5742b16f54c37f747aca78baaba86295, type: 3}
+  - {fileID: -874269358, guid: 5742b16f54c37f747aca78baaba86295, type: 3}
+  - {fileID: 618269828, guid: 5742b16f54c37f747aca78baaba86295, type: 3}
+  - {fileID: 1225599518, guid: 5742b16f54c37f747aca78baaba86295, type: 3}
+  - {fileID: -107591273, guid: 5742b16f54c37f747aca78baaba86295, type: 3}
+  - {fileID: -2070294637, guid: 5742b16f54c37f747aca78baaba86295, type: 3}
+  sprite:
+  - {fileID: -2109663177, guid: 7996a86b53a0481408436ecf2503095b, type: 3}
+  - {fileID: 1663508313, guid: 7996a86b53a0481408436ecf2503095b, type: 3}
+  - {fileID: 635511975, guid: 7996a86b53a0481408436ecf2503095b, type: 3}
+  - {fileID: -1773558982, guid: 7996a86b53a0481408436ecf2503095b, type: 3}
+  - {fileID: 51190797, guid: 7996a86b53a0481408436ecf2503095b, type: 3}
+  - {fileID: 1099306679, guid: 7996a86b53a0481408436ecf2503095b, type: 3}
   growthTime: 180
   deathTime: 420
   minwatertime: 18

@@ -26,14 +26,20 @@ public class UIController : MonoBehaviour
     
     [Header("UI Elements")]
     
-    public GameObject PlayModeUI;
-    public GameObject EditModeUI;
+    public GameObject playModeUI;
+    public GameObject editModeUI;
     public GameObject workerUIAdditive;
+    public TextMeshProUGUI coinsDisplay;
     public TextMeshProUGUI seedAmountDisplay;
-    [Header("GameComponents")]
+    [Header("GameComponents")] 
     
-    GameManager gameManager;
-    Inventory _inventory;
+    private GameManager _gameManager;
+    private Inventory _inventory;
+
+    public UIController(Inventory inventory)
+    {
+        _inventory = inventory;
+    }
 
     public void Awake()
     {
@@ -44,8 +50,8 @@ public class UIController : MonoBehaviour
     }
     public void Start()
     {
-        gameManager = GetComponent<GameManager>();
-        _inventory = gameManager.inventory;
+        _gameManager = GetComponent<GameManager>();
+        _inventory = _gameManager.inventory;
     }
     public void Update()
     {
@@ -56,60 +62,65 @@ public class UIController : MonoBehaviour
         UpdateCropImage();
         UpdateTool();
         UpdateSeedAmount();
-        if (gameManager.GetGameMode() == GameManager.GameMode.Play)
+        UpdateCoins();
+        if (_gameManager.GetGameMode() == GameManager.GameMode.Play)
         {
-            if(gameManager.selectedCharacter.CompareTag("Worker"))
+            if(_gameManager.selectedCharacter.CompareTag("Worker"))
             {
                 if (workerUIAdditive.activeSelf == false) workerUIAdditive.SetActive(true);
             }
-            else if(gameManager.selectedCharacter.CompareTag("Player"))
+            else if(_gameManager.selectedCharacter.CompareTag("Player"))
             {
                 if (workerUIAdditive.activeSelf == true) workerUIAdditive.SetActive(false);
             }   
         }
-        else if (gameManager.GetGameMode() == GameManager.GameMode.Edit)
+        else if (_gameManager.GetGameMode() == GameManager.GameMode.Edit)
         {
             if (workerUIAdditive.activeSelf == true) workerUIAdditive.SetActive(false);
         }
     }
     public void UpdateTool()
     {
-        if(gameManager.selectedCharacter.CompareTag("Player")
+        if(_gameManager.selectedCharacter.CompareTag("Player")
            &&inventory.currentTool == Inventory.Tool.Planting) SelectPlantTool();
-        else if(gameManager.selectedCharacter.CompareTag("Player")
+        else if(_gameManager.selectedCharacter.CompareTag("Player")
                 &&inventory.currentTool == Inventory.Tool.Harvesting) SelectHarvestTool();
-        else if(gameManager.selectedCharacter.CompareTag("Player")
+        else if(_gameManager.selectedCharacter.CompareTag("Player")
                 &&inventory.currentTool == Inventory.Tool.Watering) SelectWaterTool();
-        else if(gameManager.selectedCharacter.CompareTag("Player")&&inventory.currentTool==Inventory.Tool.None) SelectNoneTool();
-        else if(gameManager.selectedCharacter.CompareTag("Worker")
-                &&gameManager.selectedCharacter.GetComponent<WorkerInteraction>().assignedWork == Inventory.Tool.Planting) SelectPlantTool();
-        else if(gameManager.selectedCharacter.CompareTag("Worker")
-                &&gameManager.selectedCharacter.GetComponent<WorkerInteraction>().assignedWork == Inventory.Tool.Harvesting) SelectHarvestTool();
-        else if(gameManager.selectedCharacter.CompareTag("Worker")
-                &&gameManager.selectedCharacter.GetComponent<WorkerInteraction>().assignedWork == Inventory.Tool.Watering) SelectWaterTool();
-        else if(gameManager.selectedCharacter.CompareTag("Worker")
-                &&gameManager.selectedCharacter.GetComponent<WorkerInteraction>().assignedWork == Inventory.Tool.None) SelectNoneTool();
+        else if(_gameManager.selectedCharacter.CompareTag("Player")&&inventory.currentTool==Inventory.Tool.None) SelectNoneTool();
+        else if(_gameManager.selectedCharacter.CompareTag("Worker")
+                &&_gameManager.selectedCharacter.GetComponent<WorkerInteraction>().assignedWork == Inventory.Tool.Planting) SelectPlantTool();
+        else if(_gameManager.selectedCharacter.CompareTag("Worker")
+                &&_gameManager.selectedCharacter.GetComponent<WorkerInteraction>().assignedWork == Inventory.Tool.Harvesting) SelectHarvestTool();
+        else if(_gameManager.selectedCharacter.CompareTag("Worker")
+                &&_gameManager.selectedCharacter.GetComponent<WorkerInteraction>().assignedWork == Inventory.Tool.Watering) SelectWaterTool();
+        else if(_gameManager.selectedCharacter.CompareTag("Worker")
+                &&_gameManager.selectedCharacter.GetComponent<WorkerInteraction>().assignedWork == Inventory.Tool.None) SelectNoneTool();
     }
     public void UpdateCropImage()
     {
-            if(gameManager.selectedCharacter.CompareTag("Player")&&
+            if(_gameManager.selectedCharacter.CompareTag("Player")&&
                cropImage.sprite != inventory.selectedCrop.icon) cropImage.sprite = _inventory.selectedCrop.icon;  
-            else if(gameManager.selectedCharacter.CompareTag("Worker")&&
+            else if(_gameManager.selectedCharacter.CompareTag("Worker")&&
                     cropImage.sprite != 
-                    gameManager.selectedCharacter.GetComponent<WorkerInteraction>().selectedcrop.icon)  
-                cropImage.sprite = gameManager.selectedCharacter.GetComponent<WorkerInteraction>().selectedcrop.icon;
+                    _gameManager.selectedCharacter.GetComponent<WorkerInteraction>().selectedcrop.icon)  
+                cropImage.sprite = _gameManager.selectedCharacter.GetComponent<WorkerInteraction>().selectedcrop.icon;
     }
 
     public void UpdateSeedAmount()
     {
-        if (gameManager.selectedCharacter.CompareTag("Player")) 
-            seedAmountDisplay.SetText(OptimizeSeedAmount(_inventory.GetSeedAmount(_inventory.selectedCrop)));
-        else if (gameManager.selectedCharacter.CompareTag("Worker"))
-            seedAmountDisplay.SetText(OptimizeSeedAmount(_inventory.
-                GetSeedAmount(gameManager.selectedCharacter.GetComponent<WorkerInteraction>().selectedcrop)));
+        if (_gameManager.selectedCharacter.CompareTag("Player")) 
+            seedAmountDisplay.SetText(OptimizeInt(_inventory.GetSeedAmount(_inventory.selectedCrop)));
+        else if (_gameManager.selectedCharacter.CompareTag("Worker"))
+            seedAmountDisplay.SetText(OptimizeInt(_inventory.
+                GetSeedAmount(_gameManager.selectedCharacter.GetComponent<WorkerInteraction>().selectedcrop)));
+    }
+    public void UpdateCoins()
+    {
+        coinsDisplay.SetText(OptimizeInt(_inventory.coins));
     }
 
-    public string OptimizeSeedAmount(int seedAmount)
+    public string OptimizeInt(int seedAmount)
     {
         if (seedAmount >= 1000000f)
             return (seedAmount / 1000000f).ToString("0.#") + "M"; 
@@ -120,14 +131,14 @@ public class UIController : MonoBehaviour
 
    public void SelectPlantTool()
     {
-        if (gameManager.selectedCharacter.CompareTag("Player")) {
+        if (_gameManager.selectedCharacter.CompareTag("Player")) {
             _inventory.currentTool = Inventory.Tool.Planting;
             plantbutton.image.sprite = plantSelectedSprite;
             harvestbutton.image.sprite = harvestUnselectedSprite;
             waterbutton.image.sprite = waterUnselectedSprite; 
         }
-        else if (gameManager.selectedCharacter.CompareTag("Worker")) {
-            gameManager.selectedCharacter.GetComponent<WorkerInteraction>().assignedWork = Inventory.Tool.Planting;
+        else if (_gameManager.selectedCharacter.CompareTag("Worker")) {
+            _gameManager.selectedCharacter.GetComponent<WorkerInteraction>().assignedWork = Inventory.Tool.Planting;
             plantbutton.image.sprite = plantSelectedSprite;
             harvestbutton.image.sprite = harvestUnselectedSprite;
             waterbutton.image.sprite = waterUnselectedSprite;
@@ -135,14 +146,14 @@ public class UIController : MonoBehaviour
     }
     public void SelectHarvestTool()
     {
-        if (gameManager.selectedCharacter.CompareTag("Player")) {
+        if (_gameManager.selectedCharacter.CompareTag("Player")) {
             _inventory.currentTool = Inventory.Tool.Harvesting;
             plantbutton.image.sprite = plantUnselectedSprite;
             harvestbutton.image.sprite = harvestSelectedSprite;
             waterbutton.image.sprite = waterUnselectedSprite;
         }
-        else if (gameManager.selectedCharacter.CompareTag("Worker")) {
-            gameManager.selectedCharacter.GetComponent<WorkerInteraction>().assignedWork = Inventory.Tool.Harvesting;
+        else if (_gameManager.selectedCharacter.CompareTag("Worker")) {
+            _gameManager.selectedCharacter.GetComponent<WorkerInteraction>().assignedWork = Inventory.Tool.Harvesting;
             plantbutton.image.sprite = plantUnselectedSprite;
             harvestbutton.image.sprite = harvestSelectedSprite;
             waterbutton.image.sprite = waterUnselectedSprite;
@@ -150,14 +161,14 @@ public class UIController : MonoBehaviour
     }
     public void SelectWaterTool()
     {
-       if (gameManager.selectedCharacter.CompareTag("Player")) {
+       if (_gameManager.selectedCharacter.CompareTag("Player")) {
            _inventory.currentTool = Inventory.Tool.Watering;
             plantbutton.image.sprite = plantUnselectedSprite;
             harvestbutton.image.sprite = harvestUnselectedSprite;
             waterbutton.image.sprite = waterSelectedSprite;
         }
-        else if (gameManager.selectedCharacter.CompareTag("Worker")) {
-            gameManager.selectedCharacter.GetComponent<WorkerInteraction>().assignedWork = Inventory.Tool.Watering;
+        else if (_gameManager.selectedCharacter.CompareTag("Worker")) {
+            _gameManager.selectedCharacter.GetComponent<WorkerInteraction>().assignedWork = Inventory.Tool.Watering;
             plantbutton.image.sprite = plantUnselectedSprite;
             harvestbutton.image.sprite = harvestUnselectedSprite;
             waterbutton.image.sprite = waterSelectedSprite;
@@ -173,11 +184,11 @@ public class UIController : MonoBehaviour
 
     public void UnPauseGame()
     {
-        if(gameManager.GetPreviousMode()==GameManager.GameMode.Edit) EditModeUI.SetActive(true);
-        if(gameManager.GetPreviousMode()==GameManager.GameMode.Play) PlayModeUI.SetActive(true);
+        if(_gameManager.GetPreviousMode()==GameManager.GameMode.Edit) editModeUI.SetActive(true);
+        if(_gameManager.GetPreviousMode()==GameManager.GameMode.Play) playModeUI.SetActive(true);
     }
     public void ExitGame()  
     {
-        gameManager.ExitGame();
+        _gameManager.ExitGame();
     }
 }

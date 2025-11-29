@@ -7,7 +7,6 @@ public class PlayerInteraction : MonoBehaviour
     Inventory _inventory;
     public List<GameObject> selectedTiles = new List<GameObject>();
     public GameObject currentSelectedTile;
-    public int seedinhands;
 
     void Start()
     {
@@ -20,13 +19,37 @@ public class PlayerInteraction : MonoBehaviour
             switch(_inventory.currentTool)
             {
                 case Inventory.Tool.Planting:
-                    if(_inventory.HasSeeds(_inventory.selectedCrop)&&tile.GetComponent<FarmTile>().currentState==FarmTile.TileState.Empty)
+                    if (currentSelectedTile == null)
+                  
+                        if (_inventory.HasSeeds(_inventory.selectedCrop) &&
+                            tile.GetComponent<FarmTile>().currentState == FarmTile.TileState.Empty)
+                        {
+                            Add(tile);
+                            tile.GetComponent<FarmTile>().selectedCrop =
+                                _inventory.selectedCrop;
+                            break;
+                        }
+                   
+                    if (_inventory.HasSeeds(_inventory.selectedCrop) &&
+                        tile.GetComponent<FarmTile>().currentState == FarmTile.TileState.Empty)
                     {
-                    seedinhands++;
-                    int seedinv = _inventory.GetSeedAmount( _inventory.selectedCrop);
-                    if (seedinv-seedinhands>=0)
-                        Add(tile);
+                        int seedsPending = 0;
+                        foreach (GameObject t in selectedTiles)
+                        {
+                            if (t.GetComponent<FarmTile>().selectedCrop == _inventory.selectedCrop)
+                            {
+                                seedsPending++;
+                                Debug.Log(seedsPending);
+                            }
+                        }
+                        if (_inventory.GetSeedAmount(_inventory.selectedCrop) - seedsPending > 0)
+                        {
+                            Add( tile);
+                            tile.GetComponent<FarmTile>().selectedCrop =
+                                _inventory.selectedCrop;
+                        }
                     }
+
                     break;
                 case Inventory.Tool.Harvesting:
                     if(tile.GetComponent<FarmTile>().currentState == FarmTile.TileState.FullyGrown)
@@ -51,10 +74,6 @@ public class PlayerInteraction : MonoBehaviour
     }
     public void RemoveTile(GameObject tile) { 
         tile.GetComponent<FarmTile>().isSelected=false;
-        if(tile.GetComponent<FarmTile>().action == Inventory.Tool.Planting)
-        {
-            seedinhands--;
-        }
         tile.GetComponent<FarmTile>().action = Inventory.Tool.None;
         selectedTiles.Remove(tile);
         if (selectedTiles.Count > 0)

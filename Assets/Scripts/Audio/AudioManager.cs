@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 
@@ -5,6 +6,7 @@ public class AudioManager : MonoBehaviour
 {
     //Audio Sources
     public static AudioManager Instance;
+    private GameManager _gameManager;
 
     [Header("Audio Source")]
 
@@ -36,8 +38,17 @@ public class AudioManager : MonoBehaviour
 
     private void Start()
     {
+        _gameManager= GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         musicSource.clip = backgroundMusic;
         musicSource.Play();
+    }
+
+    private void Update()
+    {
+        if (_gameManager == null)
+        {
+            _gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+        }
     }
 
 
@@ -46,8 +57,9 @@ public class AudioManager : MonoBehaviour
         sfxSource.PlayOneShot(sfx);
     }
 
-    public void PlayEffects(AudioClip effect)
+    public void PlayGameSfx(AudioClip effect)
     {
+        if(_gameManager.GetGameMode()==GameManager.GameMode.Pause||_gameManager.GetGameMode()==GameManager.GameMode.Inactive) return;
         GameObject temp = new GameObject("TempAudio");
         AudioSource source = temp.AddComponent<AudioSource>();
         source.clip = effect;

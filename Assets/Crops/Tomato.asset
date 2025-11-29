@@ -15,12 +15,19 @@ MonoBehaviour:
   cropName: tomato
   icon: {fileID: -2832780145358062395, guid: c0dcee33f8e80364599edb7dbd80b7d4, type: 3}
   tile:
-  - {fileID: -864972266, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
-  - {fileID: -549705495, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
-  - {fileID: 1890530284, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
-  - {fileID: -1460876114, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
-  - {fileID: -706249926, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
-  - {fileID: 812771317, guid: 1713762e29b94424ebf264e6593864ab, type: 3}
+  - {fileID: 1112668875, guid: 5742b16f54c37f747aca78baaba86295, type: 3}
+  - {fileID: -1109203406, guid: 5742b16f54c37f747aca78baaba86295, type: 3}
+  - {fileID: 2118417681, guid: 5742b16f54c37f747aca78baaba86295, type: 3}
+  - {fileID: 993463607, guid: 5742b16f54c37f747aca78baaba86295, type: 3}
+  - {fileID: 1697517925, guid: 5742b16f54c37f747aca78baaba86295, type: 3}
+  - {fileID: 1950505178, guid: 5742b16f54c37f747aca78baaba86295, type: 3}
+  sprite:
+  - {fileID: -1443779980, guid: 7996a86b53a0481408436ecf2503095b, type: 3}
+  - {fileID: 2079769954, guid: 7996a86b53a0481408436ecf2503095b, type: 3}
+  - {fileID: -1117232134, guid: 7996a86b53a0481408436ecf2503095b, type: 3}
+  - {fileID: -1127848216, guid: 7996a86b53a0481408436ecf2503095b, type: 3}
+  - {fileID: -1200138556, guid: 7996a86b53a0481408436ecf2503095b, type: 3}
+  - {fileID: -1847537164, guid: 7996a86b53a0481408436ecf2503095b, type: 3}
   growthTime: 60
   deathTime: 180
   minwatertime: 10

@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     public GameMode currentMode;
     private GameMode _previousMode;
     public EditMode editMode;
+    public GraphicsMode graphicsMode;
     private void Awake()
     {
         if (Instance == null)
@@ -34,6 +35,7 @@ public class GameManager : MonoBehaviour
         SelectCharacter(player);
         SetGameMode(GameMode.Play);
         SetNormalEditMode();
+        graphicsMode = GraphicsMode.High;
         
     }
 
@@ -118,6 +120,16 @@ public class GameManager : MonoBehaviour
     {
         return currentMode;
     }
+
+    public void HideGameLayer()
+    {
+        Camera.main.cullingMask &= ~(1 << LayerMask.NameToLayer("Gameplay"));
+    }
+
+    public void showGameLayer()
+    {
+        Camera.main.cullingMask |= (1 << LayerMask.NameToLayer("Gameplay"));
+    }
     public void ExitGame()
     {
         SceneManager.LoadScene("MainMenu");
@@ -127,12 +139,18 @@ public class GameManager : MonoBehaviour
     {
         Play,
         Edit,
-        Pause
+        Pause,
+        Inactive
     }
     public enum EditMode
     {
         Add,
         Remove,
         Normal
+    }
+    public enum GraphicsMode
+    {
+        Low,
+        High
     }
 }

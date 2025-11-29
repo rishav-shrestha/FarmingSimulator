@@ -16,7 +16,6 @@ public class CropDatabase : MonoBehaviour
             string path = AssetDatabase.GUIDToAssetPath(guids[i]);
             crops.Add(AssetDatabase.LoadAssetAtPath<Crop>(path));
         }
-        Debug.Log("Loaded " + crops.Count + " crops from Assets/Crops/");
         
     }
 }

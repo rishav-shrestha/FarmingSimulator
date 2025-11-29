@@ -98,8 +98,7 @@ public class Inventory : MonoBehaviour
             stack.amount -= amount;
             return true;
         }
-
-        Debug.LogWarning("Attempted to use more seeds than available!");
+        
         return false;
     }
 
@@ -120,8 +119,6 @@ public class Inventory : MonoBehaviour
             stack.amount -= amount;
             return true;
         }
-
-        Debug.LogWarning("Attempted to remove more crops than available!");
         return false;
     }
 

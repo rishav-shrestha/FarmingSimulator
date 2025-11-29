@@ -172,11 +172,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   assignedWork: 0
   selectedTiles: []
+  shownTiles: []
   currentSelectedTile: {fileID: 0}
   startTile: {fileID: 0}
   endTile: {fileID: 0}
   workerData: {fileID: 0}
-  selectedcrop: {fileID: 0}
+  selectedcrop: {fileID: 11400000, guid: ebf65ae077d17124f98faea0fc799c79, type: 2}
 --- !u!114 &8711437280269202693
 MonoBehaviour:
   m_ObjectHideFlags: 0

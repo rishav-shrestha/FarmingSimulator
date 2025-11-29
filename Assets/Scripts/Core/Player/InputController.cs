@@ -23,7 +23,7 @@ public class InputController : MonoBehaviour
     }
     void Update()
     {
-        if (_gameManager.GetGameMode() == GameManager.GameMode.Pause) return;
+        if (_gameManager.GetGameMode() == GameManager.GameMode.Pause||_gameManager.GetGameMode()==GameManager.GameMode.Inactive) return;
         
         HandleMouse();
         _cameraController.UpdateCamera();
@@ -224,7 +224,6 @@ public class InputController : MonoBehaviour
                 }
                 else 
                 {
-                    Debug.Log("Remove");
                     _gameManager.selectedCharacter.GetComponent<WorkerInteraction>().Remove(tile.gameObject);
                 }
             }

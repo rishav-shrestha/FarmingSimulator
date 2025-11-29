@@ -53,18 +53,13 @@ public class PlayerMovement : MonoBehaviour
                     SetTargetPosition(_playerInteraction.currentSelectedTile.transform.position);
                 }
                 break;
-            // Handle interaction with selected tile
             case PlayerState.State.Interacting:
-                // Interact with the current selected tile
                 _playerInteraction.InteractTile(_playerInteraction.currentSelectedTile);
-                Debug.Log("ChangeStatetoInteracting");
-                // If another tile is selected, go to that tile
                 if (_playerInteraction.currentSelectedTile != null)
                 {
                     SetTargetPosition(_playerInteraction.currentSelectedTile.transform.position);
                     _playerState.currentState = PlayerState.State.GoingtoTarget;
                 }
-                // If no tile is selected, return to idle
                 else
                 {
                     _playerState.currentState = PlayerState.State.ReturningToIdle;
