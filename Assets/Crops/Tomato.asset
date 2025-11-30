@@ -28,11 +28,18 @@ MonoBehaviour:
   - {fileID: -1127848216, guid: 7996a86b53a0481408436ecf2503095b, type: 3}
   - {fileID: -1200138556, guid: 7996a86b53a0481408436ecf2503095b, type: 3}
   - {fileID: -1847537164, guid: 7996a86b53a0481408436ecf2503095b, type: 3}
+  storageunitsprite:
+  - {fileID: 1382712315, guid: 13627e695a8e8b943a1a017b47da5f2f, type: 3}
+  - {fileID: -1431391712, guid: 13627e695a8e8b943a1a017b47da5f2f, type: 3}
+  - {fileID: 1031686233, guid: 13627e695a8e8b943a1a017b47da5f2f, type: 3}
   growthTime: 60
   deathTime: 180
   minwatertime: 10
   maxwatertime: 16
+  pileLifeTime: 600
+  storageUnitLifeTime: 3000
   sellPrice: 12
   seedBuyPrice: 5
+  maxStorageCapacity: 120
   totalStages: 6
   locked: 0
