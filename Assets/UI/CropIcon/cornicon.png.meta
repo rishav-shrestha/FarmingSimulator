@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      cornicon_0: -8085116256810050344
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
