@@ -18,7 +18,7 @@
         UpdateRender();
         if(cropStored > maxCapacity) 
             cropStored = maxCapacity;
-        maxCapacity = crop.maxStorageCapacity;
+        if(crop!=null) maxCapacity = crop.maxStorageCapacity;
     }
 
     public void AddCrop(int amount)
@@ -45,13 +45,13 @@
                 renderer.sprite = emptyStorageUnitSprite;
                 break;
             case State.Partial:
-                renderer.sprite = crop.storageunitsprite[0];
+                if (crop != null) renderer.sprite = crop.storageunitsprite[0];   
                 break;
             case State.HalfFull:
-                renderer.sprite = crop.storageunitsprite[1];
+                if (crop != null) renderer.sprite = crop.storageunitsprite[1];
                 break;
             case State.Full:
-                renderer.sprite = crop.storageunitsprite[2];
+                if (crop != null) renderer.sprite = crop.storageunitsprite[2];
                 break;
         }
     }

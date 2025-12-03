@@ -69,7 +69,7 @@ public class FarmTile : MonoBehaviour
             if (crop == null)
             {
                 currentState = TileState.Growing;
-               AudioManager.Instance.PlayGameSfx(AudioManager.Instance.plantSfx);
+               AudioManager.Instance.PlayfarmSfx(AudioManager.Instance.plantSfx);
                 crop = selectedCrop;
                 inventory.UseSeed(selectedCrop);
             }
@@ -84,12 +84,13 @@ public class FarmTile : MonoBehaviour
             {
                 if (currentState == TileState.FullyGrown)
                 {
-                   AudioManager.Instance.PlayGameSfx(AudioManager.Instance.harvestSfx);
+                   AudioManager.Instance.PlayfarmSfx(AudioManager.Instance.harvestSfx);
                     crop = null;
                     currentStage = 0;
                     growthTimer = 0f;
                     deathTimer = 0f;
                     currentState = TileState.Empty;
+                    if (crop != null) inventory.EarnCoins(crop.sellPrice);
                 }
                 else if (currentState == TileState.Dead)
                 {
@@ -107,7 +108,7 @@ public class FarmTile : MonoBehaviour
     {
         if (currentState == TileState.RequiresWater && action == Inventory.Tool.Watering)
         { 
-            AudioManager.Instance.PlayGameSfx(AudioManager.Instance.waterSfx);
+            AudioManager.Instance.PlayfarmSfx(AudioManager.Instance.waterSfx);
             currentState = TileState.Growing;
             waterTimer--;
         }
@@ -121,7 +122,7 @@ public class FarmTile : MonoBehaviour
             if (crop == null)
             {
                 currentState = TileState.Growing;
-                AudioManager.Instance.PlayGameSfx(AudioManager.Instance.plantSfx);
+                AudioManager.Instance.PlayfarmSfx(AudioManager.Instance.plantSfx);
                 crop = worker.selectedcrop;
                 inventory.UseSeed(worker.selectedcrop);
 
@@ -140,12 +141,15 @@ public class FarmTile : MonoBehaviour
             {
                 if (currentState == TileState.FullyGrown)
                 {
-                    AudioManager.Instance.PlayGameSfx(AudioManager.Instance.harvestSfx);
+                    AudioManager.Instance.PlayfarmSfx(AudioManager.Instance.harvestSfx);
                     crop = null;
                     currentStage = 0;
                     growthTimer = 0f;
                     deathTimer = 0f;
                     currentState = TileState.Empty;
+                    inventory.AddCrop(crop,1);
+                    inventory.AddSeed(crop,3);
+                    if (crop != null) inventory.EarnCoins(crop.sellPrice);
                 }
                 else if (currentState == TileState.Dead)
                 {
@@ -164,7 +168,7 @@ public class FarmTile : MonoBehaviour
     {
         if (currentState == TileState.RequiresWater && worker.assignedWork == Inventory.Tool.Watering)
         {
-            AudioManager.Instance.PlayGameSfx(AudioManager.Instance.waterSfx);
+            AudioManager.Instance.PlayfarmSfx(AudioManager.Instance.waterSfx);
             currentState = TileState.Growing;
             waterTimer--;
         }
@@ -230,7 +234,7 @@ public class FarmTile : MonoBehaviour
                 GetComponent<SpriteRenderer>().sprite = crop != null ? crop.tile[currentStage] : emptyTileSprite;
                 break;
             case GameManager.GraphicsMode.High:
-                if (gameManager.GetGameMode() == GameManager.GameMode.Edit)
+                if (gameManager.GetGameMode() == GameManager.GameMode.WorkerEdit)
                 {
                     GetComponent<SpriteRenderer>().sprite = crop != null ? crop.tile[currentStage] : emptyTileSprite;
                     break;
@@ -250,7 +254,7 @@ public class FarmTile : MonoBehaviour
         float targetScale = isHovered ? hoverScale : normalScale;
         transform.localScale = Vector3.Lerp(transform.localScale, Vector3.one * targetScale, Time.deltaTime * scaleSpeed);
         cropChild.transform.localScale = Vector3.Lerp(cropChild.transform.localScale, Vector3.one * targetScale, Time.deltaTime * scaleSpeed);
-        if (gameManager.GetGameMode() == GameManager.GameMode.Play)
+        if (gameManager.GetGameMode() == GameManager.GameMode.Farm)
         {
             if(isCurrentSelected)
             {
@@ -282,11 +286,11 @@ public class FarmTile : MonoBehaviour
             }   
         }
         
-        else if(gameManager.GetGameMode() == GameManager.GameMode.Edit)
+        else if(gameManager.GetGameMode() == GameManager.GameMode.WorkerEdit)
         {
             
-            if (gameManager.GetEditMode() == GameManager.EditMode.Add ||
-                gameManager.GetEditMode() == GameManager.EditMode.Remove)
+            if (gameManager.GetEditMode() == GameManager.WorkerEditMode.Add ||
+                gameManager.GetEditMode() == GameManager.WorkerEditMode.Remove)
             {
                 if (this==gameManager.selectedCharacter.GetComponent<WorkerInteraction>().startTile)
                 {
@@ -312,7 +316,7 @@ public class FarmTile : MonoBehaviour
                 }
             }
 
-            if (gameManager.GetEditMode() == GameManager.EditMode.Normal)
+            if (gameManager.GetEditMode() == GameManager.WorkerEditMode.Normal)
             {
                 if (isHovered)
                 {
@@ -330,7 +334,7 @@ public class FarmTile : MonoBehaviour
                   
             }
 
-            if (gameManager.GetEditMode() == GameManager.EditMode.Add)
+            if (gameManager.GetEditMode() == GameManager.WorkerEditMode.Add)
             {
                 if (gameManager.selectedCharacter.GetComponent<WorkerInteraction>().selectedTiles.Contains(this.gameObject))
                 {
@@ -370,7 +374,7 @@ public class FarmTile : MonoBehaviour
         {
             outlineChild.SetActive(true);
             outlineChild.GetComponent<SpriteRenderer>().color = color;
-            if (gameManager.GetGameMode() == GameManager.GameMode.Play &&
+            if (gameManager.GetGameMode() == GameManager.GameMode.Farm &&
                 gameManager.graphicsMode == GameManager.GraphicsMode.High)
             {
                 cropChild.GetComponent<SpriteRenderer>().material.SetFloat("_OutlineThickness", 0.5f);

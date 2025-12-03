@@ -4,15 +4,20 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
+    public Camera gameCam;
+    public Camera storageCam;
+    public Camera mapCam;
     public Inventory inventory;
     public GameObject tileManager;
+    public UIController uIcontroller;
     public GameObject player;
     public GameObject[] workers;
     public GameObject selectedCharacter;
     public GameMode currentMode;
     private GameMode _previousMode;
-    public EditMode editMode;
+    public WorkerEditMode workerEditMode;
     public GraphicsMode graphicsMode;
+    public Scene currentScene;
     private void Awake()
     {
         if (Instance == null)
@@ -28,12 +33,16 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        gameCam.enabled = true;
+        storageCam.enabled = false;
+        mapCam.enabled = false;
         tileManager= GameObject.FindGameObjectWithTag("TileManager");
         inventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<Inventory>();
         player = GameObject.FindGameObjectWithTag("Player");
         workers = GameObject.FindGameObjectsWithTag("Worker");
+        uIcontroller = GetComponent<UIController>();
         SelectCharacter(player);
-        SetGameMode(GameMode.Play);
+        SetGameMode(GameMode.Farm);
         SetNormalEditMode();
         graphicsMode = GraphicsMode.High;
         
@@ -62,16 +71,16 @@ public class GameManager : MonoBehaviour
     
     public void SetAddEditMode()
     {
-        if(GetEditMode()!=EditMode.Add) selectedCharacter.GetComponent<WorkerInteraction>().startTile = null;
-        if(GetEditMode()!=EditMode.Add) selectedCharacter.GetComponent<WorkerInteraction>().endTile = null;
-        editMode = EditMode.Add;
+        if(GetEditMode()!=WorkerEditMode.Add) selectedCharacter.GetComponent<WorkerInteraction>().startTile = null;
+        if(GetEditMode()!=WorkerEditMode.Add) selectedCharacter.GetComponent<WorkerInteraction>().endTile = null;
+        workerEditMode = WorkerEditMode.Add;
     }
 
     public void SetRemoveEditMode()
     {
-        if(GetEditMode()!=EditMode.Remove) selectedCharacter.GetComponent<WorkerInteraction>().startTile = null;
-        if(GetEditMode()!=EditMode.Remove) selectedCharacter.GetComponent<WorkerInteraction>().endTile = null;
-        editMode = EditMode.Remove;
+        if(GetEditMode()!=WorkerEditMode.Remove) selectedCharacter.GetComponent<WorkerInteraction>().startTile = null;
+        if(GetEditMode()!=WorkerEditMode.Remove) selectedCharacter.GetComponent<WorkerInteraction>().endTile = null;
+        workerEditMode = WorkerEditMode.Remove;
     }
     public void SetNormalEditMode()
     {
@@ -80,7 +89,7 @@ public class GameManager : MonoBehaviour
             selectedCharacter.GetComponent<WorkerInteraction>().startTile = null;
             selectedCharacter.GetComponent<WorkerInteraction>().endTile = null;   
         }
-        editMode = EditMode.Normal;
+        workerEditMode = WorkerEditMode.Normal;
     }
     public void ClearSelectedTiles()
     {
@@ -92,11 +101,11 @@ public class GameManager : MonoBehaviour
     {
         switch (currentMode)
         {
-            case GameMode.Play:
-                SetGameMode(GameMode.Edit);
+            case GameMode.Farm:
+                SetGameMode(GameMode.WorkerEdit);
                 break;
-            case GameMode.Edit:
-                SetGameMode(GameMode.Play);
+            case GameMode.WorkerEdit:
+                SetGameMode(GameMode.Farm);
                 break;
         }
     }
@@ -112,37 +121,28 @@ public class GameManager : MonoBehaviour
         SetGameMode(_previousMode);
         GetComponent<UIController>().UnPauseGame();
     }
-    public EditMode GetEditMode()
+    public WorkerEditMode GetEditMode()
     {
-        return editMode;
+        return workerEditMode;
     }
     public GameMode GetGameMode()
     {
         return currentMode;
     }
-
-    public void HideGameLayer()
-    {
-        Camera.main.cullingMask &= ~(1 << LayerMask.NameToLayer("Gameplay"));
-    }
-
-    public void showGameLayer()
-    {
-        Camera.main.cullingMask |= (1 << LayerMask.NameToLayer("Gameplay"));
-    }
     public void ExitGame()
     {
         SceneManager.LoadScene("MainMenu");
     }
-    
     public enum GameMode
     {
-        Play,
-        Edit,
+        Farm,
+        Storage,
+        StorageEdit,
+        WorkerEdit,
         Pause,
-        Inactive
+        Map
     }
-    public enum EditMode
+    public enum WorkerEditMode
     {
         Add,
         Remove,

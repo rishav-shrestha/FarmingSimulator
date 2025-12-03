@@ -31,10 +31,16 @@ public class UIController : MonoBehaviour
     public GameObject workerUIAdditive;
     public TextMeshProUGUI coinsDisplay;
     public TextMeshProUGUI seedAmountDisplay;
+    public TextMeshProUGUI locationDisplay;
     [Header("GameComponents")] 
     
     private GameManager _gameManager;
     private Inventory _inventory;
+    
+    [Header("Scene UI")]
+    public GameObject storageUI;
+    public GameObject farmUI;
+    public GameObject mapUI;
 
     public UIController(Inventory inventory)
     {
@@ -62,8 +68,9 @@ public class UIController : MonoBehaviour
         UpdateCropImage();
         UpdateTool();
         UpdateSeedAmount();
+        UpdateLocationDisplay();
         UpdateCoins();
-        if (_gameManager.GetGameMode() == GameManager.GameMode.Play)
+        if (_gameManager.GetGameMode() == GameManager.GameMode.Farm)
         {
             if(_gameManager.selectedCharacter.CompareTag("Worker"))
             {
@@ -74,7 +81,7 @@ public class UIController : MonoBehaviour
                 if (workerUIAdditive.activeSelf == true) workerUIAdditive.SetActive(false);
             }   
         }
-        else if (_gameManager.GetGameMode() == GameManager.GameMode.Edit)
+        else if (_gameManager.GetGameMode() == GameManager.GameMode.WorkerEdit)
         {
             if (workerUIAdditive.activeSelf == true) workerUIAdditive.SetActive(false);
         }
@@ -118,6 +125,11 @@ public class UIController : MonoBehaviour
     public void UpdateCoins()
     {
         coinsDisplay.SetText(OptimizeInt(_inventory.coins));
+    }
+
+    public void UpdateLocationDisplay()
+    {
+        GetComponent<MapController>().UpdateLocationText();
     }
 
     public string OptimizeInt(int seedAmount)
@@ -184,9 +196,11 @@ public class UIController : MonoBehaviour
 
     public void UnPauseGame()
     {
-        if(_gameManager.GetPreviousMode()==GameManager.GameMode.Edit) editModeUI.SetActive(true);
-        if(_gameManager.GetPreviousMode()==GameManager.GameMode.Play) playModeUI.SetActive(true);
+        if(_gameManager.GetPreviousMode()==GameManager.GameMode.WorkerEdit) editModeUI.SetActive(true);
+        if(_gameManager.GetPreviousMode()==GameManager.GameMode.Farm) playModeUI.SetActive(true);
     }
+
+   
     public void ExitGame()  
     {
         _gameManager.ExitGame();

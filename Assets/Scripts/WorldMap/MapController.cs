@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -6,6 +7,7 @@ using UnityEngine.UI;
 public class MapController : MonoBehaviour
 {
   GameManager gameManager;
+
   public Location location;
   public Button inventoryButton;
   public Button shopButton;
@@ -14,17 +16,17 @@ public class MapController : MonoBehaviour
   public Button farmButton;
   public GameObject inventoryHighlight;
   public GameObject shopHighlight;
-  public GameObject realstateHighlight;
+  public GameObject realStateHighlight;
   public GameObject hiringHighlight;
   public GameObject farmHighlight;
   
   private void Start()
   {
-    if (GameObject.FindGameObjectWithTag("GameManager") == null)
+    if (SceneManager.GetActiveScene().name == "Game")
     {
       gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
     }
-    
+      
   }
 
   void Update()
@@ -35,73 +37,61 @@ public class MapController : MonoBehaviour
     }
     if (SceneManager.GetActiveScene().name == "Worldmap")
     {
-      updateLocationButton();
+      UpdateLocationText();
       UpdateLocationHighlight();  
     }
   }
-  public void LoadWorldMap()
+  public void LoadorExitWorldMap()
   {
-    gameManager.SetGameMode(GameManager.GameMode.Inactive);
-    gameManager.gameObject.GetComponent<UIController>().playModeUI.SetActive(false);
-    gameManager.HideGameLayer();
-    SceneManager.LoadScene("WorldMap",LoadSceneMode.Additive);
-  }
-  public void ExitWorldMap()
-  {
-    if (location == Location.Farm)
+    if (gameManager.GetGameMode() == GameManager.GameMode.Map)
     {
-      SceneManager.UnloadSceneAsync("WorldMap");
-      gameManager.showGameLayer();
-      gameManager.gameObject.GetComponent<UIController>().playModeUI.SetActive(true);
-      gameManager.SetGameMode(GameManager.GameMode.Play);
+      gameManager.uIcontroller.mapUI.SetActive(false);
+      gameManager.mapCam.enabled = false;
+      switch (location)
+      {
+        case Location.Farm:
+          gameManager.gameCam.enabled = true;
+          gameManager.uIcontroller.farmUI.SetActive(true);
+          gameManager.SetGameMode(GameManager.GameMode.Farm);
+          break;
+        case Location.Inventory:
+          gameManager.gameCam.enabled = true;
+          gameManager.uIcontroller.farmUI.SetActive(true);
+          gameManager.SetGameMode(GameManager.GameMode.Storage);
+          break;
+        case Location.Shop:
+          break;
+        case Location.RealState:
+          break;
+        case Location.Hiring:
+          break;
+        default:
+          throw new ArgumentOutOfRangeException();
+      }
     }
-    else if (location == Location.Inventory)
+    else if (gameManager.GetGameMode() != GameManager.GameMode.Map)
     {
-      SceneManager.UnloadSceneAsync("WorldMap");
-      SceneManager.LoadScene("Inventory",LoadSceneMode.Additive);
-    }
-    else if (location == Location.Shop)
-    {
-      SceneManager.UnloadSceneAsync("WorldMap");
-      SceneManager.LoadScene("Shop",LoadSceneMode.Additive);
-    }
-    else if (location == Location.RealState)
-    {
-      SceneManager.UnloadSceneAsync("WorldMap");
-      SceneManager.LoadScene("RealState",LoadSceneMode.Additive);
-    }
-    else if (location == Location.Hiring)
-    {
-      SceneManager.UnloadSceneAsync("WorldMap");
-      SceneManager.LoadScene("Hiring",LoadSceneMode.Additive);
+      gameManager.mapCam.enabled = true;
+      gameManager.gameCam.enabled = false;
+      gameManager.storageCam.enabled = false;
+      gameManager.SetGameMode(GameManager.GameMode.Map);
+      gameManager.uIcontroller.mapUI.SetActive(true);
+      gameManager.uIcontroller.farmUI.SetActive(false);
     }
   }
 
-  public void setLocation(Location location)
+  private void SetLocation(Location location)
   {
     this.location = location;
   }
 
-  public void SetFarm()
+  public void CycleLocation()
   {
-    setLocation(Location.Farm);
-  }
-
-  public void SetInventory()
-  {
-    setLocation(Location.Inventory);
-  }
-  public void SetShop()
-  {
-    setLocation(Location.Shop);
-  }
-  public void SetRealState()
-  {
-    setLocation(Location.RealState);
-  }
-  public void SetHiring()
-  {
-    setLocation(Location.Hiring);
+    for (location++; location > Location.Hiring; location--)
+    {
+      SetLocation(location);
+    }
+    if(location==Location.Hiring) SetLocation(Location.Farm);
   }
   
   public enum Location
@@ -113,70 +103,22 @@ public class MapController : MonoBehaviour
     Hiring
   }
 
-  public void updateLocationButton()
+  public void UpdateLocationText()
   {
-    
-    if (location == Location.Inventory)
-    {
-      inventoryButton.image.color = Color.yellow;
-      shopButton.image.color = Color.blue;
-      realStateButton.image.color = Color.blue;
-      hiringButton.image.color = Color.blue;
-      farmButton.image.color = Color.blue;
-    }
-    else if (location == Location.Shop)
-    {
-      inventoryButton.image.color = Color.blue;
-      shopButton.image.color = Color.yellow;
-      realStateButton.image.color = Color.blue;
-      hiringButton.image.color = Color.blue;
-      farmButton.image.color = Color.blue;
-    }
-    else if (location == Location.RealState)
-    {
-      inventoryButton.image.color = Color.blue;
-      shopButton.image.color = Color.blue;
-      realStateButton.image.color = Color.yellow;
-      hiringButton.image.color = Color.blue;
-      farmButton.image.color = Color.blue;
-    }
-    else if (location == Location.Hiring)
-    {
-      inventoryButton.image.color = Color.blue;
-      shopButton.image.color = Color.blue;
-      realStateButton.image.color = Color.blue;
-      hiringButton.image.color = Color.yellow;
-      farmButton.image.color = Color.blue;
-    }
-    else if (location == Location.Farm)
-    {
-      inventoryButton.image.color = Color.blue;
-      shopButton.image.color = Color.blue;
-      realStateButton.image.color = Color.blue;
-      hiringButton.image.color = Color.blue;
-      farmButton.image.color = Color.yellow;
-    }
-    else
-    {
-      inventoryButton.image.color = Color.blue;
-      shopButton.image.color = Color.blue;
-      realStateButton.image.color = Color.blue;
-      hiringButton.image.color = Color.blue;
-      farmButton.image.color = Color.blue;
-    }
+    gameManager.uIcontroller.locationDisplay.SetText(location.ToString());
   }
 
   private void UpdateLocationHighlight()
   {
     if(inventoryHighlight.activeSelf==(location==Location.Inventory) && 
        shopHighlight.activeSelf==(location == Location.Shop) &&
-       realstateHighlight.activeSelf== (location == Location.RealState)&&
+       realStateHighlight.activeSelf== (location == Location.RealState)&&
        hiringHighlight.activeSelf ==(location == Location.Hiring) && 
        farmHighlight.activeSelf == (location == Location.Hiring))
       return;
     inventoryHighlight.SetActive(location==Location.Inventory);
     shopHighlight.SetActive(location == Location.Shop);
-    realstateHighlight.SetActive(location == Location.RealState);
+    realStateHighlight.SetActive(location == Location.RealState);
     hiringHighlight.SetActive (location == Location.Hiring);
     farmHighlight.SetActive(location == Location.Farm);
   }

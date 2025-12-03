@@ -28,12 +28,12 @@ public class WorkerInteraction : MonoBehaviour
         if (startTile != null && endTile != null)
         {
             if (GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().GetEditMode() ==
-                GameManager.EditMode.Add)
+                GameManager.WorkerEditMode.Add)
             {
                 SelectTilesBetween(startTile.GetComponent<FarmTile>(), endTile.GetComponent<FarmTile>());
             }
             else if (GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().GetEditMode() ==
-                     GameManager.EditMode.Remove)
+                     GameManager.WorkerEditMode.Remove)
             {
                 RemoveTilesBetween(startTile.GetComponent<FarmTile>(), endTile.GetComponent<FarmTile>());
             }
@@ -56,7 +56,12 @@ public class WorkerInteraction : MonoBehaviour
         {
             if (tile.GetComponent<FarmTile>().currentState == state)
             {
-                conditionalTiles.Add(tile);
+                foreach (GameObject w in GameObject.FindGameObjectsWithTag("Worker"))
+                {
+                    if (tile!=w.GetComponent<WorkerInteraction>().currentSelectedTile); conditionalTiles.Add(tile);
+                    
+                }
+               
             }
         }
         if (conditionalTiles.Count == 0) return null;

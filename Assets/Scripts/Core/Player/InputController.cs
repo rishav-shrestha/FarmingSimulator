@@ -14,19 +14,23 @@ public class InputController : MonoBehaviour
     private GameObject _hoveredCharacter;
     private bool _isPlayer;
     private GameManager _gameManager;
+    private StorageUnit _hoveredStorageUnit;
+    private Plot _hoveredPlot;
+    private PlotManager _plotManager;
     private CameraController _cameraController;
+    
     
     void Start()
     {
+        _plotManager = GetComponent<PlotManager>();
         _gameManager = GetComponent<GameManager>();
         _cameraController = GetComponent<CameraController>();
     }
     void Update()
     {
-        if (_gameManager.GetGameMode() == GameManager.GameMode.Pause||_gameManager.GetGameMode()==GameManager.GameMode.Inactive) return;
-        
+        if (_gameManager.GetGameMode() == GameManager.GameMode.Pause||_gameManager.GetGameMode()==GameManager.GameMode.Map) return;
         HandleMouse();
-        _cameraController.UpdateCamera();
+        if(_gameManager.GetGameMode()==GameManager.GameMode.Farm||_gameManager.GetGameMode()==GameManager.GameMode.WorkerEdit) _cameraController.UpdateCamera();
     }
     
     
@@ -57,22 +61,38 @@ public class InputController : MonoBehaviour
 
     void ClearHoveredObjects()
     {
-        if (_hoveredTile != null)
+        if (_gameManager.GetGameMode()==GameManager.GameMode.Farm||_gameManager.GetGameMode()==GameManager.GameMode.WorkerEdit 
+          ||_gameManager.GetGameMode()==GameManager.GameMode.Storage ||_gameManager.GetGameMode()==GameManager.GameMode.StorageEdit)
         {
-            _hoveredTile.isHovered = false;
-            _hoveredTile = null;
+             if (_hoveredTile != null)
+                  {
+                      _hoveredTile.isHovered = false;
+                      _hoveredTile = null;
+                  }
+          
+                  if (_hoveredCharacter != null)
+                  {
+                      if (_isPlayer)
+                          _hoveredCharacter.GetComponent<PlayerData>().hovered = false;
+                      else
+                          _hoveredCharacter.GetComponent<WorkerData>().hovered = false;
+          
+                      _hoveredCharacter = null;
+                      _isPlayer = false;
+                  }  
+                  
+                  if (_hoveredStorageUnit != null)
+                  {
+                      _hoveredStorageUnit.hovered = false;
+                      _hoveredStorageUnit = null;
+                  }
+                  if (_hoveredPlot != null)
+                  {
+                      _hoveredPlot.hovered = false;
+                      _hoveredStorageUnit = null;
+                  }
         }
-
-        if (_hoveredCharacter != null)
-        {
-            if (_isPlayer)
-                _hoveredCharacter.GetComponent<PlayerData>().hovered = false;
-            else
-                _hoveredCharacter.GetComponent<WorkerData>().hovered = false;
-
-            _hoveredCharacter = null;
-            _isPlayer = false;
-        }
+     
     }
  
     void HandleMousePress()
@@ -112,8 +132,8 @@ public class InputController : MonoBehaviour
             {
                 Vector3 worldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
                 worldPos.z = 0;
-                if (_gameManager.GetGameMode() == GameManager.GameMode.Play) TryInteractPlayMode(worldPos); 
-                else if(_gameManager.GetGameMode() == GameManager.GameMode.Edit) TryInteractEditMode(worldPos);
+                if (_gameManager.GetGameMode() == GameManager.GameMode.Farm) TryInteractPlayMode(worldPos); 
+                else if(_gameManager.GetGameMode() == GameManager.GameMode.WorkerEdit) TryInteractEditMode(worldPos);
             }
         }
     }
@@ -121,10 +141,86 @@ public class InputController : MonoBehaviour
     void Find(Vector3 worldpos)
     {
         Collider2D hit = Physics2D.OverlapPoint(worldpos);
-        HoverCharacter(hit);
-        if (!HoverCharacter(hit)) HoverTIle(hit);  
+        if (_gameManager.currentMode == GameManager.GameMode.Farm||_gameManager.currentMode==GameManager.GameMode.WorkerEdit)
+        {
+           HoverCharacter(hit);
+                  if (!HoverCharacter(hit)) HoverTIle(hit);    
+        }
+        else if(_gameManager.currentMode==GameManager.GameMode.Storage) HoverTIle(hit);
+        {
+            if(_plotManager.currentMode==PlotManager.GameMode.Play) HoverStorageUnit(hit);
+            if (_plotManager.currentMode == PlotManager.GameMode.Edit)
+            {
+                if (!HoverStorageUnit(hit)) HoverPlot(hit);
+            }
+        }
+       
+    }
+    void TryInteractPlayMode(Vector3 worldPos)
+    {
+        Collider2D hit = Physics2D.OverlapPoint(worldPos);
+        if (_gameManager.currentMode == GameManager.GameMode.Farm)
+        {
+            selectCharacter(hit);
+            selectTile(hit);   
+        }
+        if (_gameManager.currentMode == GameManager.GameMode.Storage)
+        {
+            SelectUnit(hit);   
+        }
+    }
+    
+
+    public void TryInteractEditMode(Vector3 worldPos)
+    {
+        
+        Collider2D hit = Physics2D.OverlapPoint(worldPos);
+        InteractNormalMode(hit);
+        InteractAddRemoveMode(hit);
     }
 
+    private void InteractAddRemoveMode(Collider2D hit)
+    {
+        if(_gameManager.GetEditMode()==GameManager.WorkerEditMode.Remove||_gameManager.GetEditMode()==GameManager.WorkerEditMode.Add) 
+        {
+            if (_gameManager.selectedCharacter.TryGetComponent(out WorkerData workerData)
+                && hit != null && hit.TryGetComponent(out FarmTile farmTile))
+            {
+                GameObject worker = workerData.gameObject;
+                if (worker.GetComponent<WorkerInteraction>().startTile == null)
+                {
+                    worker.GetComponent<WorkerInteraction>().startTile = farmTile.gameObject;  
+                }
+                else
+                {
+                    worker.GetComponent<WorkerInteraction>().endTile = farmTile.gameObject;
+                    worker.GetComponent<WorkerInteraction>().shownTiles.Clear();
+                }
+            }  
+        }
+    }
+
+    public void InteractNormalMode(Collider2D hit)
+    {
+        if (_gameManager.GetEditMode() == GameManager.WorkerEditMode.Normal)
+        {
+            if (hit != null && hit.TryGetComponent(out FarmTile tile))
+            {
+                if(!_gameManager.selectedCharacter.GetComponent<WorkerInteraction>().selectedTiles.Contains(tile.gameObject))
+                {
+                    _gameManager.selectedCharacter.GetComponent<WorkerInteraction>().Add(tile.gameObject);
+                }
+                else 
+                {
+                    _gameManager.selectedCharacter.GetComponent<WorkerInteraction>().Remove(tile.gameObject);
+                }
+            }
+        }
+    }
+        
+    
+
+    //Game Scene
     bool HoverCharacter(Collider2D hit)
     {
         if (hit != null && hit.TryGetComponent(out PlayerData player))
@@ -151,13 +247,7 @@ public class InputController : MonoBehaviour
             _hoveredTile = tile;
         }
     }
-    void TryInteractPlayMode(Vector3 worldPos)
-    {
-        Collider2D hit = Physics2D.OverlapPoint(worldPos);
-        selectCharacter(hit);
-        selectTile(hit);
-        
-    }
+ 
     public void selectCharacter(Collider2D hit)
     {
         if (hit != null)
@@ -182,52 +272,34 @@ public class InputController : MonoBehaviour
             player.GetComponent<PlayerInteraction>().AddTile(tile.gameObject);
         }
     }
-
-    public void TryInteractEditMode(Vector3 worldPos)
+    //Storage Scene
+    private void HoverPlot(Collider2D hit)
     {
-        
-        Collider2D hit = Physics2D.OverlapPoint(worldPos);
-        InteractNormalMode(hit);
-        InteractAddRemoveMode(hit);
-    }
-
-    private void InteractAddRemoveMode(Collider2D hit)
-    {
-        if(_gameManager.GetEditMode()==GameManager.EditMode.Remove||_gameManager.GetEditMode()==GameManager.EditMode.Add) 
+        if (hit != null && hit.TryGetComponent(out Plot plot))
         {
-            if (_gameManager.selectedCharacter.TryGetComponent(out WorkerData workerData)
-                && hit != null && hit.TryGetComponent(out FarmTile farmTile))
-            {
-                GameObject worker = workerData.gameObject;
-                if (worker.GetComponent<WorkerInteraction>().startTile == null)
-                {
-                    worker.GetComponent<WorkerInteraction>().startTile = farmTile.gameObject;  
-                }
-                else
-                {
-                    worker.GetComponent<WorkerInteraction>().endTile = farmTile.gameObject;
-                    worker.GetComponent<WorkerInteraction>().shownTiles.Clear();
-                }
-            }  
+            plot.hovered = true;
+            _hoveredPlot = plot;
         }
     }
-
-    public void InteractNormalMode(Collider2D hit)
+    public void SelectUnit(Collider2D hit)
     {
-        if (_gameManager.GetEditMode() == GameManager.EditMode.Normal)
+        if (hit != null)
         {
-            if (hit != null && hit.TryGetComponent(out FarmTile tile))
+            if (hit.TryGetComponent(out StorageUnit unit))
             {
-                if(!_gameManager.selectedCharacter.GetComponent<WorkerInteraction>().selectedTiles.Contains(tile.gameObject))
-                {
-                    _gameManager.selectedCharacter.GetComponent<WorkerInteraction>().Add(tile.gameObject);
-                }
-                else 
-                {
-                    _gameManager.selectedCharacter.GetComponent<WorkerInteraction>().Remove(tile.gameObject);
-                }
+                _plotManager.selectedUnit=unit;
             }
         }
     }
-        
+    private bool HoverStorageUnit(Collider2D hit)
+    {
+        if (hit != null && hit.TryGetComponent(out StorageUnit unit))
+        {
+            _hoveredStorageUnit = unit;
+            unit.hovered = true;
+            return true;
+        }
+        return false;
     }
+    
+}

@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class Plot : MonoBehaviour
 {
+    public int plotID;
     public StorageUnit unit;
     public GameObject highlight;
     public bool hovered;

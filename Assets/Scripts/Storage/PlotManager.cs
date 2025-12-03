@@ -1,20 +1,31 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlotManager : MonoBehaviour
 {
-    public GameObject[] plots;
-    public StorageUnit[] storageUnits;
+    public List<GameObject> plots;
+    public List<StorageUnit> storageUnits;
+    public int unitCount;
+    public int maxUnitCount;
+    public StorageDisplay storageDisplay;
     public GameMode currentMode;
     public EditMode editMode;
     public StorageUnit selectedUnit;
     private void Start()
     {
-        plots=GameObject.FindGameObjectsWithTag("Plot");
-        foreach (GameObject p in plots)
+        maxUnitCount = plots.Count;
+        unitCount = 0;
+        int id = 0;
+        foreach (GameObject p in GameObject.FindGameObjectsWithTag("Plot"))
         {
-            p.GetComponent<Plot>().unit=storageUnits[UnityEngine.Random.Range(0,storageUnits.Length)];
+         plots.Add(p);   
+         storageUnits.Add(p.GetComponent<StorageUnit>());
+         p.GetComponent<Plot>().plotID=id;
+         p.name = $"Plot_{id}";
+         id++;
         }
+        storageDisplay = GetComponent<StorageDisplay>();
     }
     public enum EditMode
     {

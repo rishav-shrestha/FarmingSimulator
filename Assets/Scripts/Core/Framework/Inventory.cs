@@ -51,6 +51,13 @@ public class Inventory : MonoBehaviour
         {
             int index = _cropDatabase.crops.IndexOf(selectedCrop);
             index = (index + 1) % _cropDatabase.crops.Count;
+            foreach (Crop crop in _cropDatabase.crops)
+            {
+                if (crop.locked)
+                {
+                    index = (index + 1) % _cropDatabase.crops.Count;  
+                }
+            }
             SetSelectedCrop( _cropDatabase.crops[index]);     
         }
     }
