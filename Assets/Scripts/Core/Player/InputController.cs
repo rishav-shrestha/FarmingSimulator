@@ -12,18 +12,22 @@ public class InputController : MonoBehaviour
     private float _startTime;
     private FarmTile _hoveredTile;
     private GameObject _hoveredCharacter;
+    private StorageUnit _hoveredStorageUnit;
+    private Plot _hoveredPlot;
     private bool _isPlayer;
     private GameManager _gameManager;
     private CameraController _cameraController;
+    private PlotManager _plotManager;
     
     void Start()
     {
+        _plotManager = GetComponent<PlotManager>();
         _gameManager = GetComponent<GameManager>();
         _cameraController = GetComponent<CameraController>();
     }
     void Update()
     {
-        if (_gameManager.GetGameMode() == GameManager.GameMode.Pause||_gameManager.GetGameMode()==GameManager.GameMode.Inactive) return;
+        if (_gameManager.GetGameMode() == GameManager.GameMode.Pause||_gameManager.GetGameMode()==GameManager.GameMode.Map) return;
         
         HandleMouse();
         _cameraController.UpdateCamera();
@@ -72,6 +76,16 @@ public class InputController : MonoBehaviour
 
             _hoveredCharacter = null;
             _isPlayer = false;
+        }
+        if (_hoveredStorageUnit != null)
+        {
+            _hoveredStorageUnit.hovered = false;
+            _hoveredStorageUnit = null;
+        }
+        if (_hoveredPlot != null)
+        {
+            _hoveredPlot.hovered = false;
+            _hoveredStorageUnit = null;
         }
     }
  
@@ -123,6 +137,9 @@ public class InputController : MonoBehaviour
         Collider2D hit = Physics2D.OverlapPoint(worldpos);
         HoverCharacter(hit);
         if (!HoverCharacter(hit)) HoverTIle(hit);  
+        
+        HoverStorageUnit(hit);
+        if (!HoverStorageUnit(hit)) HoverPlot(hit);  
     }
 
     bool HoverCharacter(Collider2D hit)
@@ -154,11 +171,12 @@ public class InputController : MonoBehaviour
     void TryInteractPlayMode(Vector3 worldPos)
     {
         Collider2D hit = Physics2D.OverlapPoint(worldPos);
-        selectCharacter(hit);
-        selectTile(hit);
+        SelectCharacter(hit);
+        SelectTile(hit);
+        SelectUnit(hit);
         
     }
-    public void selectCharacter(Collider2D hit)
+    public void SelectCharacter(Collider2D hit)
     {
         if (hit != null)
         {
@@ -173,13 +191,23 @@ public class InputController : MonoBehaviour
         }
     }
 
-    public void selectTile(Collider2D hit)
+    public void SelectTile(Collider2D hit)
     {
         if (_gameManager.selectedCharacter.TryGetComponent(out PlayerData data) 
             && hit != null && hit.TryGetComponent(out FarmTile tile))
         {
             GameObject player = GameObject.FindGameObjectWithTag("Player");
             player.GetComponent<PlayerInteraction>().AddTile(tile.gameObject);
+        }
+    }
+    public void SelectUnit(Collider2D hit)
+    {
+        if (hit != null)
+        {
+            if (hit.TryGetComponent(out StorageUnit unit))
+            {
+                _plotManager.selectedUnit=unit;
+            }
         }
     }
 
@@ -230,4 +258,27 @@ public class InputController : MonoBehaviour
         }
     }
         
+    
+    
+    
+    
+    bool HoverStorageUnit(Collider2D hit)
+    {
+        if (hit != null && hit.TryGetComponent(out StorageUnit unit))
+        {
+            _hoveredStorageUnit = unit;
+            unit.hovered = true;
+            return true;
+        }
+        return false;
+    }
+
+    void HoverPlot(Collider2D hit)
+    {
+        if (hit != null && hit.TryGetComponent(out Plot plot))
+        {
+            plot.hovered = true;
+            _hoveredPlot = plot;
+        }
+    }
     }

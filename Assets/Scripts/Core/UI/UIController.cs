@@ -31,15 +31,18 @@ public class UIController : MonoBehaviour
     public GameObject workerUIAdditive;
     public TextMeshProUGUI coinsDisplay;
     public TextMeshProUGUI seedAmountDisplay;
+    public TextMeshProUGUI cropAmountDisplay;
+    public TextMeshProUGUI locationDisplay;
     [Header("GameComponents")] 
     
     private GameManager _gameManager;
     private Inventory _inventory;
 
-    public UIController(Inventory inventory)
-    {
-        _inventory = inventory;
-    }
+    [Header("UI")] public GameObject mapUI;
+    public GameObject storageUI;
+    public GameObject farmUI;
+    public GameObject[] ui;
+    
 
     public void Awake()
     {
@@ -52,6 +55,7 @@ public class UIController : MonoBehaviour
     {
         _gameManager = GetComponent<GameManager>();
         _inventory = _gameManager.inventory;
+        ui = new GameObject[3] {mapUI, storageUI, farmUI};
     }
     public void Update()
     {
@@ -61,7 +65,7 @@ public class UIController : MonoBehaviour
     {
         UpdateCropImage();
         UpdateTool();
-        UpdateSeedAmount();
+        UpdateSeedAndCropAmount();
         UpdateCoins();
         if (_gameManager.GetGameMode() == GameManager.GameMode.Play)
         {
@@ -107,13 +111,23 @@ public class UIController : MonoBehaviour
                 cropImage.sprite = _gameManager.selectedCharacter.GetComponent<WorkerInteraction>().selectedcrop.icon;
     }
 
-    public void UpdateSeedAmount()
+    public void UpdateSeedAndCropAmount()
     {
-        if (_gameManager.selectedCharacter.CompareTag("Player")) 
+
+        if (_gameManager.selectedCharacter.CompareTag("Player"))
+        {
             seedAmountDisplay.SetText(OptimizeInt(_inventory.GetSeedAmount(_inventory.selectedCrop)));
+            cropAmountDisplay.SetText(OptimizeInt(_inventory.GetCropAmount(_inventory.selectedCrop)));   
+        }
         else if (_gameManager.selectedCharacter.CompareTag("Worker"))
+        {
             seedAmountDisplay.SetText(OptimizeInt(_inventory.
                 GetSeedAmount(_gameManager.selectedCharacter.GetComponent<WorkerInteraction>().selectedcrop)));
+            seedAmountDisplay.SetText(OptimizeInt(_inventory.
+                GetCropAmount(_gameManager.selectedCharacter.GetComponent<WorkerInteraction>().selectedcrop)));
+        }
+            
+        
     }
     public void UpdateCoins()
     {

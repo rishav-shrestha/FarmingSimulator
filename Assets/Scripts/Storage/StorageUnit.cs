@@ -18,7 +18,7 @@
         UpdateRender();
         if(cropStored > maxCapacity) 
             cropStored = maxCapacity;
-        maxCapacity = crop.maxStorageCapacity;
+        if(crop!=null) maxCapacity = crop.maxStorageCapacity;
     }
 
     public void AddCrop(int amount)
@@ -39,6 +39,7 @@
     private void UpdateRender()
     {
         SpriteRenderer renderer= GetComponent<SpriteRenderer>();
+        if(crop == null) return;
         switch (state)
         {
             case State.Empty:

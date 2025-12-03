@@ -57,9 +57,9 @@ public class AudioManager : MonoBehaviour
         sfxSource.PlayOneShot(sfx);
     }
 
-    public void PlayGameSfx(AudioClip effect)
+    public void PlayFarmSfx(AudioClip effect)
     {
-        if(_gameManager.GetGameMode()==GameManager.GameMode.Pause||_gameManager.GetGameMode()==GameManager.GameMode.Inactive) return;
+        if(_gameManager.GetActiveCamera()!=_gameManager.gameCam) return;
         GameObject temp = new GameObject("TempAudio");
         AudioSource source = temp.AddComponent<AudioSource>();
         source.clip = effect;

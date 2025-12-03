@@ -13,17 +13,15 @@ public class StorageInputController : MonoBehaviour
     private StorageUnit _hoveredStorageUnit;
     private Plot _hoveredPlot;
     private PlotManager _plotManager;
-    private CameraController _cameraController;
+
     
     void Start()
     {
         _plotManager = GetComponent<PlotManager>();
-        _cameraController = GetComponent<CameraController>();
     }
     void Update()
     {
         HandleMouse();
-        _cameraController.UpdateCamera();
     }
     
     

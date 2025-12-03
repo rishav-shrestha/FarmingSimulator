@@ -7,6 +7,7 @@ public class Plot : MonoBehaviour
     public GameObject highlight;
     public bool hovered;
     public bool hasUnit;
+    public int id;
 
     private void Update()
     {

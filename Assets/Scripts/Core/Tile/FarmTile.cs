@@ -69,7 +69,7 @@ public class FarmTile : MonoBehaviour
             if (crop == null)
             {
                 currentState = TileState.Growing;
-               AudioManager.Instance.PlayGameSfx(AudioManager.Instance.plantSfx);
+               AudioManager.Instance.PlayFarmSfx(AudioManager.Instance.plantSfx);
                 crop = selectedCrop;
                 inventory.UseSeed(selectedCrop);
             }
@@ -84,7 +84,7 @@ public class FarmTile : MonoBehaviour
             {
                 if (currentState == TileState.FullyGrown)
                 {
-                   AudioManager.Instance.PlayGameSfx(AudioManager.Instance.harvestSfx);
+                   AudioManager.Instance.PlayFarmSfx(AudioManager.Instance.harvestSfx);
                     crop = null;
                     currentStage = 0;
                     growthTimer = 0f;
@@ -107,7 +107,7 @@ public class FarmTile : MonoBehaviour
     {
         if (currentState == TileState.RequiresWater && action == Inventory.Tool.Watering)
         { 
-            AudioManager.Instance.PlayGameSfx(AudioManager.Instance.waterSfx);
+            AudioManager.Instance.PlayFarmSfx(AudioManager.Instance.waterSfx);
             currentState = TileState.Growing;
             waterTimer--;
         }
@@ -121,7 +121,7 @@ public class FarmTile : MonoBehaviour
             if (crop == null)
             {
                 currentState = TileState.Growing;
-                AudioManager.Instance.PlayGameSfx(AudioManager.Instance.plantSfx);
+                AudioManager.Instance.PlayFarmSfx(AudioManager.Instance.plantSfx);
                 crop = worker.selectedcrop;
                 inventory.UseSeed(worker.selectedcrop);
 
@@ -140,7 +140,7 @@ public class FarmTile : MonoBehaviour
             {
                 if (currentState == TileState.FullyGrown)
                 {
-                    AudioManager.Instance.PlayGameSfx(AudioManager.Instance.harvestSfx);
+                    AudioManager.Instance.PlayFarmSfx(AudioManager.Instance.harvestSfx);
                     crop = null;
                     currentStage = 0;
                     growthTimer = 0f;
@@ -164,7 +164,7 @@ public class FarmTile : MonoBehaviour
     {
         if (currentState == TileState.RequiresWater && worker.assignedWork == Inventory.Tool.Watering)
         {
-            AudioManager.Instance.PlayGameSfx(AudioManager.Instance.waterSfx);
+            AudioManager.Instance.PlayFarmSfx(AudioManager.Instance.waterSfx);
             currentState = TileState.Growing;
             waterTimer--;
         }

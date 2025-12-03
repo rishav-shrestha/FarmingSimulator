@@ -41,39 +41,31 @@ public class MapController : MonoBehaviour
   }
   public void LoadWorldMap()
   {
-    gameManager.SetGameMode(GameManager.GameMode.Inactive);
-    gameManager.gameObject.GetComponent<UIController>().playModeUI.SetActive(false);
-    gameManager.HideGameLayer();
-    SceneManager.LoadScene("WorldMap",LoadSceneMode.Additive);
+    gameManager.SetActiveCamera(gameManager.mapCam);
+    gameManager.SetActiveUI(gameManager.uiController.mapUI);
+    gameManager.SetGameMode(GameManager.GameMode.Map);
   }
   public void ExitWorldMap()
   {
-    if (location == Location.Farm)
+    
+    switch (location)
     {
-      SceneManager.UnloadSceneAsync("WorldMap");
-      gameManager.showGameLayer();
-      gameManager.gameObject.GetComponent<UIController>().playModeUI.SetActive(true);
-      gameManager.SetGameMode(GameManager.GameMode.Play);
-    }
-    else if (location == Location.Inventory)
-    {
-      SceneManager.UnloadSceneAsync("WorldMap");
-      SceneManager.LoadScene("Inventory",LoadSceneMode.Additive);
-    }
-    else if (location == Location.Shop)
-    {
-      SceneManager.UnloadSceneAsync("WorldMap");
-      SceneManager.LoadScene("Shop",LoadSceneMode.Additive);
-    }
-    else if (location == Location.RealState)
-    {
-      SceneManager.UnloadSceneAsync("WorldMap");
-      SceneManager.LoadScene("RealState",LoadSceneMode.Additive);
-    }
-    else if (location == Location.Hiring)
-    {
-      SceneManager.UnloadSceneAsync("WorldMap");
-      SceneManager.LoadScene("Hiring",LoadSceneMode.Additive);
+      case Location.Farm:
+        gameManager.SetActiveCamera(gameManager.storageCam);
+        gameManager.SetActiveUI(gameManager.uiController.storageUI);
+        gameManager.SetGameMode(GameManager.GameMode.Play);
+        break;
+      case Location.Inventory:
+        gameManager.SetActiveCamera(gameManager.storageCam);
+        gameManager.SetActiveUI(gameManager.uiController.storageUI);
+        gameManager.SetGameMode(GameManager.GameMode.Play);
+        break;
+      case Location.Shop:
+        break;
+      case Location.RealState:
+        break;
+      case Location.Hiring:
+        break;
     }
   }
 

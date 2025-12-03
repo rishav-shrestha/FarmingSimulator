@@ -3,9 +3,16 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public Camera gameCam;
+    public Camera storageCam;
+    public Camera mapCam;
+    public Camera[] cams;
     public static GameManager Instance;
     public Inventory inventory;
     public GameObject tileManager;
+    public PlotManager plotManager;
+    public MapController mapController;
+    public UIController uiController;
     public GameObject player;
     public GameObject[] workers;
     public GameObject selectedCharacter;
@@ -32,6 +39,11 @@ public class GameManager : MonoBehaviour
         inventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<Inventory>();
         player = GameObject.FindGameObjectWithTag("Player");
         workers = GameObject.FindGameObjectsWithTag("Worker");
+        plotManager = GetComponent<PlotManager>();
+        mapController = GetComponent<MapController>();
+        uiController = GetComponent<UIController>();
+        cams=new Camera[] {gameCam,storageCam,mapCam};
+        SetActiveCamera(gameCam);
         SelectCharacter(player);
         SetGameMode(GameMode.Play);
         SetNormalEditMode();
@@ -59,7 +71,53 @@ public class GameManager : MonoBehaviour
     {
         return _previousMode;
     }
-    
+
+    public Camera SetActiveCamera(Camera camera)
+    {
+        foreach (Camera cam in cams)
+        {
+            cam.enabled = false;
+        }
+        camera.enabled = true;
+        return camera;
+    }
+    public Camera GetActiveCamera()
+    {
+        foreach (Camera cam in cams)
+        {
+            if (cam.enabled) return cam;
+        }
+        return null;
+    }
+
+    public void SetActiveUI(GameObject ui)
+    {
+        foreach (GameObject u in uiController.ui)
+        {
+            u.SetActive(false);
+        }
+        ui.SetActive( true);
+    }
+    public void CycleGraphicsMode()
+    {
+        graphicsMode = graphicsMode == GraphicsMode.High ? GraphicsMode.Low : GraphicsMode.High;
+    }
+    public void CycleEditMode()
+    {
+        editMode = editMode == EditMode.Add ? EditMode.Remove : EditMode.Add;
+    }
+
+    public void CycleLocation()
+    {
+        if (mapController.location< MapController.Location.Hiring)
+        {
+            mapController.location++;
+        }
+        else
+        {
+            mapController.location = MapController.Location.Farm;
+        }
+    }
     public void SetAddEditMode()
     {
         if(GetEditMode()!=EditMode.Add) selectedCharacter.GetComponent<WorkerInteraction>().startTile = null;
@@ -140,13 +198,21 @@ public class GameManager : MonoBehaviour
         Play,
         Edit,
         Pause,
-        Inactive
+        Map
     }
     public enum EditMode
     {
         Add,
         Remove,
         Normal
+    }
+
+    public enum StorageEditMode
+    {
+        Relocate,
+        Add,
+        Sell,
+        Remove
     }
     public enum GraphicsMode
     {
