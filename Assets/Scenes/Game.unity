@@ -277,7 +277,7 @@ GameObject:
   - component: {fileID: 32487023}
   - component: {fileID: 32487022}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: LocationDisplay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2896,8 +2896,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 109d21a9fc35da84a981e969cabb4f22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameCam: {fileID: 1391006846}
+  storageCam: {fileID: 49759704}
+  mapCam: {fileID: 1815415940}
+  cams: []
   inventory: {fileID: 728832132}
   tileManager: {fileID: 1175530190}
+  plotManager: {fileID: 0}
+  mapController: {fileID: 0}
+  uiController: {fileID: 0}
   player: {fileID: 1840622573}
   workers:
   - {fileID: 1783729178}
@@ -3008,6 +3015,12 @@ MonoBehaviour:
   workerUIAdditive: {fileID: 148028755}
   coinsDisplay: {fileID: 1376369723}
   seedAmountDisplay: {fileID: 236472196}
+  cropAmountDisplay: {fileID: 1613774065}
+  locationDisplay: {fileID: 32487022}
+  mapUI: {fileID: 2037755939}
+  storageUI: {fileID: 721205526}
+  farmUI: {fileID: 489990679}
+  ui: []
 --- !u!114 &463724841
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4115,7 +4128,7 @@ GameObject:
   - component: {fileID: 670706856}
   - component: {fileID: 670706855}
   m_Layer: 5
-  m_Name: Button
+  m_Name: LocationButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9339,7 +9352,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1581302993}
-  - component: {fileID: 1581302994}
   m_Layer: 0
   m_Name: Plots
   m_TagString: Untagged
@@ -9404,20 +9416,6 @@ Transform:
   - {fileID: 1191884221}
   m_Father: {fileID: 721205527}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1581302994
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1581302992}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 11c8c57aee644b6479a1ba8c0e3d50b7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tapThreshold: 0.2
-  dragThreshold: 20
 --- !u!1001 &1594799444
 PrefabInstance:
   m_ObjectHideFlags: 0

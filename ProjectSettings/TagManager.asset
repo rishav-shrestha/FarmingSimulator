@@ -10,6 +10,7 @@ TagManager:
   - TileManager
   - Crop
   - Farmtile
+  - Plot
   layers:
   - Default
   - TransparentFX
