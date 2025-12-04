@@ -39,33 +39,35 @@ public class MapController : MonoBehaviour
       UpdateLocationHighlight();  
     }
   }
-  public void LoadWorldMap()
+  public void LoadorExitWorldMap()
   {
-    gameManager.SetActiveCamera(gameManager.mapCam);
-    gameManager.SetActiveUI(gameManager.uiController.mapUI);
-    gameManager.SetGameMode(GameManager.GameMode.Map);
-  }
-  public void ExitWorldMap()
-  {
-    
-    switch (location)
+    if (gameManager.GetGameMode() == GameManager.GameMode.Map)
     {
-      case Location.Farm:
-        gameManager.SetActiveCamera(gameManager.storageCam);
-        gameManager.SetActiveUI(gameManager.uiController.storageUI);
-        gameManager.SetGameMode(GameManager.GameMode.Play);
-        break;
-      case Location.Inventory:
-        gameManager.SetActiveCamera(gameManager.storageCam);
-        gameManager.SetActiveUI(gameManager.uiController.storageUI);
-        gameManager.SetGameMode(GameManager.GameMode.Play);
-        break;
-      case Location.Shop:
-        break;
-      case Location.RealState:
-        break;
-      case Location.Hiring:
-        break;
+      switch (location)
+      {
+        case Location.Farm:
+          gameManager.SetActiveCamera(gameManager.storageCam);
+          gameManager.SetActiveUI(gameManager.uiController.storageUI);
+          gameManager.SetGameMode(GameManager.GameMode.Play);
+          break;
+        case Location.Inventory:
+          gameManager.SetActiveCamera(gameManager.storageCam);
+          gameManager.SetActiveUI(gameManager.uiController.storageUI);
+          gameManager.SetGameMode(GameManager.GameMode.Play);
+          break;
+        case Location.Shop:
+          break;
+        case Location.RealState:
+          break;
+        case Location.Hiring:
+          break;
+      }
+    }
+    else
+    {
+        gameManager.SetActiveCamera(gameManager.mapCam);
+        gameManager.SetActiveUI(gameManager.uiController.mapUI);
+        gameManager.SetGameMode(GameManager.GameMode.Map);
     }
   }
 

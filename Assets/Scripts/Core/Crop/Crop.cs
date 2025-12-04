@@ -18,5 +18,6 @@ public class Crop : ScriptableObject
     public int seedBuyPrice = 10;
     public int maxStorageCapacity = 100;
     public int totalStages;
+    public int harvestAmount;
     public bool locked;
 }

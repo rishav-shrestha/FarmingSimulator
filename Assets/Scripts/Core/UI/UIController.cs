@@ -15,6 +15,7 @@ public class UIController : MonoBehaviour
     public Button plantbutton;
     public Button harvestbutton;
     public Button waterbutton;
+    public Button pausebutton;
     [Header("Sprites")]
     
     public Sprite plantSelectedSprite;
@@ -28,11 +29,13 @@ public class UIController : MonoBehaviour
     
     public GameObject playModeUI;
     public GameObject editModeUI;
+    public GameObject gameoverscreen;
     public GameObject workerUIAdditive;
     public TextMeshProUGUI coinsDisplay;
     public TextMeshProUGUI seedAmountDisplay;
     public TextMeshProUGUI cropAmountDisplay;
     public TextMeshProUGUI locationDisplay;
+    public Slider progressBar;
     [Header("GameComponents")] 
     
     private GameManager _gameManager;
@@ -67,6 +70,7 @@ public class UIController : MonoBehaviour
         UpdateTool();
         UpdateSeedAndCropAmount();
         UpdateCoins();
+        UpdateGameProgress();
         if (_gameManager.GetGameMode() == GameManager.GameMode.Play)
         {
             if(_gameManager.selectedCharacter.CompareTag("Worker"))
@@ -200,6 +204,11 @@ public class UIController : MonoBehaviour
     {
         if(_gameManager.GetPreviousMode()==GameManager.GameMode.Edit) editModeUI.SetActive(true);
         if(_gameManager.GetPreviousMode()==GameManager.GameMode.Play) playModeUI.SetActive(true);
+    }
+
+    public void UpdateGameProgress()
+    {
+        progressBar.value = inventory.coins;
     }
     public void ExitGame()  
     {

@@ -85,6 +85,7 @@ public class FarmTile : MonoBehaviour
                 if (currentState == TileState.FullyGrown)
                 {
                    AudioManager.Instance.PlayFarmSfx(AudioManager.Instance.harvestSfx);
+                   inventory.AddCrop(crop,1);
                     crop = null;
                     currentStage = 0;
                     growthTimer = 0f;
@@ -141,6 +142,7 @@ public class FarmTile : MonoBehaviour
                 if (currentState == TileState.FullyGrown)
                 {
                     AudioManager.Instance.PlayFarmSfx(AudioManager.Instance.harvestSfx);
+                    inventory.AddCrop(crop,1);
                     crop = null;
                     currentStage = 0;
                     growthTimer = 0f;
@@ -232,6 +234,7 @@ public class FarmTile : MonoBehaviour
             case GameManager.GraphicsMode.High:
                 if (gameManager.GetGameMode() == GameManager.GameMode.Edit)
                 {
+                    cropRenderer.sprite=null;
                     GetComponent<SpriteRenderer>().sprite = crop != null ? crop.tile[currentStage] : emptyTileSprite;
                     break;
                 }

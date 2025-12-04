@@ -9,7 +9,7 @@ public class Inventory : MonoBehaviour
     public int seedamountdisplay;
     public CropDatabase _cropDatabase;
     [Header("Currencies")]
-    [SerializeField] public int coins;
+    public int coins=-300;
 
 
     [Header("Tool Settings")]
@@ -152,6 +152,22 @@ public class Inventory : MonoBehaviour
     public void EarnCoins(int amount)
     {
         coins += amount;
+    }
+
+    public void BuySelectedCropSeed()
+    {
+        if (SpendCoins(selectedCrop.seedBuyPrice*5))
+        {
+            AddSeed( selectedCrop, 5);
+        }
+    }
+    public void SellAllCrops()
+    {
+        foreach (CropStack stack in cropInventory)
+        {
+            coins += stack.amount * stack.crop.sellPrice;
+            stack.amount = 0;
+        }
     }
     public enum Tool
     {

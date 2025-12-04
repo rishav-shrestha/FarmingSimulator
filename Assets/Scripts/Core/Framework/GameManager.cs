@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -20,6 +21,9 @@ public class GameManager : MonoBehaviour
     private GameMode _previousMode;
     public EditMode editMode;
     public GraphicsMode graphicsMode;
+    public float passiveExpensesTimer;
+    public int passiveExpensesCost;
+    public int bar;
     private void Awake()
     {
         if (Instance == null)
@@ -48,7 +52,41 @@ public class GameManager : MonoBehaviour
         SetGameMode(GameMode.Play);
         SetNormalEditMode();
         graphicsMode = GraphicsMode.High;
-        
+        passiveExpensesCost = 30;
+      
+    }
+
+    public void Update()
+    {
+        passiveExpensesTimer+=Time.deltaTime;
+        if (passiveExpensesTimer >= 30)
+        {
+            inventory.coins-=(passiveExpensesCost);
+            passiveExpensesTimer = 0;
+        }
+
+        if (GetTotalAssets() <= 0)
+        {
+            SetGameMode(GameMode.Pause);
+            uiController.pausebutton.gameObject.SetActive(false);
+            uiController.gameoverscreen.SetActive(true);
+        }
+    }
+    public int GetTotalAssets()
+    {
+        int totalAssets = inventory.coins;
+        foreach (Crop crop in inventory._cropDatabase.crops)
+        {
+            totalAssets += inventory.GetCropAmount(crop)*crop.sellPrice;
+            totalAssets += inventory.GetSeedAmount(crop)*crop.sellPrice;
+        }
+        foreach (GameObject tile in GameObject.FindGameObjectsWithTag("Farmtile"))
+        {
+            if (tile.GetComponent<FarmTile>().currentState == FarmTile.TileState.Empty||
+                tile.GetComponent<FarmTile>().currentState == FarmTile.TileState.Dead) continue;
+            totalAssets += tile.GetComponent<FarmTile>().crop.sellPrice;
+        }
+        return totalAssets;
     }
 
     public void CycleWorkerCrop()
@@ -179,14 +217,9 @@ public class GameManager : MonoBehaviour
         return currentMode;
     }
 
-    public void HideGameLayer()
+    public void RestartGame()
     {
-        Camera.main.cullingMask &= ~(1 << LayerMask.NameToLayer("Gameplay"));
-    }
-
-    public void showGameLayer()
-    {
-        Camera.main.cullingMask |= (1 << LayerMask.NameToLayer("Gameplay"));
+        SceneManager.LoadScene("Game");
     }
     public void ExitGame()
     {
