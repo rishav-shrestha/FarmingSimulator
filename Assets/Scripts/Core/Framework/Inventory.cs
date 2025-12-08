@@ -26,13 +26,19 @@ public class Inventory : MonoBehaviour
     {
         _cropDatabase = GetComponent<CropDatabase>();
         selectedCrop = _cropDatabase.crops[0];
+        foreach (Crop crop in _cropDatabase.crops)
+        {
+            if (crop != selectedCrop)
+            {
+                crop.locked = true;
+            }
+        }
         // Initialize seeds/crops for all crops in database
         foreach (Crop crop in _cropDatabase.crops)
         {
             seedInventory.Add(new CropStack { crop = crop, amount = 10 }); // starting seeds
             cropInventory.Add(new CropStack { crop = crop, amount = 0 });  // no harvested crops yet
         }
-       
     }
     void Update()
     {
@@ -51,7 +57,11 @@ public class Inventory : MonoBehaviour
         {
             int index = _cropDatabase.crops.IndexOf(selectedCrop);
             index = (index + 1) % _cropDatabase.crops.Count;
-            SetSelectedCrop( _cropDatabase.crops[index]);     
+            SetSelectedCrop( _cropDatabase.crops[index]);
+            if (_cropDatabase.crops[index].locked)
+            {
+                CycleSelectedCrop();
+            }
         }
     }
     public void CycleSelectedCrop(WorkerInteraction worker)
@@ -61,7 +71,11 @@ public class Inventory : MonoBehaviour
         {
             int index = _cropDatabase.crops.IndexOf(worker.selectedcrop);
             index = (index + 1) % _cropDatabase.crops.Count;
-            worker.SetCrop( _cropDatabase.crops[index]);     
+            worker.SetCrop( _cropDatabase.crops[index]);  
+            if (_cropDatabase.crops[index].locked)
+            {
+                CycleSelectedCrop(worker);
+            }
         }
     }
     
