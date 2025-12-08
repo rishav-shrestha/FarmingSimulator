@@ -9,14 +9,18 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Movement Settings")]
     public float speed = 1f;
+    private bool facingRight = true;
+    private Vector3 lastPosition;
 
     private GameManager _gameManager;
     private PlayerState _playerState;
     private PlayerInteraction _playerInteraction;
+    private Animator _animator;
     void Start()
     {
 
         // Initialize components
+        _animator = GetComponent<Animator>();
         _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         _playerInteraction = GetComponent<PlayerInteraction>();  
         _playerState = GetComponent<PlayerState>();
@@ -24,6 +28,7 @@ public class PlayerMovement : MonoBehaviour
         idlePosition = transform.position;
         // Set current position to starting position
         currentPosition = transform.position;
+        lastPosition = transform.position;
     }
     void Update()
     {
@@ -85,6 +90,24 @@ public class PlayerMovement : MonoBehaviour
         {
             _playerState.currentState = PlayerState.State.Idle;
         }
+
+        if (_playerState.currentState == PlayerState.State.Idle)
+        {
+            _animator.SetBool("Moving", false);
+        }
+        else
+        {
+            _animator.SetBool("Moving", true);
+        }
+
+        Vector3 delta = transform.position - lastPosition;
+
+       if (delta.x > 0 && !facingRight)
+            Flip();
+        else if (delta.x < 0 && facingRight)
+            Flip();
+
+        lastPosition = transform.position; 
     }
 
     // Set the target position for movement
@@ -124,5 +147,12 @@ public class PlayerMovement : MonoBehaviour
         {
             _playerState.currentState = PlayerState.State.Idle;
         }
+    }
+    void Flip()
+    {
+        facingRight = !facingRight;
+        Vector3 scale = transform.localScale;
+        scale.x *= -1;
+        transform.localScale = scale;
     }
 }

@@ -1,10 +1,19 @@
 fileFormatVersion: 2
-guid: e52abb25c67b6d04c91232cc1a39cadc
+guid: c4ad6854fd745db48a1d8650712e08b7
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3920547800484317271
-    second: Ella_0
+      213: -2515493846327978331
+    second: EllaSpriteSheet_0
+  - first:
+      213: -2788072435771978813
+    second: EllaSpriteSheet_1
+  - first:
+      213: -2515128905879031449
+    second: EllaSpriteSheet_2
+  - first:
+      213: -1636618628174377664
+    second: EllaSpriteSheet_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -75,7 +84,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -100,13 +109,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Ella_0
+      name: EllaSpriteSheet_0
       rect:
         serializedVersion: 2
-        x: 1
+        x: 0
         y: 0
-        width: 13
-        height: 16
+        width: 16
+        height: 17
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +124,74 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9a771332c8a6799c0800000000000000
-      internalID: -3920547800484317271
+      spriteID: 5a690f6acab271dd0800000000000000
+      internalID: -2515493846327978331
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EllaSpriteSheet_1
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 0
+        width: 16
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3cbc0c934e6ce49d0800000000000000
+      internalID: -2788072435771978813
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EllaSpriteSheet_2
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 0
+        width: 16
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 76173c8f597781dd0800000000000000
+      internalID: -2515128905879031449
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EllaSpriteSheet_3
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 0
+        width: 16
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 04d01e267009949e0800000000000000
+      internalID: -1636618628174377664
       vertices: []
       indices: 
       edges: []
@@ -125,7 +200,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 0cfda2f6737e9c441bdb9c95b8bd243d
     internalID: 0
     vertices: []
     indices: 
@@ -133,9 +208,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":16.0,"y":17.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      Ella_0: -3920547800484317271
+      EllaSpriteSheet_0: -2515493846327978331
+      EllaSpriteSheet_1: -2788072435771978813
+      EllaSpriteSheet_2: -2515128905879031449
+      EllaSpriteSheet_3: -1636618628174377664
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

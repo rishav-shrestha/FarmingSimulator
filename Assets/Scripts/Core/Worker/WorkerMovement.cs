@@ -9,11 +9,17 @@ public class WorkerMovement : MonoBehaviour
     public Vector2 targetPosition;
     public Vector2 idlePosition;
     
+    private Vector3 lastPosition;
+    private bool facingRight = true;
+    private Animator _animator;
+    
     private WorkerState _workerState;
     private WorkerInteraction _workerInteraction;
 
     void Start()
     {
+        _animator = GetComponent<Animator>();
+        lastPosition = transform.position;
         _workerInteraction = GetComponent<WorkerInteraction>();
         _workerState = GetComponent<WorkerState>();
         _gameManager= GameObject.Find("GameManager").GetComponent<GameManager>();
@@ -71,7 +77,23 @@ public class WorkerMovement : MonoBehaviour
                 }
                 break;
         }
-        
+        if (_workerState.currentState == WorkerState.State.Idle)
+        {
+            _animator.SetBool("Moving", false);
+        }
+        else
+        {
+            _animator.SetBool("Moving", true);
+        }
+
+        Vector3 delta = transform.position - lastPosition;
+
+        if (delta.x > 0 && !facingRight)
+            Flip();
+        else if (delta.x < 0 && facingRight)
+            Flip();
+
+        lastPosition = transform.position; 
         currentPosition = transform.position;
     }
 
@@ -127,5 +149,11 @@ public class WorkerMovement : MonoBehaviour
     {
         currentPosition = position;
     }
-    
+    private void Flip()
+    {
+        facingRight = !facingRight;
+        Vector3 scale = transform.localScale;
+        scale.x *= -1;
+        transform.localScale = scale;
+    }
 }

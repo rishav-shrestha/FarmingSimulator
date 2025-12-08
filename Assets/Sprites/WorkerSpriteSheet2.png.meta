@@ -1,13 +1,19 @@
 fileFormatVersion: 2
-guid: cfc35048afe4da94b9ea693c03e6c83f
+guid: 0b3f3fc8d75718a4caa65d8c01ca5a51
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1855334516424799873
-    second: HarvestPopUp_0
+      213: 3172871306351976118
+    second: WorkerSpriteSheet2_0
   - first:
-      213: -2844421172055411738
-    second: HarvestPopUp_1
+      213: -4191008338338749316
+    second: WorkerSpriteSheet2_1
+  - first:
+      213: -5795826280869371800
+    second: WorkerSpriteSheet2_2
+  - first:
+      213: -7704111825844529883
+    second: WorkerSpriteSheet2_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -40,7 +46,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -54,7 +60,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -103,23 +109,89 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: HarvestPopUp_0
+      name: WorkerSpriteSheet2_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 613
-        height: 676
+        width: 16
+        height: 17
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: cb9080b127a78f040ac7dd84e74ebbad
-      internalID: 1855334516424799873
+      spriteID: 6be932d74ad480c20800000000000000
+      internalID: 3172871306351976118
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorkerSpriteSheet2_1
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 0
+        width: 16
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c746e960f1c86d5c0800000000000000
+      internalID: -4191008338338749316
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorkerSpriteSheet2_2
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 0
+        width: 16
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 86068e484b6119fa0800000000000000
+      internalID: -5795826280869371800
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorkerSpriteSheet2_3
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 0
+        width: 16
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 52596aecc1f751590800000000000000
+      internalID: -7704111825844529883
       vertices: []
       indices: 
       edges: []
@@ -128,7 +200,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: f8c10919227b6a14b9116c406b5321de
+    spriteID: 194c11f91b9e3724daed4abd274119fa
     internalID: 0
     vertices: []
     indices: 
@@ -138,9 +210,12 @@ TextureImporter:
     spriteCustomMetadata:
       entries:
       - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":613.0,"y":676.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":16.0,"y":17.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      HarvestPopUp_0: 1855334516424799873
+      WorkerSpriteSheet2_0: 3172871306351976118
+      WorkerSpriteSheet2_1: -4191008338338749316
+      WorkerSpriteSheet2_2: -5795826280869371800
+      WorkerSpriteSheet2_3: -7704111825844529883
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -33,7 +33,6 @@ public class FarmTile : MonoBehaviour
     public GameObject outlinePrehab;
     private SpriteRenderer _mainRenderer;
     private SpriteRenderer _tileRenderer;
-    private int _originalTileOrder;
 
     // Scaling variables
     public float hoverScale = 1.2f;    
@@ -45,6 +44,12 @@ public class FarmTile : MonoBehaviour
     public GameObject cropChild;
     private SpriteRenderer cropRenderer;
 
+    //PopUp
+    public GameObject popUpChild;
+    private SpriteRenderer popUpRenderer;
+    public Sprite popUpSpriteRequiresWater;
+    public Sprite popUpSpriteFullyGrown;
+
     private void Start()
     {
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
@@ -54,10 +59,12 @@ public class FarmTile : MonoBehaviour
 
         _mainRenderer = GetComponent<SpriteRenderer>();
         _tileRenderer = _mainRenderer; // assuming tile itself is the main sprite
-        _originalTileOrder = _tileRenderer.sortingOrder;
 
         //Crop Child
         cropRenderer = cropChild.GetComponent<SpriteRenderer>();
+        
+        //PopUp Child
+        popUpRenderer = popUpChild.GetComponent<SpriteRenderer>();
 
         CreateOutlineChild();
     }
@@ -160,7 +167,8 @@ public class FarmTile : MonoBehaviour
             }
         }
     }
-    
+
+ 
 
     public void WaterCrop(WorkerInteraction worker)
     {
@@ -256,6 +264,7 @@ public class FarmTile : MonoBehaviour
         cropChild.transform.localScale = Vector3.Lerp(cropChild.transform.localScale, Vector3.one * targetScale, Time.deltaTime * scaleSpeed);
         if (gameManager.GetGameMode() == GameManager.GameMode.Play)
         {
+            UpdatePopUp();
             if(isCurrentSelected)
             {
                 UpdateOutline(Color.yellow);
@@ -402,6 +411,25 @@ public class FarmTile : MonoBehaviour
             outlineChild.SetActive(false);
             outlined = false;
         }
+    }
+    public void UpdatePopUp()
+    {
+        switch (currentState)
+        {
+            case TileState.FullyGrown:
+                popUpChild.SetActive(true);
+                popUpRenderer.sprite = popUpSpriteFullyGrown;
+                break;
+            case TileState.RequiresWater:
+                popUpChild.SetActive(true);
+                popUpRenderer.sprite = popUpSpriteRequiresWater;
+                break;
+            default:
+                 popUpRenderer.sprite = null;
+                popUpChild.SetActive(false);
+                break;
+        }
+        
     }
 
 

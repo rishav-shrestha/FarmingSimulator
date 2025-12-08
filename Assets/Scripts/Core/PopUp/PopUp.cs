@@ -2,15 +2,29 @@ using UnityEngine;
 
 public class PopUp : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public void ShowPopUp()
     {
         
     }
-
-    // Update is called once per frame
-    void Update()
+    public void HidePopUp()
     {
         
+    }
+    public void UpdatePopUp()
+    {
+        
+    }
+    public void DestroyPopUp()
+    {
+        
+    }
+    public void SetPopUp(PopUp PopUp)
+    {
+        
+    }
+    public enum PopUpType
+    { 
+        Water,
+        Harvest
     }
 }
