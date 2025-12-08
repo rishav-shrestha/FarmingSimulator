@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
@@ -16,6 +17,7 @@ public class UIController : MonoBehaviour
     public Button harvestbutton;
     public Button waterbutton;
     public Button pausebutton;
+    public Button graphicsbutton;
     [Header("Sprites")]
     
     public Sprite plantSelectedSprite;
@@ -24,7 +26,8 @@ public class UIController : MonoBehaviour
     public Sprite plantUnselectedSprite;
     public Sprite harvestUnselectedSprite;
     public Sprite waterUnselectedSprite;
-    
+    public Sprite lowGraphicsSprite;
+    public Sprite highGraphicsSprite;
     [Header("UI Elements")]
     
     public GameObject playModeUI;
@@ -66,6 +69,7 @@ public class UIController : MonoBehaviour
     }
     public void UpdateUI()
     {
+        SetGraphics();
         UpdateCropImage();
         UpdateTool();
         UpdateSeedAndCropAmount();
@@ -127,7 +131,7 @@ public class UIController : MonoBehaviour
         {
             seedAmountDisplay.SetText(OptimizeInt(_inventory.
                 GetSeedAmount(_gameManager.selectedCharacter.GetComponent<WorkerInteraction>().selectedcrop)));
-            seedAmountDisplay.SetText(OptimizeInt(_inventory.
+            cropAmountDisplay.SetText(OptimizeInt(_inventory.
                 GetCropAmount(_gameManager.selectedCharacter.GetComponent<WorkerInteraction>().selectedcrop)));
         }
             
@@ -209,6 +213,60 @@ public class UIController : MonoBehaviour
     public void UpdateGameProgress()
     {
         progressBar.value = inventory.coins;
+    }
+
+    public void ExpandFarm()
+    {
+        if (inventory.SpendCoins(3000 * _gameManager.farmCostMultiplier))
+        {
+            _gameManager.tileManager.GetComponent<TileManager>().ExpandFarm(1, 1);
+            _gameManager.farmCostMultiplier++;
+            _gameManager.passiveExpensesCost+=700* _gameManager.farmCostMultiplier;
+        }
+    }
+
+    public void SetGraphics()
+    {
+        if (PlayerPrefs.HasKey("GraphicsMode") == false)
+        {
+            PlayerPrefs.SetString("GraphicsMode", _gameManager.graphicsMode.ToString());  
+        }
+        if (PlayerPrefs.GetString("GraphicsMode") == "Low")
+        {
+            graphicsbutton.image.sprite = lowGraphicsSprite;
+            _gameManager.graphicsMode = GameManager.GraphicsMode.Low;
+        }
+        else 
+        {
+            graphicsbutton.image.sprite = highGraphicsSprite;
+            _gameManager.graphicsMode = GameManager.GraphicsMode.High;
+        }
+
+       
+        
+    }
+    public void CycleGraphics()
+    {
+        _gameManager.CycleGraphicsMode();
+        if (_gameManager.graphicsMode == GameManager.GraphicsMode.High)
+        {
+           PlayerPrefs.SetString("GraphicsMode", "High"); 
+            graphicsbutton.image.sprite = highGraphicsSprite;
+        }
+        else
+        {
+            graphicsbutton.image.sprite = lowGraphicsSprite;
+            PlayerPrefs.SetString("GraphicsMode", "Low"); 
+        }
+    }
+    public void AddWorker()
+    {
+        if (inventory.SpendCoins(1000))
+        {
+            Instantiate(_gameManager.workerPrefab, _gameManager.player.transform.position, Quaternion.identity);
+            _gameManager.farmCostMultiplier++;
+            _gameManager.passiveExpensesCost+=100;
+        }
     }
     public void ExitGame()  
     {

@@ -61,7 +61,7 @@ public class AudioManager : MonoBehaviour
     {
         if(_gameManager.GetActiveCamera()!=_gameManager.gameCam) return;
         GameObject temp = new GameObject("TempAudio");
-        AudioSource source = temp.AddComponent<AudioSource>();
+        AudioSource source = sfxSource;
         source.clip = effect;
         source.Play();
         Destroy(temp, effect.length);

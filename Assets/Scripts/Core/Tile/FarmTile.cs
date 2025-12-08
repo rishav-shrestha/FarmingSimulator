@@ -229,6 +229,7 @@ public class FarmTile : MonoBehaviour
         switch (gameManager.graphicsMode)
         {
             case GameManager.GraphicsMode.Low:
+                cropRenderer.sprite=null;
                 GetComponent<SpriteRenderer>().sprite = crop != null ? crop.tile[currentStage] : emptyTileSprite;
                 break;
             case GameManager.GraphicsMode.High:

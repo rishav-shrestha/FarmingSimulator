@@ -11,6 +11,8 @@ TagManager:
   - Crop
   - Farmtile
   - Plot
+  - Grass
+  - Border
   layers:
   - Default
   - TransparentFX

@@ -1,21 +1,29 @@
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 public class CropDatabase : MonoBehaviour
 {
-    public List<Crop> crops;
+    public List<Crop> crops = new List<Crop>();
 
-    void OnValidate()
+#if UNITY_EDITOR
+    // Only runs in the Unity Editor
+    private void OnValidate()
     {
-        string[] guids = AssetDatabase.FindAssets("t:Crop", new[] { "Assets/Crops" });
-        crops = new List<Crop>(guids.Length);
-
-        for (int i = 0; i < guids.Length; i++)
-        {
-            string path = AssetDatabase.GUIDToAssetPath(guids[i]);
-            crops.Add(AssetDatabase.LoadAssetAtPath<Crop>(path));
-        }
-        
+        LoadCrops();
     }
+
+    private void LoadCrops()
+    {
+        crops.Clear();
+        string[] guids = UnityEditor.AssetDatabase.FindAssets("t:Crop", new[] { "Assets/Crops" });
+
+        foreach (string guid in guids)
+        {
+            string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
+            Crop crop = UnityEditor.AssetDatabase.LoadAssetAtPath<Crop>(path);
+            if (crop != null)
+                crops.Add(crop);
+        }
+    }
+#endif
 }

@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     public UIController uiController;
     public GameObject player;
     public GameObject[] workers;
+    public GameObject workerPrefab;
     public GameObject selectedCharacter;
     public GameMode currentMode;
     private GameMode _previousMode;
@@ -23,18 +24,10 @@ public class GameManager : MonoBehaviour
     public GraphicsMode graphicsMode;
     public float passiveExpensesTimer;
     public int passiveExpensesCost;
+    public int farmCostMultiplier=1;
     public int bar;
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
     }
 
     private void Start()
@@ -52,14 +45,14 @@ public class GameManager : MonoBehaviour
         SetGameMode(GameMode.Play);
         SetNormalEditMode();
         graphicsMode = GraphicsMode.High;
-        passiveExpensesCost = 30;
+        passiveExpensesCost = 500;
       
     }
 
     public void Update()
     {
         passiveExpensesTimer+=Time.deltaTime;
-        if (passiveExpensesTimer >= 30)
+        if (passiveExpensesTimer >= 200)
         {
             inventory.coins-=(passiveExpensesCost);
             passiveExpensesTimer = 0;

@@ -156,9 +156,21 @@ public class Inventory : MonoBehaviour
 
     public void BuySelectedCropSeed()
     {
-        if (SpendCoins(selectedCrop.seedBuyPrice*5))
+        if (gameObject.GetComponent<GameManager>().selectedCharacter.CompareTag("Player"))
         {
-            AddSeed( selectedCrop, 5);
+            if (SpendCoins(selectedCrop.seedBuyPrice*5))
+            {
+                AddSeed( selectedCrop, 5);
+            } 
+        }
+        else if (gameObject.GetComponent<GameManager>().selectedCharacter.CompareTag("Worker"))
+        {
+            if (SpendCoins(gameObject.GetComponent<GameManager>().selectedCharacter.
+                    GetComponent<WorkerInteraction>().selectedcrop.seedBuyPrice*5))
+            {
+                AddSeed( gameObject.GetComponent<GameManager>().selectedCharacter.
+                    GetComponent<WorkerInteraction>().selectedcrop, 5);
+            } 
         }
     }
     public void SellAllCrops()

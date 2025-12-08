@@ -10,13 +10,14 @@ public class PlayerMovement : MonoBehaviour
     [Header("Movement Settings")]
     public float speed = 1f;
 
-
+    private GameManager _gameManager;
     private PlayerState _playerState;
     private PlayerInteraction _playerInteraction;
     void Start()
     {
 
         // Initialize components
+        _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         _playerInteraction = GetComponent<PlayerInteraction>();  
         _playerState = GetComponent<PlayerState>();
         // Set idle position to starting position
@@ -26,7 +27,7 @@ public class PlayerMovement : MonoBehaviour
     }
     void Update()
     {
-
+        if(_gameManager.GetGameMode()==GameManager.GameMode.Pause) return;
         // State machine for player movement
         switch (_playerState.currentState)
         {
