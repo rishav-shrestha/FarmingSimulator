@@ -3,11 +3,9 @@ using UnityEngine;
 public class WorkerData : MonoBehaviour
 {
     public string workername = "Worker";
-    [SerializeField] public int maxEnergy ;
-    [SerializeField] public int energy ;
-    [SerializeField] public int plantingskills;
-    [SerializeField] public int harvestingskills;
-    [SerializeField] public int wateringskills;
+    [SerializeField] public int plantingskill=0;
+    [SerializeField] public int harvestingskill=3;
+    [SerializeField] public int wateringskill=5;
 
     [SerializeField] public int maxSkillLevel;
 

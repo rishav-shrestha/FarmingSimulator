@@ -59,47 +59,52 @@ public class SortingLayerAdjuster : MonoBehaviour
             SpriteRenderer renderer = farmTile.GetComponent<SpriteRenderer>();
             renderer.sortingOrder = farmtilesortingorder;
             tile.outlineChild.GetComponent<SpriteRenderer>().sortingOrder = farmtilesortingorder - outlineOffset;
-            if (tile.currentStage < 2)
-            {
-                tile.cropChild.GetComponent<SpriteRenderer>().sortingOrder = farmtilesortingorder + outlineOffset;
-            }
+            
             if (tile.outlined)
             {
                 renderer.sortingOrder += hoveringOffset;
-                if (tile.currentStage < 2)
-                {
-                    tile.cropChild.GetComponent<SpriteRenderer>().sortingOrder += hoveringOffset;
-                }
-                else
-                {
-                    tile.cropChild.GetComponent<SpriteRenderer>().sortingOrder += hoveringOffset*10; 
-                }
-                
                 tile.outlineChild.GetComponent<SpriteRenderer>().sortingOrder += hoveringOffset;
+                    if (tile.currentStage < 2)
+                    {
+                        tile.popUpChild.GetComponent<SpriteRenderer>().sortingOrder = tile.cropChild.GetComponent<SpriteRenderer>().sortingOrder + 50;
+                    }
+                    else
+                    {
+                        tile.popUpChild.GetComponent<SpriteRenderer>().sortingOrder = tile.cropChild.GetComponent<SpriteRenderer>().sortingOrder + 50;
+                    }  
             }
+            if (tile.currentStage < 2)
+            {
+                tile.popUpChild.GetComponent<SpriteRenderer>().sortingOrder = tile.cropChild.GetComponent<SpriteRenderer>().sortingOrder + 50;
+                tile.cropChild.GetComponent<SpriteRenderer>().sortingOrder = tile.GetComponent<SpriteRenderer>().sortingOrder + outlineOffset;
+            }
+
         }
     }
+
     void UpdateRenderObjects()
     {
-        if (_gameManager.GetGameMode()==GameManager.GameMode.Pause) return;
+        if (_gameManager.GetGameMode() == GameManager.GameMode.Pause) return;
         foreach (GameObject worker in GameObject.FindGameObjectsWithTag("Worker"))
         {
             if (!renderObjects.Contains(worker)) renderObjects.Add(worker);
         }
+
         foreach (GameObject farmTile in GameObject.FindGameObjectsWithTag("Farmtile"))
         {
-          
+
             if (farmTile.GetComponent<FarmTile>().currentState != FarmTile.TileState.Empty)
             {
-                if (!renderObjects.Contains(farmTile.GetComponent<FarmTile>().cropChild)) 
+                if (!renderObjects.Contains(farmTile.GetComponent<FarmTile>().cropChild))
                     renderObjects.Add(farmTile.GetComponent<FarmTile>().cropChild);
-                
+
             }
             else
             {
-                if (renderObjects.Contains(farmTile.GetComponent<FarmTile>().cropChild)) 
+                if (renderObjects.Contains(farmTile.GetComponent<FarmTile>().cropChild))
                     renderObjects.Remove(farmTile.GetComponent<FarmTile>().cropChild);
             }
+
         }
     }
 }

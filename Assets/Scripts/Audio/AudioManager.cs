@@ -9,20 +9,15 @@ public class AudioManager : MonoBehaviour
     private GameManager _gameManager;
 
     [Header("Audio Source")]
-
     [SerializeField] AudioSource musicSource;
     [SerializeField] AudioSource sfxSource;
-
-
     //Audio Clips
     [Header("Audio Clip")]
-
     public AudioClip buttonClickSfx;
     public AudioClip backgroundMusic;
     public AudioClip plantSfx;
     public AudioClip waterSfx;
     public AudioClip harvestSfx;
-
     private void Awake()
     {
         if (Instance == null)
@@ -35,7 +30,6 @@ public class AudioManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
     private void Start()
     {
         _gameManager= GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
@@ -43,27 +37,16 @@ public class AudioManager : MonoBehaviour
         musicSource.Play();
     }
 
-    private void Update()
+    public void Initialize(GameManager gameManager)
     {
-        if (_gameManager == null)
-        {
-            _gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
-        }
+        _gameManager = gameManager;
     }
-
-
-    public void PlaySfx(AudioClip sfx)
-    {
-        sfxSource.PlayOneShot(sfx);
-    }
+    public void PlaySfx(AudioClip sfx) { sfxSource.PlayOneShot(sfx); }
 
     public void PlayFarmSfx(AudioClip effect)
     {
-        if(_gameManager.GetActiveCamera()!=_gameManager.gameCam) return;
-        GameObject temp = new GameObject("TempAudio");
-        AudioSource source = sfxSource;
-        source.clip = effect;
-        source.Play();
-        Destroy(temp, effect.length);
+        sfxSource.PlayOneShot(effect);
     }
+    
+    
 }

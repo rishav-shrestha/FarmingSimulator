@@ -1,19 +1,25 @@
 fileFormatVersion: 2
-guid: c4ad6854fd745db48a1d8650712e08b7
+guid: c27df40d4a3b1694c87e38cc50789d8e
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2515493846327978331
-    second: EllaSpriteSheet_0
+      213: 1629226595347958954
+    second: ellaspritesheet 1_0
   - first:
-      213: -2788072435771978813
-    second: EllaSpriteSheet_1
+      213: 2703597068025012575
+    second: ellaspritesheet 1_1
   - first:
-      213: -2515128905879031449
-    second: EllaSpriteSheet_2
+      213: -5101983905835960478
+    second: ellaspritesheet 1_2
   - first:
-      213: -1636618628174377664
-    second: EllaSpriteSheet_3
+      213: 4876139903140380234
+    second: ellaspritesheet 1_3
+  - first:
+      213: 2757109964645451102
+    second: ellaspritesheet 1_4
+  - first:
+      213: 4857444954881005988
+    second: ellaspritesheet 1_5
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -84,7 +90,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -105,17 +111,43 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: EllaSpriteSheet_0
+      name: ellaspritesheet 1_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 16
-        height: 17
+        x: 4
+        y: 3
+        width: 15
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -124,20 +156,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5a690f6acab271dd0800000000000000
-      internalID: -2515493846327978331
+      spriteID: aac855ad4fc2c9610800000000000000
+      internalID: 1629226595347958954
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: EllaSpriteSheet_1
+      name: ellaspritesheet 1_1
       rect:
         serializedVersion: 2
-        x: 16
-        y: 0
-        width: 16
-        height: 17
+        x: 26
+        y: 3
+        width: 15
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -146,20 +178,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3cbc0c934e6ce49d0800000000000000
-      internalID: -2788072435771978813
+      spriteID: f512b67853b158520800000000000000
+      internalID: 2703597068025012575
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: EllaSpriteSheet_2
+      name: ellaspritesheet 1_2
       rect:
         serializedVersion: 2
-        x: 32
-        y: 0
-        width: 16
-        height: 17
+        x: 49
+        y: 3
+        width: 17
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -168,20 +200,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 76173c8f597781dd0800000000000000
-      internalID: -2515128905879031449
+      spriteID: 26733ea4bac1239b0800000000000000
+      internalID: -5101983905835960478
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: EllaSpriteSheet_3
+      name: ellaspritesheet 1_3
       rect:
         serializedVersion: 2
-        x: 48
-        y: 0
-        width: 16
-        height: 17
+        x: 70
+        y: 3
+        width: 21
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -190,8 +222,52 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 04d01e267009949e0800000000000000
-      internalID: -1636618628174377664
+      spriteID: a4e3ac138678ba340800000000000000
+      internalID: 4876139903140380234
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ellaspritesheet 1_4
+      rect:
+        serializedVersion: 2
+        x: 94
+        y: 3
+        width: 22
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e55c161b7e8334620800000000000000
+      internalID: 2757109964645451102
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ellaspritesheet 1_5
+      rect:
+        serializedVersion: 2
+        x: 118
+        y: 3
+        width: 16
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4a912bb537c196340800000000000000
+      internalID: 4857444954881005988
       vertices: []
       indices: 
       edges: []
@@ -200,7 +276,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 0cfda2f6737e9c441bdb9c95b8bd243d
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -208,14 +284,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries:
-      - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":16.0,"y":17.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+      entries: []
     nameFileIdTable:
-      EllaSpriteSheet_0: -2515493846327978331
-      EllaSpriteSheet_1: -2788072435771978813
-      EllaSpriteSheet_2: -2515128905879031449
-      EllaSpriteSheet_3: -1636618628174377664
+      ellaspritesheet 1_0: 1629226595347958954
+      ellaspritesheet 1_1: 2703597068025012575
+      ellaspritesheet 1_2: -5101983905835960478
+      ellaspritesheet 1_3: 4876139903140380234
+      ellaspritesheet 1_4: 2757109964645451102
+      ellaspritesheet 1_5: 4857444954881005988
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

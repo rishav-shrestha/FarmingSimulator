@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 
 public class CameraController : MonoBehaviour
 {
@@ -10,13 +11,16 @@ public class CameraController : MonoBehaviour
     public float maxZoom = 3f;
 
     [Header("Camera Bounds")]
-    public float clampPadding = 1f; // how far beyond the farm the camera can move (in tiles)
+    public float clampPadding = 1f;
 
     [Header("References")]
-    public TileManager tileManager; // assign in Inspector
+    public TileManager tileManager;
 
     private Camera _cam;
     private Vector3 _dragOrigin;
+
+    // Touch zoom helpers
+    private float _previousPinchDistance;
 
     void Start()
     {
@@ -26,10 +30,14 @@ public class CameraController : MonoBehaviour
 
     public void UpdateCamera()
     {
-        HandleMouseDrag();
-        HandleMouseZoom();
+        HandleDrag();
+        HandleZoom();
         ClampCamera();
     }
+
+    // =========================
+    // INITIAL SETUP
+    // =========================
 
     private void CenterAndFitFarm()
     {
@@ -48,6 +56,103 @@ public class CameraController : MonoBehaviour
         _cam.orthographicSize = Mathf.Clamp(Mathf.Max(sizeX, sizeY), minZoom, maxZoom);
     }
 
+    // =========================
+    // DRAG (Mouse + Touch)
+    // =========================
+
+    void HandleDrag()
+    {
+        float camWidth = _cam.orthographicSize * _cam.aspect;
+        float camHeight = _cam.orthographicSize;
+
+        if (tileManager.width <= camWidth * 2 &&
+            tileManager.height <= camHeight * 2)
+            return;
+
+        // 🖱 Mouse drag
+        if (Mouse.current != null)
+        {
+            if (Mouse.current.leftButton.wasPressedThisFrame)
+                _dragOrigin = ScreenToWorld(Mouse.current.position.ReadValue());
+
+            if (Mouse.current.leftButton.isPressed)
+                DragCamera(Mouse.current.position.ReadValue());
+        }
+
+        // 📱 One-finger drag
+        if (Touchscreen.current != null &&
+            Touchscreen.current.touches.Count == 1)
+        {
+            TouchControl touch = Touchscreen.current.primaryTouch;
+
+            if (touch.press.wasPressedThisFrame)
+                _dragOrigin = ScreenToWorld(touch.position.ReadValue());
+
+            if (touch.press.isPressed)
+                DragCamera(touch.position.ReadValue());
+        }
+    }
+
+    void DragCamera(Vector2 screenPos)
+    {
+        Vector3 currentWorldPos = ScreenToWorld(screenPos);
+        Vector3 diff = _dragOrigin - currentWorldPos;
+
+        _cam.transform.position += new Vector3(diff.x, diff.y, 0f) * dragSpeed;
+        _dragOrigin = currentWorldPos;
+    }
+
+    // =========================
+    // ZOOM (Mouse + Pinch)
+    // =========================
+
+    void HandleZoom()
+    {
+        // 🖱 Mouse wheel zoom
+        if (Mouse.current != null)
+        {
+            float scroll = Mouse.current.scroll.ReadValue().y;
+            if (scroll != 0)
+            {
+                ZoomCamera(scroll * zoomSpeed);
+            }
+        }
+
+        // 📱 Pinch zoom
+        if (Touchscreen.current != null &&
+            Touchscreen.current.touches.Count == 2)
+        {
+            var touch0 = Touchscreen.current.touches[0];
+            var touch1 = Touchscreen.current.touches[1];
+
+            Vector2 p0 = touch0.position.ReadValue();
+            Vector2 p1 = touch1.position.ReadValue();
+
+            float currentDistance = Vector2.Distance(p0, p1);
+
+            if (touch0.press.wasPressedThisFrame || touch1.press.wasPressedThisFrame)
+            {
+                _previousPinchDistance = currentDistance;
+                return;
+            }
+
+            float delta = currentDistance - _previousPinchDistance;
+            _previousPinchDistance = currentDistance;
+
+            ZoomCamera(delta * zoomSpeed * 0.01f);
+        }
+    }
+
+    void ZoomCamera(float delta)
+    {
+        _cam.orthographicSize -= delta;
+        _cam.orthographicSize = Mathf.Clamp(_cam.orthographicSize, minZoom, maxZoom);
+    }
+
+    // =========================
+    // CLAMPING
+    // =========================
+
     private void ClampCamera()
     {
         int width = tileManager.width;
@@ -57,12 +162,12 @@ public class CameraController : MonoBehaviour
         float camWidth = camHeight * _cam.aspect;
 
         float minX = camWidth - 0.5f - clampPadding;
-        float maxX = width - 1 + 0.5f + clampPadding - camWidth;
+        float maxX = width - 0.5f + clampPadding - camWidth;
         float minY = camHeight - 0.5f - clampPadding;
-        float maxY = height - 1 + 0.5f + clampPadding - camHeight;
+        float maxY = height - 0.5f + clampPadding - camHeight;
 
-        // ✅ Add slight tolerance so you can still pan at max zoom
-        float minPanAllowance = 0.2f; // small buffer (in world units)
+        float minPanAllowance = 0.2f;
+
         if (maxX - minX < minPanAllowance)
         {
             float centerX = (width - 1) / 2f;
@@ -83,33 +188,14 @@ public class CameraController : MonoBehaviour
         _cam.transform.position = new Vector3(clampedX, clampedY, _cam.transform.position.z);
     }
 
+    // =========================
+    // HELPERS
+    // =========================
 
-    void HandleMouseDrag()
+    Vector3 ScreenToWorld(Vector2 screenPos)
     {
-        float camWidth = _cam.orthographicSize * _cam.aspect;
-        float camHeight = _cam.orthographicSize;
-
-        if ((tileManager.width <= camWidth * 2) && (tileManager.height <= camHeight * 2))
-            return;
-
-        if (Mouse.current.leftButton.wasPressedThisFrame)
-            _dragOrigin = _cam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-
-        if (Mouse.current.leftButton.isPressed)
-        {
-            Vector3 diff = _dragOrigin - _cam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-            _cam.transform.position += new Vector3(diff.x, diff.y, 0) * dragSpeed;
-            _dragOrigin = _cam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-        }
-    }
-
-    void HandleMouseZoom()
-    {
-        float scroll = Mouse.current.scroll.ReadValue().y;
-        if (scroll != 0)
-        {
-            _cam.orthographicSize -= scroll * zoomSpeed;
-            _cam.orthographicSize = Mathf.Clamp(_cam.orthographicSize, minZoom, maxZoom);
-        }
+        Vector3 world = _cam.ScreenToWorldPoint(screenPos);
+        world.z = 0f;
+        return world;
     }
 }

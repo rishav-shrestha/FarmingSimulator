@@ -41,4 +41,4 @@ MonoBehaviour:
   maxStorageCapacity: 80
   totalStages: 5
   harvestAmount: 3
-  locked: 1
+  locked: 0

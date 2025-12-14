@@ -37,8 +37,6 @@ public class UIController : MonoBehaviour
     public TextMeshProUGUI coinsDisplay;
     public TextMeshProUGUI seedAmountDisplay;
     public TextMeshProUGUI cropAmountDisplay;
-    public TextMeshProUGUI locationDisplay;
-    public Slider progressBar;
     [Header("GameComponents")] 
     
     private GameManager _gameManager;
@@ -74,7 +72,6 @@ public class UIController : MonoBehaviour
         UpdateTool();
         UpdateSeedAndCropAmount();
         UpdateCoins();
-        UpdateGameProgress();
         if (_gameManager.GetGameMode() == GameManager.GameMode.Play)
         {
             if(_gameManager.selectedCharacter.CompareTag("Worker"))
@@ -93,6 +90,7 @@ public class UIController : MonoBehaviour
     }
     public void UpdateTool()
     {
+        
         if(_gameManager.selectedCharacter.CompareTag("Player")
            &&inventory.currentTool == Inventory.Tool.Planting) SelectPlantTool();
         else if(_gameManager.selectedCharacter.CompareTag("Player")
@@ -208,11 +206,6 @@ public class UIController : MonoBehaviour
     {
         if(_gameManager.GetPreviousMode()==GameManager.GameMode.Edit) editModeUI.SetActive(true);
         if(_gameManager.GetPreviousMode()==GameManager.GameMode.Play) playModeUI.SetActive(true);
-    }
-
-    public void UpdateGameProgress()
-    {
-        progressBar.value = inventory.coins;
     }
 
     public void ExpandFarm()

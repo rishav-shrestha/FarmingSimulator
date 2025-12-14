@@ -1,5 +1,7 @@
+using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class WorkerInteraction : MonoBehaviour
 {
@@ -8,14 +10,21 @@ public class WorkerInteraction : MonoBehaviour
     public List<GameObject> selectedTiles = new List<GameObject>();
     public List<GameObject> shownTiles = new List<GameObject>();
     public GameObject currentSelectedTile;
+    public Slider interactionSlider;
     
     public GameObject startTile;
     public GameObject endTile;
-    public WorkerData workerData;
     public Crop selectedcrop;
+    public bool interacting;
+    public float interactionTime;
+    public float elapsed;
+    
+    private WorkerData _workerData;
+
     void Start()
     {
-        workerData=GetComponent<WorkerData>();
+        interactionSlider.gameObject.SetActive(false);
+        _workerData=GetComponent<WorkerData>();
         _inventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<Inventory>();
         if (selectedcrop == null)
         {
@@ -78,11 +87,7 @@ public class WorkerInteraction : MonoBehaviour
         }
         return nearestTile.GetComponent<FarmTile>();
     }
-
-    public void SetWork(Inventory.Tool tool)
-    {
-        assignedWork = tool;
-    }
+    
 
     public void SetCrop(Crop crop)
     {
@@ -165,7 +170,66 @@ public class WorkerInteraction : MonoBehaviour
         }
     }
 
-    public void Interact(GameObject tile)
+    public void CallInteract(GameObject Tile)
+    {
+        if(interacting) return;
+        if (Tile == null)
+        {
+            Debug.Log("Tile is null");
+            return;
+        }
+        StartCoroutine(Interact(Tile));
+    }
+
+    public float CalculateInteractionTime()
+    {
+        float maxTime = 1.5f;
+        float minTime = 0.1f;
+        Inventory.Tool action = currentSelectedTile.GetComponent<FarmTile>().action;
+        switch (action)
+        {
+            case Inventory.Tool.Planting:
+                return maxTime - (maxTime - minTime) * Mathf.Log(_workerData.plantingskill + 1f) / Mathf.Log(9 + 1f);
+                break;
+            case Inventory.Tool.Watering:
+                return maxTime - (maxTime - minTime) * Mathf.Log(_workerData.wateringskill + 1f) / Mathf.Log(9 + 1f);
+                break;
+            case Inventory.Tool.Harvesting:
+                return maxTime - (maxTime - minTime) * Mathf.Log(_workerData.harvestingskill + 1f) / Mathf.Log(9 + 1f);
+                break;
+        }
+        
+        return 0;
+    }
+    IEnumerator Interact(GameObject tile)
+    {
+        interactionTime = CalculateInteractionTime(); // your calculated duration
+        elapsed = 0f;
+
+        interacting = true;
+
+        // Make sure the slider is visible and reset
+        interactionSlider.gameObject.SetActive(true);
+        interactionSlider.GetComponent<Slider>().value = 0f;
+
+        // Loop for the duration
+        while (elapsed < interactionTime)
+        {
+            elapsed += Time.deltaTime;                 // increase elapsed time
+            interactionSlider.GetComponent<Slider>().value = elapsed / interactionTime; // update slider 0 → 1
+            yield return null;                         // wait until next frame
+        }
+
+        // Ensure slider is full
+        interactionSlider.GetComponent<Slider>().value = 1f;
+        interactionSlider.gameObject.SetActive(false);
+
+        // Call the tile interaction exactly after interactionTime
+        InteractTile(tile);
+
+        interacting = false;
+    }
+    public void InteractTile(GameObject tile)
     {
         if(tile!=null)
         {
@@ -182,6 +246,7 @@ public class WorkerInteraction : MonoBehaviour
                     break;
             }
         } 
+        interacting=false;
         currentSelectedTile = null;
     }
 

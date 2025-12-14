@@ -2,13 +2,9 @@ using UnityEngine;
 
 public class PlayerData : MonoBehaviour
 {
-    [SerializeField] public int level ;
-    [SerializeField] public int experience;
-    [SerializeField] public int maxEnergy;
-    [SerializeField] public int energy;
-    [SerializeField] public int plantingskills;
-    [SerializeField] public int harvestingskills;
-    [SerializeField] public int wateringskills;
+    [SerializeField] public int plantingskill=0;
+    [SerializeField] public int harvestingskill=3;
+    [SerializeField] public int wateringskill=9;
   
     [SerializeField] public int maxSkillLevel;
     

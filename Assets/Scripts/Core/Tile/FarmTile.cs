@@ -265,6 +265,7 @@ public class FarmTile : MonoBehaviour
         if (gameManager.GetGameMode() == GameManager.GameMode.Play)
         {
             UpdatePopUp();
+            this._mainRenderer.color = Color.white;
             if(isCurrentSelected)
             {
                 UpdateOutline(Color.yellow);

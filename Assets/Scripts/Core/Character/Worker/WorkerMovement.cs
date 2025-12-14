@@ -50,17 +50,26 @@ public class WorkerMovement : MonoBehaviour
                 }
                 break;
             case WorkerState.State.Interacting :
-                _workerInteraction.Interact(_workerInteraction.currentSelectedTile);
                 FindTarget();
                 if (_workerInteraction.currentSelectedTile != null)
                 {
                     SetTargetPosition(_workerInteraction.currentSelectedTile.transform.position);
-                    _workerState.currentState = WorkerState.State.GoingtoTarget;
                 }
-                else
+                if(IsAtTarget()) _workerInteraction.CallInteract(_workerInteraction.currentSelectedTile);
+                
+                if (!_workerInteraction.interacting)
                 {
-                    _workerState.currentState = WorkerState.State.ReturningToIdle;
+                    if (_workerInteraction.currentSelectedTile != null)
+                    {
+                        SetTargetPosition(_workerInteraction.currentSelectedTile.transform.position);
+                        _workerState.currentState = WorkerState.State.GoingtoTarget;
+                    }
+                    else
+                    {
+                        _workerState.currentState = WorkerState.State.ReturningToIdle;
+                    }  
                 }
+               
                 
                 break;
             case WorkerState.State.ReturningToIdle :
@@ -77,7 +86,7 @@ public class WorkerMovement : MonoBehaviour
                 }
                 break;
         }
-        if (_workerState.currentState == WorkerState.State.Idle)
+        if (_workerState.currentState == WorkerState.State.Idle||_workerState.currentState == WorkerState.State.Interacting)
         {
             _animator.SetBool("Moving", false);
         }

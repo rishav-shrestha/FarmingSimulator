@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    private static readonly int Moving = Animator.StringToHash("Moving");
+    private static readonly int Direction = Animator.StringToHash("Direction");
+
     [Header("Movement Postions")]
     public Vector2 targetPosition;
     public Vector2 idlePosition;
@@ -9,8 +12,9 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Movement Settings")]
     public float speed = 1f;
-    private bool facingRight = true;
-    private Vector3 lastPosition;
+    private bool _facingRight = true;
+    private bool _facingUp = true;
+    private Vector3 _lastPosition;
 
     private GameManager _gameManager;
     private PlayerState _playerState;
@@ -28,7 +32,7 @@ public class PlayerMovement : MonoBehaviour
         idlePosition = transform.position;
         // Set current position to starting position
         currentPosition = transform.position;
-        lastPosition = transform.position;
+        _lastPosition = transform.position;
     }
     void Update()
     {
@@ -60,15 +64,25 @@ public class PlayerMovement : MonoBehaviour
                 }
                 break;
             case PlayerState.State.Interacting:
-                _playerInteraction.InteractTile(_playerInteraction.currentSelectedTile);
                 if (_playerInteraction.currentSelectedTile != null)
                 {
                     SetTargetPosition(_playerInteraction.currentSelectedTile.transform.position);
-                    _playerState.currentState = PlayerState.State.GoingtoTarget;
                 }
-                else
+                if (IsAtTarget())
                 {
-                    _playerState.currentState = PlayerState.State.ReturningToIdle;
+                    _playerInteraction.CallInteract(_playerInteraction.currentSelectedTile);  
+                 
+                }
+                if(!_playerInteraction.interacting)
+                { 
+                    if (_playerInteraction.currentSelectedTile != null)
+                    {
+                        _playerState.currentState = PlayerState.State.GoingtoTarget;
+                    }
+                    else
+                    {
+                        _playerState.currentState = PlayerState.State.ReturningToIdle;
+                    }
                 }
                 break;
         }
@@ -91,23 +105,29 @@ public class PlayerMovement : MonoBehaviour
             _playerState.currentState = PlayerState.State.Idle;
         }
 
-        if (_playerState.currentState == PlayerState.State.Idle)
+        if (_playerState.currentState == PlayerState.State.Idle||_playerState.currentState == PlayerState.State.Interacting)
         {
-            _animator.SetBool("Moving", false);
+            _animator.SetBool(Moving, false);
         }
         else
         {
-            _animator.SetBool("Moving", true);
+            _animator.SetBool(Moving, true);
         }
 
-        Vector3 delta = transform.position - lastPosition;
+        Vector3 delta = transform.position - _lastPosition;
+        
+        if (delta.y > 0 && !_facingUp)
+            ChangeDirection();
+        else if (delta.y < 0 && _facingUp)
+            ChangeDirection();
 
-       if (delta.x > 0 && !facingRight)
-            Flip();
-        else if (delta.x < 0 && facingRight)
+        
+       if (delta.x > 0 && !_facingRight)
+           Flip();
+        else if (delta.x < 0 && _facingRight)
             Flip();
 
-        lastPosition = transform.position; 
+        _lastPosition = transform.position; 
     }
 
     // Set the target position for movement
@@ -150,9 +170,14 @@ public class PlayerMovement : MonoBehaviour
     }
     void Flip()
     {
-        facingRight = !facingRight;
+        _facingRight = !_facingRight;
         Vector3 scale = transform.localScale;
         scale.x *= -1;
         transform.localScale = scale;
+    }
+    void ChangeDirection()
+    {
+        _facingUp = !_facingUp;
+        _animator.SetInteger(Direction, _facingUp ? 1 : 0);
     }
 }

@@ -1,16 +1,23 @@
 
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerInteraction : MonoBehaviour
 {
     Inventory _inventory;
     public List<GameObject> selectedTiles = new List<GameObject>();
     public GameObject currentSelectedTile;
-
+    public bool interacting;
+    private PlayerData _playerData;
+    public Slider interactionSlider;
+    public float interactionTime;
+    public float elapsed;
     void Start()
     {
-        
+        interactionSlider.gameObject.SetActive(false);
+        _playerData=GetComponent<PlayerData>();
         _inventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<Inventory>();
     }
     public void AddTile(GameObject tile)
@@ -52,7 +59,8 @@ public class PlayerInteraction : MonoBehaviour
 
                     break;
                 case Inventory.Tool.Harvesting:
-                    if(tile.GetComponent<FarmTile>().currentState == FarmTile.TileState.FullyGrown)
+                    if(tile.GetComponent<FarmTile>().currentState == FarmTile.TileState.FullyGrown ||
+                       tile.GetComponent<FarmTile>().currentState == FarmTile.TileState.Dead)
                     {
                         Add(tile);
                     }
@@ -66,7 +74,7 @@ public class PlayerInteraction : MonoBehaviour
             }
        
     }
-
+    
     private void Add(GameObject tile)
     {
         tile.GetComponent<FarmTile>().action = _inventory.currentTool;
@@ -88,6 +96,60 @@ public class PlayerInteraction : MonoBehaviour
         }
         selectedTiles.Clear();
     }
+    public void CallInteract(GameObject Tile)
+    {
+        if(interacting) return;
+                                                StartCoroutine(Interact(Tile));
+    }
+
+    public float CalculateInteractionTime()
+    {
+        float maxTime = 1.5f;
+        float minTime = 0.1f;
+        Inventory.Tool action = currentSelectedTile.GetComponent<FarmTile>().action;
+        switch (action)
+        {
+        case Inventory.Tool.Planting:
+            return maxTime - (maxTime - minTime) * Mathf.Log(_playerData.plantingskill + 1f) / Mathf.Log(9 + 1f);
+            break;
+        case Inventory.Tool.Watering:
+            return maxTime - (maxTime - minTime) * Mathf.Log(_playerData.wateringskill + 1f) / Mathf.Log(9 + 1f);
+            break;
+        case Inventory.Tool.Harvesting:
+            return maxTime - (maxTime - minTime) * Mathf.Log(_playerData.harvestingskill + 1f) / Mathf.Log(9 + 1f);
+            break;
+        }
+        
+        return 0;
+    }
+    IEnumerator Interact(GameObject tile)
+    {
+        interactionTime = CalculateInteractionTime(); // your calculated duration
+        elapsed = 0f;
+
+        interacting = true;
+
+        // Make sure the slider is visible and reset
+        interactionSlider.gameObject.SetActive(true);
+        interactionSlider.GetComponent<Slider>().value = 0f;
+
+        // Loop for the duration
+        while (elapsed < interactionTime)
+        {
+            elapsed += Time.deltaTime;                 // increase elapsed time
+            interactionSlider.GetComponent<Slider>().value = elapsed / interactionTime; // update slider 0 → 1
+            yield return null;                         // wait until next frame
+        }
+
+        // Ensure slider is full
+        interactionSlider.GetComponent<Slider>().value = 1f;
+        interactionSlider.gameObject.SetActive(false);
+
+        // Call the tile interaction exactly after interactionTime
+        InteractTile(tile);
+
+        interacting = false;
+    }
     public void InteractTile(GameObject tile)
     {
         if(tile!=null)
@@ -106,6 +168,7 @@ public class PlayerInteraction : MonoBehaviour
             }
         } 
         tile.GetComponentInParent<FarmTile>().isCurrentSelected = false;
+        interacting=false;
         RemoveTile(tile);
     }
     void Update()

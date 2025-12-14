@@ -14,10 +14,9 @@ public class TileManager : MonoBehaviour
     public GameObject borderCornerPrefab;
 
     public GameObject grassTilePrefab;
-    public int grassWidth = 3;
+    public int grassWidth = 10;
 
     public FarmTile[,] Tiles;
-
     private float _tileW;
     private float _tileH;
 

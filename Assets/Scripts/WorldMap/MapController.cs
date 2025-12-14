@@ -46,12 +46,10 @@ public class MapController : MonoBehaviour
       switch (location)
       {
         case Location.Farm:
-          gameManager.SetActiveCamera(gameManager.storageCam);
           gameManager.SetActiveUI(gameManager.uiController.storageUI);
           gameManager.SetGameMode(GameManager.GameMode.Play);
           break;
         case Location.Inventory:
-          gameManager.SetActiveCamera(gameManager.storageCam);
           gameManager.SetActiveUI(gameManager.uiController.storageUI);
           gameManager.SetGameMode(GameManager.GameMode.Play);
           break;
@@ -65,7 +63,6 @@ public class MapController : MonoBehaviour
     }
     else
     {
-        gameManager.SetActiveCamera(gameManager.mapCam);
         gameManager.SetActiveUI(gameManager.uiController.mapUI);
         gameManager.SetGameMode(GameManager.GameMode.Map);
     }
