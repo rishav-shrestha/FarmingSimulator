@@ -43,6 +43,8 @@ public class FarmTile : MonoBehaviour
     //Crop Child
     public GameObject cropChild;
     private SpriteRenderer cropRenderer;
+    
+    public  GameObject particlePrefab;
 
     //PopUp
     public GameObject popUpChild;
@@ -77,6 +79,7 @@ public class FarmTile : MonoBehaviour
             {
                 currentState = TileState.Growing;
                AudioManager.Instance.PlayFarmSfx(AudioManager.Instance.plantSfx);
+               PlayParticleEffect( Color.green);
                 crop = selectedCrop;
                 inventory.UseSeed(selectedCrop);
             }
@@ -93,6 +96,7 @@ public class FarmTile : MonoBehaviour
                 {
                    AudioManager.Instance.PlayFarmSfx(AudioManager.Instance.harvestSfx);
                    inventory.AddCrop(crop,1);
+                   PlayParticleEffect( Color.yellow);
                     crop = null;
                     currentStage = 0;
                     growthTimer = 0f;
@@ -101,6 +105,7 @@ public class FarmTile : MonoBehaviour
                 }
                 else if (currentState == TileState.Dead)
                 {
+                    PlayParticleEffect( Color.gray);
                     crop = null;
                     currentStage = 0;
                     growthTimer = 0f;
@@ -116,6 +121,7 @@ public class FarmTile : MonoBehaviour
         if (currentState == TileState.RequiresWater && action == Inventory.Tool.Watering)
         { 
             AudioManager.Instance.PlayFarmSfx(AudioManager.Instance.waterSfx);
+            PlayParticleEffect( Color.aquamarine);
             currentState = TileState.Growing;
             waterTimer--;
         }
@@ -129,6 +135,7 @@ public class FarmTile : MonoBehaviour
             if (crop == null)
             {
                 currentState = TileState.Growing;
+                PlayParticleEffect( Color.green);
                 AudioManager.Instance.PlayFarmSfx(AudioManager.Instance.plantSfx);
                 crop = worker.selectedcrop;
                 inventory.UseSeed(worker.selectedcrop);
@@ -149,6 +156,7 @@ public class FarmTile : MonoBehaviour
                 if (currentState == TileState.FullyGrown)
                 {
                     AudioManager.Instance.PlayFarmSfx(AudioManager.Instance.harvestSfx);
+                    PlayParticleEffect( Color.yellow);
                     inventory.AddCrop(crop,1);
                     crop = null;
                     currentStage = 0;
@@ -158,6 +166,7 @@ public class FarmTile : MonoBehaviour
                 }
                 else if (currentState == TileState.Dead)
                 {
+                    PlayParticleEffect( Color.gray);
                     crop = null;
                     currentStage = 0;
                     growthTimer = 0f;
@@ -175,6 +184,7 @@ public class FarmTile : MonoBehaviour
         if (currentState == TileState.RequiresWater && worker.assignedWork == Inventory.Tool.Watering)
         {
             AudioManager.Instance.PlayFarmSfx(AudioManager.Instance.waterSfx);
+            PlayParticleEffect( Color.aquamarine);
             currentState = TileState.Growing;
             waterTimer--;
         }
@@ -445,6 +455,30 @@ public class FarmTile : MonoBehaviour
         if (sr != null)
             sr.sortingOrder = _tileRenderer.sortingOrder + outlineOrderOffset;
         outlineChild.SetActive(false);
+    }
+    private void PlayParticleEffect(Color color)
+    {
+        if (particlePrefab == null) return;
+
+        // Spawn particle at tile position
+        GameObject particle = Instantiate(particlePrefab, transform.position, Quaternion.identity);
+        ParticleSystem ps = particle.GetComponent<ParticleSystem>();
+
+        if (ps != null)
+        {
+            // Set particle color
+            var main = ps.main;
+            main.startColor = color;
+
+            ps.Play();
+
+            // Destroy particle after it finishes
+            Destroy(particle, main.duration + main.startLifetime.constantMax);
+        }
+        else
+        {
+            Destroy(particle, 2f); // fallback
+        }
     }
     
     public enum TileState

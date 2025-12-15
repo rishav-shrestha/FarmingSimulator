@@ -17,6 +17,8 @@ public class UIController : MonoBehaviour
     public Button harvestbutton;
     public Button waterbutton;
     public Button pausebutton;
+    public Button playbutton;
+    public Button exiteditmodeButton;
     public Button graphicsbutton;
     [Header("Sprites")]
     

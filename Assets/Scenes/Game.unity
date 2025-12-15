@@ -1930,10 +1930,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5025c1523e45d0c43a22cbed6d76849d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dragSpeed: 1
-  zoomSpeed: 0.5
   minZoom: 1
   maxZoom: 3
+  pcDragSpeed: 3
+  pcZoomSpeed: 9
+  mobileDragSpeed: 0.7
+  mobileZoomSpeed: 1
+  enableInertia: 1
+  dragInertia: 0.9
+  zoomInertia: 0.8
   clampPadding: 1
   tileManager: {fileID: 1175530191}
 --- !u!114 &463724836
@@ -1961,6 +1966,15 @@ MonoBehaviour:
   gameManager: {fileID: 0}
   cameraController: {fileID: 0}
   plotManager: {fileID: 0}
+  backAction:
+    m_Name: 
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: b9a6e353-517d-4b31-9e28-12cc29a5bd0e
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
 --- !u!114 &463724837
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2007,6 +2021,8 @@ MonoBehaviour:
   harvestbutton: {fileID: 555346525}
   waterbutton: {fileID: 130858646}
   pausebutton: {fileID: 2136801836}
+  playbutton: {fileID: 1956665247}
+  exiteditmodeButton: {fileID: 1095628874}
   graphicsbutton: {fileID: 1737563949}
   plantSelectedSprite: {fileID: -3824439478612353135, guid: 85e4fc6cb2d07d04b8ee3c9bce92b375, type: 3}
   harvestSelectedSprite: {fileID: -1590769198271521349, guid: 83149cd096e0cfd46b34df803cc48186, type: 3}
@@ -7901,6 +7917,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 418347086}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!114 &1956665248
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8050,6 +8078,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: ButtonClickSFX, Assembly-CSharp
         m_MethodName: playButtonSound
         m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 418347086}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

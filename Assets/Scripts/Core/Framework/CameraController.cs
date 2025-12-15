@@ -1,14 +1,26 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Controls;
+using UnityEngine.InputSystem.EnhancedTouch;
+using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
 public class CameraController : MonoBehaviour
 {
     [Header("Camera Settings")]
-    public float dragSpeed = 1f;
-    public float zoomSpeed = 0.5f;
     public float minZoom = 1f;
-    public float maxZoom = 3f;
+    public float maxZoom = 6f;
+
+    [Header("PC Speed Settings")]
+    public float pcDragSpeed = 1.2f;
+    public float pcZoomSpeed = 1.0f;
+
+    [Header("Mobile Speed Settings")]
+    public float mobileDragSpeed = 1.0f;
+    public float mobileZoomSpeed = 1.0f;
+
+    [Header("Inertia Settings")]
+    public bool enableInertia = true;
+    public float dragInertia = 0.88f;
+    public float zoomInertia = 0.85f;
 
     [Header("Camera Bounds")]
     public float clampPadding = 1f;
@@ -17,185 +29,199 @@ public class CameraController : MonoBehaviour
     public TileManager tileManager;
 
     private Camera _cam;
-    private Vector3 _dragOrigin;
+    private Vector3 _dragVelocity;
+    private float _zoomVelocity;
+    private float _lastPinchDistance;
 
-    // Touch zoom helpers
-    private float _previousPinchDistance;
+    private void OnEnable() => EnhancedTouchSupport.Enable();
+    private void OnDisable() => EnhancedTouchSupport.Disable();
 
     void Start()
     {
         _cam = Camera.main;
-        CenterAndFitFarm();
+        CenterCamera();
     }
 
+    // Called externally
     public void UpdateCamera()
     {
         HandleDrag();
         HandleZoom();
+        ApplyInertia();
         ClampCamera();
     }
 
     // =========================
-    // INITIAL SETUP
+    // Drag (PC + Mobile)
     // =========================
-
-    private void CenterAndFitFarm()
-    {
-        int width = tileManager.width;
-        int height = tileManager.height;
-
-        float centerX = (width - 1) / 2f;
-        float centerY = (height - 1) / 2f;
-
-        _cam.transform.position = new Vector3(centerX, centerY, _cam.transform.position.z);
-
-        float screenAspect = (float)Screen.width / Screen.height;
-        float sizeX = width / (2f * screenAspect);
-        float sizeY = height / 2f;
-
-        _cam.orthographicSize = Mathf.Clamp(Mathf.Max(sizeX, sizeY), minZoom, maxZoom);
-    }
-
-    // =========================
-    // DRAG (Mouse + Touch)
-    // =========================
-
     void HandleDrag()
     {
-        float camWidth = _cam.orthographicSize * _cam.aspect;
-        float camHeight = _cam.orthographicSize;
-
-        if (tileManager.width <= camWidth * 2 &&
-            tileManager.height <= camHeight * 2)
-            return;
-
-        // 🖱 Mouse drag
-        if (Mouse.current != null)
+        // -------- MOBILE --------
+        if (Touch.activeTouches.Count == 1)
         {
-            if (Mouse.current.leftButton.wasPressedThisFrame)
-                _dragOrigin = ScreenToWorld(Mouse.current.position.ReadValue());
-
-            if (Mouse.current.leftButton.isPressed)
-                DragCamera(Mouse.current.position.ReadValue());
-        }
-
-        // 📱 One-finger drag
-        if (Touchscreen.current != null &&
-            Touchscreen.current.touches.Count == 1)
-        {
-            TouchControl touch = Touchscreen.current.primaryTouch;
-
-            if (touch.press.wasPressedThisFrame)
-                _dragOrigin = ScreenToWorld(touch.position.ReadValue());
-
-            if (touch.press.isPressed)
-                DragCamera(touch.position.ReadValue());
-        }
-    }
-
-    void DragCamera(Vector2 screenPos)
-    {
-        Vector3 currentWorldPos = ScreenToWorld(screenPos);
-        Vector3 diff = _dragOrigin - currentWorldPos;
-
-        _cam.transform.position += new Vector3(diff.x, diff.y, 0f) * dragSpeed;
-        _dragOrigin = currentWorldPos;
-    }
-
-    // =========================
-    // ZOOM (Mouse + Pinch)
-    // =========================
-
-    void HandleZoom()
-    {
-        // 🖱 Mouse wheel zoom
-        if (Mouse.current != null)
-        {
-            float scroll = Mouse.current.scroll.ReadValue().y;
-            if (scroll != 0)
+            var touch = Touch.activeTouches[0];
+            if (touch.phase == UnityEngine.InputSystem.TouchPhase.Moved)
             {
-                ZoomCamera(scroll * zoomSpeed);
+                Vector2 delta = touch.delta;
+                float zoomFactor = _cam.orthographicSize;
+
+                Vector3 move = new Vector3(
+                    -delta.x * zoomFactor * mobileDragSpeed * 0.001f,
+                    -delta.y * zoomFactor * mobileDragSpeed * 0.001f,
+                    0f
+                );
+
+                _cam.transform.position += move;
+                _dragVelocity = move;
             }
         }
-
-        // 📱 Pinch zoom
-        if (Touchscreen.current != null &&
-            Touchscreen.current.touches.Count == 2)
+        // -------- PC --------
+        else if (Mouse.current != null && Mouse.current.leftButton.isPressed)
         {
-            var touch0 = Touchscreen.current.touches[0];
-            var touch1 = Touchscreen.current.touches[1];
+            Vector2 delta = Mouse.current.delta.ReadValue();
+            float zoomFactor = _cam.orthographicSize;
 
-            Vector2 p0 = touch0.position.ReadValue();
-            Vector2 p1 = touch1.position.ReadValue();
+            Vector3 move = new Vector3(
+                -delta.x * zoomFactor * pcDragSpeed * 0.001f,
+                -delta.y * zoomFactor * pcDragSpeed * 0.001f,
+                0f
+            );
 
-            float currentDistance = Vector2.Distance(p0, p1);
+            _cam.transform.position += move;
+            _dragVelocity = move;
+        }
+    }
 
-            if (touch0.press.wasPressedThisFrame || touch1.press.wasPressedThisFrame)
+    // =========================
+    // Zoom (PC + Mobile)
+    // =========================
+    void HandleZoom()
+    {
+        // -------- MOBILE PINCH --------
+        if (Touch.activeTouches.Count == 2)
+        {
+            var t0 = Touch.activeTouches[0];
+            var t1 = Touch.activeTouches[1];
+
+            float distance = Vector2.Distance(t0.screenPosition, t1.screenPosition);
+
+            if (t0.phase == UnityEngine.InputSystem.TouchPhase.Began ||
+                t1.phase == UnityEngine.InputSystem.TouchPhase.Began)
             {
-                _previousPinchDistance = currentDistance;
+                _lastPinchDistance = distance;
+                _zoomVelocity = 0f;
                 return;
             }
 
-            float delta = currentDistance - _previousPinchDistance;
-            _previousPinchDistance = currentDistance;
+            float delta = distance - _lastPinchDistance;
+            _lastPinchDistance = distance;
 
-            ZoomCamera(delta * zoomSpeed * 0.01f);
+            _zoomVelocity = delta * mobileZoomSpeed * 0.001f;
+            _cam.orthographicSize = Mathf.Clamp(
+                _cam.orthographicSize - _zoomVelocity,
+                minZoom,
+                maxZoom
+            );
+        }
+
+        // -------- PC SCROLL --------
+        if (Mouse.current != null)
+        {
+            float scroll = Mouse.current.scroll.ReadValue().y;
+            if (!Mathf.Approximately(scroll, 0f))
+            {
+                _zoomVelocity = scroll * pcZoomSpeed * 0.01f;
+                _cam.orthographicSize = Mathf.Clamp(
+                    _cam.orthographicSize - _zoomVelocity,
+                    minZoom,
+                    maxZoom
+                );
+            }
         }
     }
 
-    void ZoomCamera(float delta)
+    // =========================
+    // Inertia
+    // =========================
+    void ApplyInertia()
     {
-        _cam.orthographicSize -= delta;
-        _cam.orthographicSize = Mathf.Clamp(_cam.orthographicSize, minZoom, maxZoom);
+        if (!enableInertia) return;
+
+        bool dragging =
+            Touch.activeTouches.Count == 1 ||
+            (Mouse.current != null && Mouse.current.leftButton.isPressed);
+
+        if (!dragging && _dragVelocity.magnitude > 0.0001f)
+        {
+            _cam.transform.position += _dragVelocity;
+            _dragVelocity *= dragInertia;
+        }
+
+        bool zooming =
+            Touch.activeTouches.Count == 2 ||
+            (Mouse.current != null &&
+             !Mathf.Approximately(Mouse.current.scroll.ReadValue().y, 0f));
+
+        if (!zooming && Mathf.Abs(_zoomVelocity) > 0.0001f)
+        {
+            _cam.orthographicSize = Mathf.Clamp(
+                _cam.orthographicSize - _zoomVelocity,
+                minZoom,
+                maxZoom
+            );
+            _zoomVelocity *= zoomInertia;
+        }
     }
 
     // =========================
-    // CLAMPING
+    // Clamp Camera
     // =========================
-
-    private void ClampCamera()
+    void ClampCamera()
     {
-        int width = tileManager.width;
-        int height = tileManager.height;
+        if (tileManager == null) return;
 
         float camHeight = _cam.orthographicSize;
         float camWidth = camHeight * _cam.aspect;
 
         float minX = camWidth - 0.5f - clampPadding;
-        float maxX = width - 0.5f + clampPadding - camWidth;
+        float maxX = tileManager.width - 0.5f + clampPadding - camWidth;
         float minY = camHeight - 0.5f - clampPadding;
-        float maxY = height - 0.5f + clampPadding - camHeight;
+        float maxY = tileManager.height - 0.5f + clampPadding - camHeight;
 
         float minPanAllowance = 0.2f;
 
         if (maxX - minX < minPanAllowance)
         {
-            float centerX = (width - 1) / 2f;
+            float centerX = (tileManager.width - 1) / 2f;
             minX = centerX - minPanAllowance / 2f;
             maxX = centerX + minPanAllowance / 2f;
         }
 
         if (maxY - minY < minPanAllowance)
         {
-            float centerY = (height - 1) / 2f;
+            float centerY = (tileManager.height - 1) / 2f;
             minY = centerY - minPanAllowance / 2f;
             maxY = centerY + minPanAllowance / 2f;
         }
 
-        float clampedX = Mathf.Clamp(_cam.transform.position.x, minX, maxX);
-        float clampedY = Mathf.Clamp(_cam.transform.position.y, minY, maxY);
-
-        _cam.transform.position = new Vector3(clampedX, clampedY, _cam.transform.position.z);
+        _cam.transform.position = new Vector3(
+            Mathf.Clamp(_cam.transform.position.x, minX, maxX),
+            Mathf.Clamp(_cam.transform.position.y, minY, maxY),
+            _cam.transform.position.z
+        );
     }
 
     // =========================
-    // HELPERS
+    // Helpers
     // =========================
-
-    Vector3 ScreenToWorld(Vector2 screenPos)
+    void CenterCamera()
     {
-        Vector3 world = _cam.ScreenToWorldPoint(screenPos);
-        world.z = 0f;
-        return world;
+        if (tileManager == null) return;
+
+        _cam.transform.position = new Vector3(
+            tileManager.width / 2f,
+            tileManager.height / 2f,
+            _cam.transform.position.z
+        );
     }
 }

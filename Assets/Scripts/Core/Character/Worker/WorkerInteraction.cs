@@ -185,7 +185,7 @@ public class WorkerInteraction : MonoBehaviour
     {
         float maxTime = 1.5f;
         float minTime = 0.1f;
-        Inventory.Tool action = currentSelectedTile.GetComponent<FarmTile>().action;
+        Inventory.Tool action = assignedWork;
         switch (action)
         {
             case Inventory.Tool.Planting:

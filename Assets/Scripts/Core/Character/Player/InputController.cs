@@ -26,7 +26,19 @@ public class InputController : MonoBehaviour
     [SerializeField] private PlotManager plotManager;
 
     private Camera mainCam;
+    
+    public InputAction backAction;
 
+    private void OnEnable()
+    {
+        backAction.Enable();
+    }
+
+    private void OnDisable()
+    {
+        backAction.Disable();
+    }
+    
     void Awake()
     {
         mainCam = Camera.main;
@@ -41,6 +53,21 @@ public class InputController : MonoBehaviour
 
     void Update()
     {
+        if (backAction.WasPressedThisFrame())
+        {
+            if (gameManager.currentMode == GameManager.GameMode.Play)
+            {
+                gameManager.uiController.pausebutton.onClick.Invoke();
+            }
+            else if (gameManager.currentMode == GameManager.GameMode.Pause)
+            {
+                gameManager.uiController.playbutton.onClick.Invoke();
+            }
+            else if (gameManager.currentMode == GameManager.GameMode.Edit)
+            {
+                gameManager.uiController.exiteditmodeButton.onClick.Invoke();
+            }
+        }
         if (gameManager.GetGameMode() == GameManager.GameMode.Pause ||
             gameManager.GetGameMode() == GameManager.GameMode.Map)
             return;
