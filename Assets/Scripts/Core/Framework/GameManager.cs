@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour
         mapController = GetComponent<MapController>();
         uiController = GetComponent<UIController>();
         SelectCharacter(player);
-        SetGameMode(GameMode.Play);
+        SetGameMode(GameMode.Pause);
         SetNormalEditMode();
         graphicsMode = GraphicsMode.High;
         Intialize();
