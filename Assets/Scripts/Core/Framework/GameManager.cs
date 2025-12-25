@@ -47,17 +47,6 @@ public class GameManager : MonoBehaviour
     {
         AudioManager.Instance.Initialize(this);
     }
-    public void Update()
-    {
-        passiveExpensesTimer+=Time.deltaTime;
-        if (passiveExpensesTimer >= 200)
-        {
-            inventory.coins-=(passiveExpensesCost);
-            passiveExpensesTimer = 0;
-        }
-
-        
-    }
  
 
     public void CycleWorkerCrop()

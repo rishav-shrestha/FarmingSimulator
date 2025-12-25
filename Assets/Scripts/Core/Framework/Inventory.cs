@@ -8,6 +8,7 @@ public class Inventory : MonoBehaviour
     public Crop selectedCrop;
     public int seedamountdisplay;
     public CropDatabase _cropDatabase;
+    private GameManager _gameManager;
     [Header("Currencies")]
     public int coins=500;
 
@@ -24,6 +25,7 @@ public class Inventory : MonoBehaviour
     
     void Start()
     {
+        _gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         _cropDatabase = GetComponent<CropDatabase>();
         selectedCrop = _cropDatabase.crops[0];
         // Initialize seeds/crops for all crops in database
@@ -155,19 +157,19 @@ public class Inventory : MonoBehaviour
 
     public void BuySelectedCropSeed()
     {
-        if (gameObject.GetComponent<GameManager>().selectedCharacter.CompareTag("Player"))
+        if (_gameManager.selectedCharacter.CompareTag("Player"))
         {
             if (SpendCoins(selectedCrop.seedBuyPrice*5))
             {
                 AddSeed( selectedCrop, 5);
             } 
         }
-        else if (gameObject.GetComponent<GameManager>().selectedCharacter.CompareTag("Worker"))
+        else if (_gameManager.selectedCharacter.CompareTag("Worker"))
         {
-            if (SpendCoins(gameObject.GetComponent<GameManager>().selectedCharacter.
+            if (SpendCoins(_gameManager.selectedCharacter.
                     GetComponent<WorkerInteraction>().selectedcrop.seedBuyPrice*5))
             {
-                AddSeed( gameObject.GetComponent<GameManager>().selectedCharacter.
+                AddSeed( _gameManager.selectedCharacter.
                     GetComponent<WorkerInteraction>().selectedcrop, 5);
             } 
         }
